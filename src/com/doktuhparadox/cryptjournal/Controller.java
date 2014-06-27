@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Optional;
 
 import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 public class Controller {
@@ -125,6 +126,6 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-        return Dialogs.create().masthead(null).title(title).message(message);
+        return Dialogs.create().masthead(null).style(DialogStyle.NATIVE).title(title).message(message);
     }
 }
