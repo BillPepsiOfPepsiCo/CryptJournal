@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
 
 import java.io.File;
@@ -30,16 +31,16 @@ public class Controller {
     @FXML
     protected void initialize() {
         if (!journalDir.exists() && !journalDir.mkdir()) System.out.println("Created journal entry directory");
-        this.registerListeners();
+        this.attachListeners();
         this.refreshListView();
         if (journalEntryListView.getItems().size() == 0) deleteEntryButton.setDisable(true);
 
         journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
     }
 
-    private void registerListeners() {
+    private void attachListeners() {
         journalEntryListView.setOnKeyPressed(keyEvent -> {
-
+            if (keyEvent.getCode().equals(KeyCode.ENTER)) this.onOpenButtonPressed();
         });
 
         createEntryButton.setOnAction(event -> this.onCreateButtonPressed());
@@ -61,19 +62,27 @@ public class Controller {
         }
     }
 
-    private void onSaveButtonPressed() {
-        Optional passObj = this.createDialog("Enter password", "Input password for this entry (16 chars max)").showTextInput();
-        if (passObj != Optional.empty()) {
-            String password = passObj.toString().replace("Optional[", "").replace("]", "");
-            while (password.length() < 16)
-                password += "=";
+    private void onOpenButtonPressed() {
+        String decodedContent = journalEntryListView.getSelectionModel().getSelectedItem().read(this.promptForPassword());
+        if (decodedContent.equals("BAD_PASSWORD")) this.createDialog("Error", "Incorrect password.").showError();
 
-            journalEntryListView.getSelectionModel().getSelectedItem().write(journalContentEditor.getHtmlText(), password);
-            NodeState.enable(createEntryButton);
-            NodeState.disable(journalContentEditor);
-            NodeState.disable(saveButton);
-            journalContentEditor.setHtmlText("");
-        }
+        journalContentEditor.setHtmlText(decodedContent);
+        NodeState.enable(saveButton);
+        NodeState.enable(journalContentEditor);
+        NodeState.enable(deleteEntryButton);
+        NodeState.disable(createEntryButton);
+    }
+
+    private void onSaveButtonPressed() {
+        String password = this.promptForPassword();
+        if (password == null) return;
+
+        journalEntryListView.getSelectionModel().getSelectedItem().write(journalContentEditor.getHtmlText(), password);
+        NodeState.enable(createEntryButton);
+        NodeState.disable(journalContentEditor);
+        NodeState.disable(saveButton);
+        journalContentEditor.setHtmlText("");
+
     }
 
     private void onDeleteButtonPressed() {
@@ -100,6 +109,19 @@ public class Controller {
         //There's some stupid ass off-by-one error somewhere in here and I can't find it. It may be an error with custom list cell factories.
         //I honestly don't fucking care if it's on my side because this fixes it and I don't care.
         journalEntryListView.getSelectionModel().select(currentIndex);
+    }
+
+    private String promptForPassword() {
+        Optional passObj = this.createDialog("Enter password", "Input password for this entry (16 chars max)").showTextInput();
+        if (passObj != Optional.empty()) {
+            String password = passObj.toString().replace("Optional[", "").replace("]", "");
+            while (password.length() < 16)
+                password += "=";
+
+            return password;
+        }
+
+        return null;
     }
 
     private Dialogs createDialog(String title, String message) {
