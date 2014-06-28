@@ -21,6 +21,7 @@ public class Controller {
 
     @FXML public Button createEntryButton;
     @FXML public Button deleteEntryButton;
+    @FXML public Button openButton;
     @FXML public Button saveButton;
     @FXML public Label journalEntryDateLabel;
     @FXML public Label journalEntryNameLabel;
@@ -31,22 +32,37 @@ public class Controller {
 
     @FXML
     protected void initialize() {
+        journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
         if (!journalDir.exists() && !journalDir.mkdir()) System.out.println("Created journal entry directory");
         this.attachListeners();
         this.refreshListView();
-        if (journalEntryListView.getItems().size() == 0) deleteEntryButton.setDisable(true);
-
-        journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
+        //Prevent exceptions
+        if (journalEntryListView.getItems().size() == 0) {
+            openButton.setDisable(true);
+            deleteEntryButton.setDisable(true);
+        }
     }
 
     private void attachListeners() {
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER)) this.onOpenButtonPressed();
+            keyEvent.consume();
+        });
+
+        journalEntryListView.itemsProperty().addListener(observable -> {
+            if (journalEntryListView.getItems().size() == 0) {
+                openButton.setDisable(true);
+                deleteEntryButton.setDisable(true);
+            } else {
+                openButton.setDisable(false);
+                deleteEntryButton.setDisable(false);
+            }
         });
 
         createEntryButton.setOnAction(event -> this.onCreateButtonPressed());
         saveButton.setOnAction(event -> this.onSaveButtonPressed());
         deleteEntryButton.setOnAction(event -> this.onDeleteButtonPressed());
+        openButton.setOnAction(event -> this.onOpenButtonPressed());
     }
 
     //**********Button event methods**********\\
@@ -59,12 +75,14 @@ public class Controller {
             NodeState.enable(journalContentEditor);
             NodeState.enable(deleteEntryButton);
             NodeState.disable(createEntryButton);
+            NodeState.disable(openButton);
             journalContentEditor.requestFocus();
+            journalEntryNameLabel.setText(this.getSelectedEntry().getName());
         }
     }
 
     private void onOpenButtonPressed() {
-        String decodedContent = journalEntryListView.getSelectionModel().getSelectedItem().read(this.promptForPassword());
+        String decodedContent = this.getSelectedEntry().read(this.promptForPassword());
         if (decodedContent.equals("BAD_PASSWORD")) this.createDialog("Error", "Incorrect password.").showError();
 
         journalContentEditor.setHtmlText(decodedContent);
@@ -72,13 +90,15 @@ public class Controller {
         NodeState.enable(journalContentEditor);
         NodeState.enable(deleteEntryButton);
         NodeState.disable(createEntryButton);
+        journalContentEditor.requestFocus();
+        journalEntryNameLabel.setText(this.getSelectedEntry().getName());
     }
 
     private void onSaveButtonPressed() {
         String password = this.promptForPassword();
         if (password == null) return;
 
-        journalEntryListView.getSelectionModel().getSelectedItem().write(journalContentEditor.getHtmlText(), password);
+        this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
         NodeState.enable(createEntryButton);
         NodeState.disable(journalContentEditor);
         NodeState.disable(saveButton);
@@ -88,7 +108,7 @@ public class Controller {
 
     private void onDeleteButtonPressed() {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
-            journalEntryListView.getSelectionModel().getSelectedItem().attemptDelete();
+            this.getSelectedEntry().attemptDelete();
             this.refreshListView();
             if (journalEntryListView.getItems().size() == 0) NodeState.disable(deleteEntryButton);
         }
@@ -127,5 +147,9 @@ public class Controller {
 
     private Dialogs createDialog(String title, String message) {
         return Dialogs.create().masthead(null).style(DialogStyle.NATIVE).title(title).message(message);
+    }
+
+    private JournalEntry getSelectedEntry() {
+        return journalEntryListView.getSelectionModel().getSelectedItem();
     }
 }
