@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="510.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <ImageView fx:id="dogeView" fitHeight="369.0" fitWidth="523.0" layoutX="68.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../../resources/img/doge.jpeg" />
+            </image>
+        </ImageView>
+        <Label layoutX="401.353271484375" layoutY="52.0" text="wow" textFill="#00ff7b">
+            <font>
+                <Font name="Comic Sans MS" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="384.0" layoutY="180.0" text="much secret" textFill="RED">
+            <font>
+                <Font name="Comic Sans MS" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="155.0" layoutY="17.0" text="such doge easteregg">
+            <font>
+                <Font name="Comic Sans MS" size="24.0" />
+            </font>
+            <textFill>
+                <LinearGradient endX="1.0" endY="1.0" startX="1.0">
+                    <stops>
+                        <Stop color="RED" />
+                        <Stop color="#2200ff" offset="1.0" />
+                    </stops>
+                </LinearGradient>
+            </textFill>
+        </Label>
+        <Label layoutX="25.0" layoutY="180.0" prefHeight="25.0" prefWidth="152.0" text="many encrypshibe" textFill="#51ff00">
+            <font>
+                <Font name="Comic Sans MS" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="430.0" layoutY="259.0" text="wow">
+            <font>
+                <Font name="Comic Sans MS" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="309.0" layoutY="216.0" text="bow" textFill="#0062ff">
+            <font>
+                <Font name="Comic Sans MS" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="163.0" layoutY="307.0" text="such aes" textFill="#00c3ff">
+            <font>
+                <Font name="Comic Sans MS" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="25.0" layoutY="86.0" text="many EoSh6wUrzXD4+P0gkHvO3g==">
+            <font>
+                <Font name="Comic Sans MS" size="12.0" />
+            </font>
+            <textFill>
+                <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                    <stops>
+                        <Stop color="#00ff55" />
+                        <Stop color="#4d00ff" offset="0.31419573643410853" />
+                        <Stop color="RED" offset="1.0" />
+                    </stops>
+                </RadialGradient>
+            </textFill>
+        </Label>
+    </children>
+</AnchorPane>

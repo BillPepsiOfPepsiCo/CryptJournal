@@ -1,5 +1,9 @@
 package com.doktuhparadox.cryptjournal;
 
+import com.doktuhparadox.easel.control.keyboard.KeySequence;
+import com.doktuhparadox.easel.fxml.FXMLWindow;
+import com.doktuhparadox.easel.fxml.WindowSpawner;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,12 +14,25 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
 
 import java.io.File;
+import java.io.IOException;
 
+import java.net.URL;
 import java.util.Optional;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
+
+import static javafx.scene.input.KeyCode.D;
+import static javafx.scene.input.KeyCode.E;
+import static javafx.scene.input.KeyCode.G;
+import static javafx.scene.input.KeyCode.O;
+import static javafx.scene.input.KeyCode.W;
 
 public class Controller {
 
@@ -63,6 +80,26 @@ public class Controller {
         saveButton.setOnAction(event -> this.onSaveButtonPressed());
         deleteEntryButton.setOnAction(event -> this.onDeleteButtonPressed());
         openButton.setOnAction(event -> this.onOpenButtonPressed());
+
+        //Easter eggs
+        KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
+        new KeySequence(journalContentEditor, () -> {
+            try {
+                URL url = this.getClass().getResource("/resources/smoke_weed_erryday.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        },
+                new KeyCode[] {W, E, E, D},
+                delimiters).add();
+
+        new KeySequence(journalContentEditor, () -> new WindowSpawner(new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false)).spawnWindowFromFXML(),
+                new KeyCode[] {D, O, G, E},
+                delimiters).add();
     }
 
     //**********Button event methods**********\\
@@ -153,7 +190,6 @@ public class Controller {
             }
         }
 
-        System.out.println(password);
         return password;
     }
 
