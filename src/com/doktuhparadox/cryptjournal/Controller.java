@@ -68,6 +68,7 @@ public class Controller {
     //**********Button event methods**********\\
     private void onCreateButtonPressed() {
         Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
+
         if (!input.equals(Optional.empty())) {
             new JournalEntry(input.toString().replace("Optional[", "").replace("]", ""));
             this.refreshListView();
@@ -83,7 +84,11 @@ public class Controller {
 
     private void onOpenButtonPressed() {
         String decodedContent = this.getSelectedEntry().read(this.promptForPassword());
-        if (decodedContent.equals("BAD_PASSWORD")) this.createDialog("Error", "Incorrect password.").showError();
+
+        if (decodedContent.equals("BAD_PASSWORD")) {
+            this.createDialog("Error", "Incorrect password.").showError();
+            return;
+        }
 
         journalContentEditor.setHtmlText(decodedContent);
         NodeState.enable(saveButton);
@@ -133,16 +138,23 @@ public class Controller {
     }
 
     private String promptForPassword() {
-        Optional passObj = this.createDialog("Enter password", "Input password for this entry (16 chars max)").showTextInput();
-        if (passObj != Optional.empty()) {
-            String password = passObj.toString().replace("Optional[", "").replace("]", "");
-            while (password.length() < 16)
-                password += "=";
+        String password;
 
-            return password;
+        while ((password = this.createDialog("Enter password", "Input password for this entry\n(16 chars max)").showTextInput().toString().replace("Optional[", "").replace("]", ""))
+                .length() > 16 || password.length() < 16 || password.length() == 0) {
+
+            if (password.length() > 16) {
+                this.createDialog("Error", "Password is too long.").showError();
+            } else if (password.length() < 16) {
+                //I'm lucky Optional.empty is only 14 characters. Optional.dasistleerundsehrlange
+                if (password.equals("Optional.empty")) return null;
+                while (password.length() < 16) password += "=";
+                break;
+            }
         }
 
-        return null;
+        System.out.println(password);
+        return password;
     }
 
     private Dialogs createDialog(String title, String message) {
