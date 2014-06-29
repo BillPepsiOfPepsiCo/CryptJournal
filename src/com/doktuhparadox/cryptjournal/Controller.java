@@ -3,7 +3,6 @@ package com.doktuhparadox.cryptjournal;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.fxml.FXMLWindow;
 import com.doktuhparadox.easel.fxml.WindowSpawner;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,28 +10,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.web.HTMLEditor;
-
-import java.io.File;
-import java.io.IOException;
-
-import java.net.URL;
-import java.util.Optional;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.DialogStyle;
-import org.controlsfx.dialog.Dialogs;
-
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.E;
 import static javafx.scene.input.KeyCode.G;
 import static javafx.scene.input.KeyCode.O;
 import static javafx.scene.input.KeyCode.W;
+import javafx.scene.web.HTMLEditor;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
+import org.controlsfx.dialog.Dialogs;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Optional;
 
 public class Controller {
 
@@ -49,6 +45,7 @@ public class Controller {
 
     @FXML
     protected void initialize() {
+        OptionManager.initialize();
         journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
         if (!journalDir.exists() && !journalDir.mkdir()) System.out.println("Created journal entry directory");
         this.attachListeners();
@@ -68,11 +65,11 @@ public class Controller {
 
         journalEntryListView.itemsProperty().addListener(observable -> {
             if (journalEntryListView.getItems().size() == 0) {
-                openButton.setDisable(true);
-                deleteEntryButton.setDisable(true);
+                NodeState.disable(openButton);
+                NodeState.disable(deleteEntryButton);
             } else {
-                openButton.setDisable(false);
-                deleteEntryButton.setDisable(false);
+                NodeState.enable(openButton);
+                NodeState.enable(deleteEntryButton);
             }
         });
 
@@ -142,6 +139,7 @@ public class Controller {
 
         this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
         NodeState.enable(createEntryButton);
+        NodeState.enable(openButton);
         NodeState.disable(journalContentEditor);
         NodeState.disable(saveButton);
         journalContentEditor.setHtmlText("");
@@ -152,6 +150,13 @@ public class Controller {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().attemptDelete();
             this.refreshListView();
+
+            if (!journalContentEditor.isDisabled()) {
+                NodeState.enable(createEntryButton);
+                NodeState.disable(saveButton);
+                NodeState.disable(journalContentEditor);
+                journalContentEditor.setHtmlText("");
+            }
             if (journalEntryListView.getItems().size() == 0) NodeState.disable(deleteEntryButton);
         }
     }
