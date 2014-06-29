@@ -18,7 +18,7 @@ public class DateAndTime {
         int hour = Integer.valueOf(hourMinuteSecond[0]) + 7;
 
         return OptionManager.TIME_FORMAT.getValue()
-                .replace("h", String.valueOf(Boolean.valueOf(OptionManager.TWENTY_FOUR_HOUR_TIME.getValue()) ? hour : Math.signum(hour - 12) == -1 || hour - 12 == 0 ? hour : hour - 12))
+                .replace("h", String.valueOf(Boolean.valueOf(OptionManager.TWELVE_HOUR_TIME.getValue()) ? hour : Math.signum(hour - 12) == -1 || hour - 12 == 0 ? hour : hour - 12))
                 .replace("m", hourMinuteSecond[1])
                 .replace("s", hourMinuteSecond[2]);
     }

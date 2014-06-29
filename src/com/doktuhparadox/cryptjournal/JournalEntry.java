@@ -1,17 +1,15 @@
 package com.doktuhparadox.cryptjournal;
 
 import com.doktuhparadox.easel.io.ReadWriter;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.security.Key;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import java.io.File;
+import java.io.IOException;
+import java.security.Key;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -46,7 +44,7 @@ public class JournalEntry {
             e.printStackTrace();
         }
 
-        this.readWriter.write(new BASE64Encoder().encode(encodedStringBytes));
+        this.readWriter.write(new BASE64Encoder().encode(encodedStringBytes), false);
     }
 
     public String read(String password) {

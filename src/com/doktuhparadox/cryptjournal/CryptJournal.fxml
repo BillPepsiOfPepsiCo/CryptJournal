@@ -33,6 +33,6 @@
             </font>
         </Label>
         <Button fx:id="saveButton" disable="true" layoutX="256.33837890625" layoutY="645.0" mnemonicParsing="false" text="Save" />
-        <Button fx:id="openButton" layoutX="105.0" layoutY="645.0" mnemonicParsing="false" text="Open" />
+        <Button fx:id="openButton" layoutX="105.0" layoutY="645.0" mnemonicParsing="false" text="Open" /><Button fx:id="optionsButton" layoutX="691.0" layoutY="645.0" mnemonicParsing="false" text="Options" />
     </children>
 </AnchorPane>

@@ -35,6 +35,7 @@ public class Controller {
     @FXML public Button createEntryButton;
     @FXML public Button deleteEntryButton;
     @FXML public Button openButton;
+    @FXML public Button optionsButton;
     @FXML public Button saveButton;
     @FXML public Label journalEntryDateLabel;
     @FXML public Label journalEntryNameLabel;
@@ -77,6 +78,7 @@ public class Controller {
         saveButton.setOnAction(event -> this.onSaveButtonPressed());
         deleteEntryButton.setOnAction(event -> this.onDeleteButtonPressed());
         openButton.setOnAction(event -> this.onOpenButtonPressed());
+        optionsButton.setOnAction(event -> this.onOptionsButtonPressed());
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
@@ -160,6 +162,10 @@ public class Controller {
             if (journalEntryListView.getItems().size() == 0) NodeState.disable(deleteEntryButton);
         }
     }
+
+    private void onOptionsButtonPressed() {
+        new WindowSpawner(new FXMLWindow(getClass().getResource("OptionWindow.fxml"), "Options", 346, 372, false)).spawnWindowFromFXML();
+    }
     //**********Section end, dog**********\\
 
 
@@ -199,7 +205,7 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-        return Dialogs.create().masthead(null).style(DialogStyle.NATIVE).title(title).message(message);
+        return Dialogs.create().masthead(null).lightweight().style(DialogStyle.NATIVE).title(title).message(message);
     }
 
     private JournalEntry getSelectedEntry() {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="346.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.doktuhparadox.cryptjournal.OptionsWindowController">
+<children><Label layoutX="132.0" layoutY="14.0" text="Options">
+<font>
+<Font name="Helvetica" size="24.0" />
+</font></Label><CheckBox fx:id="useDarkThemeCheckbox" layoutX="173.0" layoutY="295.0" mnemonicParsing="false" text="Use dark theme">
+<font>
+<Font name="Helvetica" size="13.0" />
+</font></CheckBox><Button fx:id="applyButton" layoutX="146.0" layoutY="332.0" mnemonicParsing="false" onAction="#onApplyButtonPressed" text="Apply" /><TextField fx:id="dateFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="69.0" prefHeight="26.0" prefWidth="92.0" /><Label layoutX="27.0" layoutY="72.0" text="Date format">
+<font>
+<Font name="Helvetica" size="16.0" />
+</font></Label><Label layoutX="26.0" layoutY="108.0" text="Time format">
+<font>
+<Font name="Helvetica" size="16.0" />
+</font></Label><TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="105.0" prefHeight="26.0" prefWidth="92.0" /><CheckBox fx:id="twelveHourTimeCheckbox" layoutX="33.0" layoutY="295.0" mnemonicParsing="false" text="12 Hour time">
+<font>
+<Font name="Helvetica" size="13.0" />
+</font></CheckBox>
+</children></AnchorPane>
