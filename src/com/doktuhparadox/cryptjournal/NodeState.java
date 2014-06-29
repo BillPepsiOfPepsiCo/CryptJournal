@@ -14,7 +14,7 @@ import javafx.util.Duration;
 public class NodeState {
 
     /**
-     * Fades a node out and enables it.
+     * Fades a node in and enables it.
      * @param node
      */
     public static void enable(Node node) {
@@ -22,7 +22,7 @@ public class NodeState {
     }
 
     /**
-     * Fades a node in and disables it.
+     * Fades a node out and disables it.
      * @param node
      */
     public static void disable(Node node) {
