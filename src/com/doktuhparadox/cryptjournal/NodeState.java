@@ -15,6 +15,7 @@ public class NodeState {
 
     /**
      * Fades a node in and enables it.
+     *
      * @param node
      */
     public static void enable(Node node) {
@@ -23,6 +24,7 @@ public class NodeState {
 
     /**
      * Fades a node out and disables it.
+     *
      * @param node
      */
     public static void disable(Node node) {

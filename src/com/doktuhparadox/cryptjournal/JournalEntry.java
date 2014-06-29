@@ -1,15 +1,16 @@
 package com.doktuhparadox.cryptjournal;
 
 import com.doktuhparadox.easel.io.ReadWriter;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.Key;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.IOException;
-import java.security.Key;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -18,6 +19,7 @@ import java.security.Key;
  * Date of creation: 6/27/14, at 12:21 PM.
  */
 public class JournalEntry {
+
     private String name;
     private ReadWriter readWriter;
 

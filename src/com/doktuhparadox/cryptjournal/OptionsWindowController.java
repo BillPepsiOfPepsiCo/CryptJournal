@@ -15,11 +15,16 @@ import javafx.stage.Stage;
  */
 public class OptionsWindowController {
 
-    @FXML public CheckBox useDarkThemeCheckbox;
-    @FXML public TextField dateFormatTextField;
-    @FXML public TextField timeFormatTextField;
-    @FXML public CheckBox twelveHourTimeCheckbox;
-    @FXML public Button applyButton;
+    @FXML
+    public CheckBox useDarkThemeCheckbox;
+    @FXML
+    public TextField dateFormatTextField;
+    @FXML
+    public TextField timeFormatTextField;
+    @FXML
+    public CheckBox twelveHourTimeCheckbox;
+    @FXML
+    public Button applyButton;
 
     @FXML
     protected void initialize() {

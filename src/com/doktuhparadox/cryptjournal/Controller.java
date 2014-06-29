@@ -3,6 +3,11 @@ package com.doktuhparadox.cryptjournal;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.fxml.FXMLWindow;
 import com.doktuhparadox.easel.fxml.WindowSpawner;
+
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,37 +15,45 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import static javafx.scene.input.KeyCode.D;
-import static javafx.scene.input.KeyCode.E;
-import static javafx.scene.input.KeyCode.G;
-import static javafx.scene.input.KeyCode.O;
-import static javafx.scene.input.KeyCode.W;
 import javafx.scene.web.HTMLEditor;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.DialogStyle;
-import org.controlsfx.dialog.Dialogs;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Optional;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Optional;
+
+import static javafx.scene.input.KeyCode.D;
+import static javafx.scene.input.KeyCode.E;
+import static javafx.scene.input.KeyCode.G;
+import static javafx.scene.input.KeyCode.O;
+import static javafx.scene.input.KeyCode.W;
 
 public class Controller {
 
-    @FXML public Button createEntryButton;
-    @FXML public Button deleteEntryButton;
-    @FXML public Button openButton;
-    @FXML public Button optionsButton;
-    @FXML public Button saveButton;
-    @FXML public Label journalEntryDateLabel;
-    @FXML public Label journalEntryNameLabel;
-    @FXML public ListView<JournalEntry> journalEntryListView;
-    @FXML public HTMLEditor journalContentEditor;
+    @FXML
+    public Button createEntryButton;
+    @FXML
+    public Button deleteEntryButton;
+    @FXML
+    public Button openButton;
+    @FXML
+    public Button optionsButton;
+    @FXML
+    public Button saveButton;
+    @FXML
+    public Label journalEntryDateLabel;
+    @FXML
+    public Label journalEntryNameLabel;
+    @FXML
+    public ListView<JournalEntry> journalEntryListView;
+    @FXML
+    public HTMLEditor journalContentEditor;
 
     public static final File journalDir = new File("Journals/");
 
@@ -93,11 +106,11 @@ public class Controller {
                 e.printStackTrace();
             }
         },
-                new KeyCode[] {W, E, E, D},
+                new KeyCode[]{W, E, E, D},
                 delimiters).add();
 
         new KeySequence(journalContentEditor, () -> new WindowSpawner(new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false)).spawnWindowFromFXML(),
-                new KeyCode[] {D, O, G, E},
+                new KeyCode[]{D, O, G, E},
                 delimiters).add();
     }
 

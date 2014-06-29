@@ -28,8 +28,4 @@ public class OptionManager {
         ENCRYPTION_ALGORITHM = new Option(optionHandler, "algorithm", "AES");
         TWELVE_HOUR_TIME = new Option(optionHandler, "twelve_hour_time", "true");
     }
-
-    public static void spawnOptionsDialog() {
-
-    }
 }

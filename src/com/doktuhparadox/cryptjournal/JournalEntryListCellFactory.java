@@ -1,9 +1,9 @@
 package com.doktuhparadox.cryptjournal;
 
-import javafx.scene.control.ListCell;
-
 import java.io.IOException;
 import java.nio.file.Files;
+
+import javafx.scene.control.ListCell;
 
 /**
  * Created and written with IntelliJ IDEA.
