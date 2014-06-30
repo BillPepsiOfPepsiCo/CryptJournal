@@ -11,14 +11,14 @@ import java.io.File;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 8:38 PM.
  */
-public class OptionManager {
-    public static File configFile = new File("Options.txt");
-    public static OptionHandler optionHandler = new OptionHandler(configFile);
+class OptionManager {
+    private static final File configFile = new File("Options.txt");
+    private static final OptionHandler optionHandler = new OptionHandler(configFile);
 
     public static Option THEME;
     public static Option DATE_FORMAT;
     public static Option TIME_FORMAT;
-    public static Option ENCRYPTION_ALGORITHM;
+    private static Option ENCRYPTION_ALGORITHM;
     public static Option TWELVE_HOUR_TIME;
 
     public static void initialize() {

@@ -18,10 +18,10 @@ import sun.misc.BASE64Encoder;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 12:21 PM.
  */
-public class JournalEntry {
+class JournalEntry {
 
-    private String name;
-    private ReadWriter readWriter;
+    private final String name;
+    private final ReadWriter readWriter;
 
     public JournalEntry(String name) {
         this.name = name;

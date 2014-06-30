@@ -28,12 +28,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import static javafx.scene.input.KeyCode.D;
-import static javafx.scene.input.KeyCode.E;
-import static javafx.scene.input.KeyCode.G;
-import static javafx.scene.input.KeyCode.O;
-import static javafx.scene.input.KeyCode.W;
-
 public class Controller {
 
     @FXML
@@ -97,7 +91,7 @@ public class Controller {
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
         new KeySequence(journalContentEditor, () -> {
             try {
-                URL url = this.getClass().getResource("/resources/smoke_weed_erryday.wav");
+                URL url = this.getClass().getResource("/resources/sound/smoke_weed_erryday.wav");
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioIn);
@@ -105,13 +99,9 @@ public class Controller {
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
                 e.printStackTrace();
             }
-        },
-                new KeyCode[]{W, E, E, D},
-                delimiters).add();
+        }, "WEED", delimiters).attach();
 
-        new KeySequence(journalContentEditor, () -> new WindowSpawner(new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false)).spawnWindowFromFXML(),
-                new KeyCode[]{D, O, G, E},
-                delimiters).add();
+        new KeySequence(journalContentEditor, () -> new WindowSpawner(new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false)).spawnWindowFromFXML(), "DOGE", delimiters).attach();
     }
 
     //**********Button event methods**********\\
@@ -218,7 +208,7 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-        return Dialogs.create().masthead(null).lightweight().style(DialogStyle.NATIVE).title(title).message(message);
+        return Dialogs.create().masthead(null).lightweight().style(DialogStyle.UNDECORATED).title(title).message(message);
     }
 
     private JournalEntry getSelectedEntry() {

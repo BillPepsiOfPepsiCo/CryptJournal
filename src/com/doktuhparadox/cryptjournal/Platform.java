@@ -6,7 +6,7 @@ package com.doktuhparadox.cryptjournal;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 10:55 AM.
  */
-public class Platform {
+class Platform {
     private static String getPlatform() {
         return System.getProperty("os.name");
     }

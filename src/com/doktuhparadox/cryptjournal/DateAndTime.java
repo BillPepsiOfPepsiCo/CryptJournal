@@ -6,7 +6,7 @@ package com.doktuhparadox.cryptjournal;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 9:18 PM.
  */
-public class DateAndTime {
+class DateAndTime {
     public static String formatDate(String[] yearMonthDay) {
         return OptionManager.DATE_FORMAT.getValue()
                 .replace("y", yearMonthDay[0])

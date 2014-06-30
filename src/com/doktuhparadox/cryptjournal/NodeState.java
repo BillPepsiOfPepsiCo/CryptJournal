@@ -11,12 +11,12 @@ import javafx.util.Duration;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 1:17 PM.
  */
-public class NodeState {
+class NodeState {
 
     /**
      * Fades a node in and enables it.
      *
-     * @param node
+     * @param node the node to fade in and enable.
      */
     public static void enable(Node node) {
         Transitions.fade(node, Duration.millis(300), 0.5, 1.0, false);
@@ -25,7 +25,7 @@ public class NodeState {
     /**
      * Fades a node out and disables it.
      *
-     * @param node
+     * @param node the node to fade out and disable.
      */
     public static void disable(Node node) {
         Transitions.fade(node, Duration.millis(300), 1.0, 0.5, true);
