@@ -1,12 +1,7 @@
 package com.doktuhparadox.cryptjournal;
 
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
-import com.doktuhparadox.easel.fxml.FXMLWindow;
-import com.doktuhparadox.easel.fxml.WindowSpawner;
-
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.DialogStyle;
-import org.controlsfx.dialog.Dialogs;
+import com.doktuhparadox.easel.utils.FXMLWindow;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,14 +14,18 @@ import javafx.scene.web.HTMLEditor;
 
 import java.io.File;
 import java.io.IOException;
+
 import java.net.URL;
 import java.util.Optional;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
+import org.controlsfx.dialog.Dialogs;
 
 public class Controller {
 
@@ -88,7 +87,7 @@ public class Controller {
         optionsButton.setOnAction(event -> this.onOptionsButtonPressed());
 
         //Easter eggs
-        KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
+        KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE}; 
         new KeySequence(journalContentEditor, () -> {
             try {
                 URL url = this.getClass().getResource("/resources/sound/smoke_weed_erryday.wav");
@@ -101,7 +100,7 @@ public class Controller {
             }
         }, "WEED", delimiters).attach();
 
-        new KeySequence(journalContentEditor, () -> new WindowSpawner(new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false)).spawnWindowFromFXML(), "DOGE", delimiters).attach();
+        new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false).spawn(), "DOGE", delimiters).attach();
     }
 
     //**********Button event methods**********\\
@@ -155,6 +154,7 @@ public class Controller {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().attemptDelete();
             this.refreshListView();
+            journalEntryNameLabel.setText("");
 
             if (!journalContentEditor.isDisabled()) {
                 NodeState.enable(createEntryButton);
@@ -162,12 +162,13 @@ public class Controller {
                 NodeState.disable(journalContentEditor);
                 journalContentEditor.setHtmlText("");
             }
+
             if (journalEntryListView.getItems().size() == 0) NodeState.disable(deleteEntryButton);
         }
     }
 
     private void onOptionsButtonPressed() {
-        new WindowSpawner(new FXMLWindow(getClass().getResource("OptionWindow.fxml"), "Options", 346, 372, false)).spawnWindowFromFXML();
+        new FXMLWindow(getClass().getResource("OptionWindow.fxml"), "Options", 346, 372, false).spawn();
     }
     //**********Section end, dog**********\\
 
@@ -197,7 +198,6 @@ public class Controller {
             if (password.length() > 16) {
                 this.createDialog("Error", "Password is too long.").showError();
             } else if (password.length() < 16) {
-                //I'm lucky Optional.empty is only 14 characters. Optional.dasistleerundsehrlange
                 if (password.equals("Optional.empty")) return null;
                 while (password.length() < 16) password += "=";
                 break;
@@ -208,7 +208,7 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-        return Dialogs.create().masthead(null).lightweight().style(DialogStyle.UNDECORATED).title(title).message(message);
+        return Dialogs.create().masthead(null).style(DialogStyle.NATIVE).title(title).message(message);
     }
 
     private JournalEntry getSelectedEntry() {
