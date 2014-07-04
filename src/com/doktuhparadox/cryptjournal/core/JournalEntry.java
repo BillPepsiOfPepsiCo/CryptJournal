@@ -18,7 +18,7 @@ import sun.misc.BASE64Encoder;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 12:21 PM.
  */
-public class JournalEntry {
+class JournalEntry {
 
     private final String name;
     private final ReadWriter readWriter;
@@ -26,6 +26,7 @@ public class JournalEntry {
     public JournalEntry(String name) {
         this.name = name;
         this.readWriter = new ReadWriter(this.getFile());
+
         try {
             if (!this.getFile().exists() && this.getFile().createNewFile())
                 System.out.println("Created new journal entry: " + this.name);
@@ -69,7 +70,7 @@ public class JournalEntry {
             e.printStackTrace();
         }
 
-        //noinspection ConstantConditions
+        if (decodedStringBytes == null) return null;
         return new String(decodedStringBytes);
     }
 

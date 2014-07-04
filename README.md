@@ -37,3 +37,13 @@ Screenshots
 ============
 
 *Comiiiiiiiiing!*
+
+Downloads
+============
+
+Download the current stable build (here)[].
+
+Dependencies
+============
+
+This app depends on (ControlsFX)[] and my own commons library, (Easel)[]. Neither of these have to be downloaded for the binary to work.

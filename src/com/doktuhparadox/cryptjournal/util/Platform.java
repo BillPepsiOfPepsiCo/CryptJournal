@@ -7,6 +7,7 @@ package com.doktuhparadox.cryptjournal.util;
  * Date of creation: 6/28/14, at 10:55 AM.
  */
 class Platform {
+
     private static String getPlatform() {
         return System.getProperty("os.name");
     }

@@ -1,7 +1,5 @@
 package com.doktuhparadox.cryptjournal.core;
 
-import com.doktuhparadox.cryptjournal.core.JournalEntry;
-import com.doktuhparadox.cryptjournal.core.JournalEntryListCellFactory;
 import com.doktuhparadox.cryptjournal.core.option.OptionManager;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
@@ -31,7 +29,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class Controller {
+class Controller {
 
     @FXML
     private Button createEntryButton;
@@ -44,15 +42,13 @@ public class Controller {
     @FXML
     private Button saveButton;
     @FXML
-    private Label journalEntryDateLabel;
-    @FXML
     private Label journalEntryNameLabel;
     @FXML
     private ListView<JournalEntry> journalEntryListView;
     @FXML
     private HTMLEditor journalContentEditor;
 
-    public static final File journalDir = new File("Journals/");
+    private static final File journalDir = new File("Journals/");
 
     @FXML
     protected void initialize() {
@@ -182,9 +178,10 @@ public class Controller {
         ObservableList<JournalEntry> entries = FXCollections.observableArrayList();
 
         //noinspection ConstantConditions
-        for (File file : journalDir.listFiles())
-            if (file != null && file.getName().endsWith(".journal"))
+        for (File file : journalDir.listFiles()) {
+            if (file.getName().endsWith(".journal"))
                 entries.add(new JournalEntry(file.getName().replace(".journal", "")));
+        }
 
         //Currently a bug with a "ghost entry" that cannot be selected. Believed to be a bug with custom list cell factories.
         journalEntryListView.setItems(entries);
@@ -204,7 +201,6 @@ public class Controller {
             } else if (password.length() > 16) {
                 this.createDialog("Error", "Password is too long.").showError();
             } else if (password.length() < 16) {
-                //I'm lucky Optional.empty is only 14 characters. Optional.leerundsehrlange
                 while (password.length() < 16) password += "=";
                 break;
             }
@@ -214,7 +210,7 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-        return Dialogs.create().masthead(null).lightweight().style(DialogStyle.NATIVE).title(title).message(message);
+        return Dialogs.create().masthead(null).style(DialogStyle.NATIVE).title(title).message(message);
     }
 
     private JournalEntry getSelectedEntry() {

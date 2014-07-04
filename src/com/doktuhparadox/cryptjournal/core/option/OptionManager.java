@@ -18,7 +18,7 @@ public class OptionManager {
     public static Option THEME;
     public static Option DATE_FORMAT;
     public static Option TIME_FORMAT;
-    private static Option ENCRYPTION_ALGORITHM;
+    public static Option ENCRYPTION_ALGORITHM;
     public static Option TWELVE_HOUR_TIME;
 
     public static void initialize() {

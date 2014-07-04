@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 10:32 PM.
  */
-public class OptionsWindowController {
+class OptionsWindowController {
 
     @FXML
     public CheckBox useDarkThemeCheckbox;
