@@ -14,7 +14,7 @@
         <ImageView fx:id="dogeView" fitHeight="369.0" fitWidth="523.0" layoutX="68.0" layoutY="8.0" pickOnBounds="true"
                    preserveRatio="true">
             <image>
-                <Image url="@../../../resources/img/doge.jpeg"/>
+                <Image url="@../../../../resources/img/doge.jpeg"/>
             </image>
         </ImageView>
         <Label layoutX="401.353271484375" layoutY="52.0" text="wow" textFill="#00ff7b">

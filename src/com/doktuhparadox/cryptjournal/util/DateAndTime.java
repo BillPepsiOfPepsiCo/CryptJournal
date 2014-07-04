@@ -1,4 +1,6 @@
-package com.doktuhparadox.cryptjournal;
+package com.doktuhparadox.cryptjournal.util;
+
+import com.doktuhparadox.cryptjournal.core.option.OptionManager;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -6,7 +8,7 @@ package com.doktuhparadox.cryptjournal;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 9:18 PM.
  */
-class DateAndTime {
+public class DateAndTime {
     public static String formatDate(String[] yearMonthDay) {
         return OptionManager.DATE_FORMAT.getValue()
                 .replace("y", yearMonthDay[0])

@@ -1,4 +1,4 @@
-package com.doktuhparadox.cryptjournal;
+package com.doktuhparadox.cryptjournal.util;
 
 /**
  * Created and written with IntelliJ IDEA.

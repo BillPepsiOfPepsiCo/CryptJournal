@@ -1,4 +1,4 @@
-package com.doktuhparadox.cryptjournal;
+package com.doktuhparadox.cryptjournal.core.option;
 
 import com.doktuhparadox.easel.options.Option;
 import com.doktuhparadox.easel.options.OptionHandler;
@@ -11,7 +11,7 @@ import java.io.File;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 8:38 PM.
  */
-class OptionManager {
+public class OptionManager {
     private static final File configFile = new File("Options.txt");
     private static final OptionHandler optionHandler = new OptionHandler(configFile);
 

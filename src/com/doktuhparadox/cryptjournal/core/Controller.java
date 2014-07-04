@@ -1,8 +1,11 @@
-package com.doktuhparadox.cryptjournal;
+package com.doktuhparadox.cryptjournal.core;
 
+import com.doktuhparadox.cryptjournal.core.JournalEntry;
+import com.doktuhparadox.cryptjournal.core.JournalEntryListCellFactory;
+import com.doktuhparadox.cryptjournal.core.option.OptionManager;
+import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
-import com.doktuhparadox.easel.fxml.FXMLWindow;
-import com.doktuhparadox.easel.fxml.WindowSpawner;
+import com.doktuhparadox.easel.utils.FXMLWindow;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.DialogStyle;
@@ -31,23 +34,23 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class Controller {
 
     @FXML
-    public Button createEntryButton;
+    private Button createEntryButton;
     @FXML
-    public Button deleteEntryButton;
+    private Button deleteEntryButton;
     @FXML
-    public Button openButton;
+    private Button openButton;
     @FXML
-    public Button optionsButton;
+    private Button optionsButton;
     @FXML
-    public Button saveButton;
+    private Button saveButton;
     @FXML
-    public Label journalEntryDateLabel;
+    private Label journalEntryDateLabel;
     @FXML
-    public Label journalEntryNameLabel;
+    private Label journalEntryNameLabel;
     @FXML
-    public ListView<JournalEntry> journalEntryListView;
+    private ListView<JournalEntry> journalEntryListView;
     @FXML
-    public HTMLEditor journalContentEditor;
+    private HTMLEditor journalContentEditor;
 
     public static final File journalDir = new File("Journals/");
 
@@ -55,7 +58,7 @@ public class Controller {
     protected void initialize() {
         OptionManager.initialize();
         journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
-        if (!journalDir.exists() && !journalDir.mkdir()) System.out.println("Created journal entry directory");
+        if (!journalDir.exists() && journalDir.mkdir()) System.out.println("Created journal entry directory");
         this.attachListeners();
         this.refreshListView();
         //Prevent exceptions
@@ -88,7 +91,7 @@ public class Controller {
         optionsButton.setOnAction(event -> this.onOptionsButtonPressed());
 
         //Easter eggs
-        KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
+        KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE}; 
         new KeySequence(journalContentEditor, () -> {
             try {
                 URL url = this.getClass().getResource("/resources/sound/smoke_weed_erryday.wav");
@@ -101,7 +104,7 @@ public class Controller {
             }
         }, "WEED", delimiters).attach();
 
-        new KeySequence(journalContentEditor, () -> new WindowSpawner(new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false)).spawnWindowFromFXML(), "DOGE", delimiters).attach();
+        new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).spawn(), "DOGE", delimiters).attach();
     }
 
     //**********Button event methods**********\\
@@ -153,8 +156,9 @@ public class Controller {
 
     private void onDeleteButtonPressed() {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
-            this.getSelectedEntry().attemptDelete();
+            this.getSelectedEntry().delete();
             this.refreshListView();
+            journalEntryNameLabel.setText("");
 
             if (!journalContentEditor.isDisabled()) {
                 NodeState.enable(createEntryButton);
@@ -162,12 +166,13 @@ public class Controller {
                 NodeState.disable(journalContentEditor);
                 journalContentEditor.setHtmlText("");
             }
+
             if (journalEntryListView.getItems().size() == 0) NodeState.disable(deleteEntryButton);
         }
     }
 
     private void onOptionsButtonPressed() {
-        new WindowSpawner(new FXMLWindow(getClass().getResource("OptionWindow.fxml"), "Options", 346, 372, false)).spawnWindowFromFXML();
+        new FXMLWindow(getClass().getResource("OptionWindow.fxml"), "Options", 346, 372, false).spawn();
     }
     //**********Section end, dog**********\\
 
@@ -194,11 +199,12 @@ public class Controller {
         while ((password = this.createDialog("Enter password", "Input password for this entry\n(16 chars max)").showTextInput().toString().replace("Optional[", "").replace("]", ""))
                 .length() > 16 || password.length() < 16 || password.length() == 0) {
 
-            if (password.length() > 16) {
+            if (password.equals("Optional.empty")) {
+                return null;
+            } else if (password.length() > 16) {
                 this.createDialog("Error", "Password is too long.").showError();
             } else if (password.length() < 16) {
-                //I'm lucky Optional.empty is only 14 characters. Optional.dasistleerundsehrlange
-                if (password.equals("Optional.empty")) return null;
+                //I'm lucky Optional.empty is only 14 characters. Optional.leerundsehrlange
                 while (password.length() < 16) password += "=";
                 break;
             }
@@ -208,7 +214,7 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-        return Dialogs.create().masthead(null).lightweight().style(DialogStyle.UNDECORATED).title(title).message(message);
+        return Dialogs.create().masthead(null).lightweight().style(DialogStyle.NATIVE).title(title).message(message);
     }
 
     private JournalEntry getSelectedEntry() {

@@ -1,4 +1,4 @@
-package com.doktuhparadox.cryptjournal;
+package com.doktuhparadox.cryptjournal.util;
 
 import com.doktuhparadox.easel.control.fx.Transitions;
 
@@ -11,7 +11,7 @@ import javafx.util.Duration;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 1:17 PM.
  */
-class NodeState {
+public class NodeState {
 
     /**
      * Fades a node in and enables it.

@@ -1,4 +1,4 @@
-package com.doktuhparadox.cryptjournal;
+package com.doktuhparadox.cryptjournal.core.option;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

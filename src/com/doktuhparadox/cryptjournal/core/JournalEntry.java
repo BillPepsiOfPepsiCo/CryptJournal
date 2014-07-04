@@ -1,4 +1,4 @@
-package com.doktuhparadox.cryptjournal;
+package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.easel.io.ReadWriter;
 
@@ -18,7 +18,7 @@ import sun.misc.BASE64Encoder;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 12:21 PM.
  */
-class JournalEntry {
+public class JournalEntry {
 
     private final String name;
     private final ReadWriter readWriter;
@@ -81,7 +81,7 @@ class JournalEntry {
         return this.name;
     }
 
-    public void attemptDelete() {
+    public void delete() {
         if (this.getFile().delete())
             System.out.println("Deleted journal entry " + this.name);
         else
