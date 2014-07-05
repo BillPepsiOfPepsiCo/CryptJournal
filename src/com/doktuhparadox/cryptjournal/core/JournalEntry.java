@@ -18,7 +18,7 @@ import sun.misc.BASE64Encoder;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 12:21 PM.
  */
-class JournalEntry {
+public class JournalEntry {
 
     private final String name;
     private final ReadWriter readWriter;

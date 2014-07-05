@@ -29,7 +29,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-class Controller {
+public class Controller {
 
     @FXML
     private Button createEntryButton;
