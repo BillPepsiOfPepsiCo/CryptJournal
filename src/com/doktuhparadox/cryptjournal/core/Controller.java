@@ -3,8 +3,8 @@ package com.doktuhparadox.cryptjournal.core;
 import com.doktuhparadox.cryptjournal.core.option.OptionManager;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
+import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
-import com.doktuhparadox.easel.utils.RuntimeUtils;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.DialogStyle;
@@ -20,15 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Optional;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Controller {
 
@@ -63,12 +55,6 @@ public class Controller {
             openButton.setDisable(true);
             deleteEntryButton.setDisable(true);
         }
-
-        RuntimeUtils.addShutdownHookThread(new Thread(() -> {
-            if (!saveButton.isDisabled()) {
-                this.onSaveButtonPressed();
-            }
-        }));
     }
 
     private void attachListeners() {
@@ -95,17 +81,7 @@ public class Controller {
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE}; 
-        new KeySequence(journalContentEditor, () -> {
-            try {
-                URL url = this.getClass().getResource("/resources/sound/smoke_weed_erryday.wav");
-                AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioIn);
-                clip.start();
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                e.printStackTrace();
-            }
-        }, "WEED", delimiters).attach();
+        new KeySequence(journalContentEditor, () -> Clippy.playSound("/resources/sound/smoke_weed_erryday.wav"), "WEED", delimiters).attach();
 
         new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).spawn(), "DOGE", delimiters).attach();
     }
