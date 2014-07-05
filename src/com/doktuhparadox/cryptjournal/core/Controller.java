@@ -170,14 +170,11 @@ public class Controller {
 
 	    //noinspection ConstantConditions
         for (File file : journalDir.listFiles()) {
-            if (file != null) {
-	            if (file.getName().endsWith(".journal")) {
-		            entries.add(new JournalEntry(file.getName().replace(".journal", "")));
-	            }
-            }
+            if (file != null && file.getName().endsWith(".journal"))
+	            entries.add(new JournalEntry(file.getName().replace(".journal", "")));
         }
 
-	    journalEntryListView.getItems().setAll(entries);
+	    journalEntryListView.setItems(entries);
     }
 
     private String promptForPassword() {
