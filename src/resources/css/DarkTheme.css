@@ -2,7 +2,7 @@
     -fx-background-color: rgb(85, 85, 90);
 }
 
-list-view .list-cell .even {
+.list-view .list-cell .even {
     -fx-background-color: rgb(85, 85, 90);
 }
 
