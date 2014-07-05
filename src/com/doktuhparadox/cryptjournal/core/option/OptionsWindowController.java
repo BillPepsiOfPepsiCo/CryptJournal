@@ -19,15 +19,15 @@ import javafx.scene.control.TextField;
 public class OptionsWindowController {
 
     @FXML
-    public CheckBox useDarkThemeCheckbox;
+    private CheckBox useDarkThemeCheckbox;
     @FXML
-    public TextField dateFormatTextField;
+    private TextField dateFormatTextField;
     @FXML
-    public TextField timeFormatTextField;
+    private TextField timeFormatTextField;
     @FXML
-    public CheckBox twelveHourTimeCheckbox;
+    private CheckBox twelveHourTimeCheckbox;
     @FXML
-    public Button applyButton;
+    private Button applyButton;
 
 
     @FXML
