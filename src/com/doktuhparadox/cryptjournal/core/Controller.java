@@ -60,7 +60,6 @@ public class Controller {
     private void attachListeners() {
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER)) this.onOpenButtonPressed();
-            keyEvent.consume();
         });
 
         journalEntryListView.itemsProperty().addListener(observable -> {
@@ -91,15 +90,16 @@ public class Controller {
         Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
         if (!input.equals(Optional.empty())) {
-            new JournalEntry(input.toString().replace("Optional[", "").replace("]", ""));
-            this.refreshListView();
+            JournalEntry newEntry = new JournalEntry(input.toString().replace("Optional[", "").replace("]", ""));
+	        this.refreshListView();
             NodeState.enable(saveButton);
             NodeState.enable(journalContentEditor);
             NodeState.enable(deleteEntryButton);
             NodeState.disable(createEntryButton);
             NodeState.disable(openButton);
-            journalContentEditor.requestFocus();
-            journalEntryNameLabel.setText(this.getSelectedEntry().getName());
+            NodeState.disable(journalEntryListView);
+	        journalEntryListView.getSelectionModel().select(newEntry);
+            journalEntryNameLabel.setText(newEntry.getName());
         }
     }
 
@@ -115,8 +115,8 @@ public class Controller {
         NodeState.enable(saveButton);
         NodeState.enable(journalContentEditor);
         NodeState.enable(deleteEntryButton);
+	    NodeState.disable(journalEntryListView);
         NodeState.disable(createEntryButton);
-        journalContentEditor.requestFocus();
         journalEntryNameLabel.setText(this.getSelectedEntry().getName());
     }
 
@@ -127,7 +127,8 @@ public class Controller {
         this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
         NodeState.enable(createEntryButton);
         NodeState.enable(openButton);
-        NodeState.disable(journalContentEditor);
+	    NodeState.enable(journalEntryListView);
+	    NodeState.disable(journalContentEditor);
         NodeState.disable(saveButton);
         journalEntryNameLabel.setText("");
         journalContentEditor.setHtmlText("");
@@ -136,7 +137,7 @@ public class Controller {
 
     private void onDeleteButtonPressed() {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
-            this.getSelectedEntry().delete();
+	        this.getSelectedEntry().delete();
             this.refreshListView();
 
             if (journalEntryListView.getItems().size() == 0) {
@@ -164,20 +165,19 @@ public class Controller {
 
 
     private void refreshListView() {
-        int currentIndex = journalEntryListView.getSelectionModel().getSelectedIndex() + 1;
         ObservableList<JournalEntry> entries = FXCollections.observableArrayList();
+	    journalEntryListView.getItems().clear();
 
-        //noinspection ConstantConditions
+	    //noinspection ConstantConditions
         for (File file : journalDir.listFiles()) {
-            if (file.getName().endsWith(".journal"))
-                entries.add(new JournalEntry(file.getName().replace(".journal", "")));
+            if (file != null) {
+	            if (file.getName().endsWith(".journal")) {
+		            entries.add(new JournalEntry(file.getName().replace(".journal", "")));
+	            }
+            }
         }
 
-        //Currently a bug with a "ghost entry" that cannot be selected. Believed to be a bug with custom list cell factories.
-        journalEntryListView.setItems(entries);
-        //There's some stupid ass off-by-one error somewhere in here and I can't find it. It may be an error with custom list cell factories.
-        //I honestly don't fucking care if it's on my side because this fixes it and I don't care.
-        journalEntryListView.getSelectionModel().select(currentIndex);
+	    journalEntryListView.getItems().setAll(entries);
     }
 
     private String promptForPassword() {
