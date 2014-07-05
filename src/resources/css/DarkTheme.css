@@ -1,13 +1,9 @@
-.tab-pane {
+.root {
     -fx-background-color: rgb(85, 85, 90);
 }
 
-.tab-pane .tab {
+list-view .list-cell .even {
     -fx-background-color: rgb(85, 85, 90);
-}
-
-.tab-pane .tab-header-background {
-    -fx-background-color: rgb(57, 57, 57);
 }
 
 .text-field, .text-area {

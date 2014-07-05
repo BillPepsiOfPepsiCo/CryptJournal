@@ -4,6 +4,7 @@ import com.doktuhparadox.cryptjournal.core.option.OptionManager;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.utils.FXMLWindow;
+import com.doktuhparadox.easel.utils.RuntimeUtils;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.DialogStyle;
@@ -62,6 +63,12 @@ public class Controller {
             openButton.setDisable(true);
             deleteEntryButton.setDisable(true);
         }
+
+        RuntimeUtils.addShutdownHookThread(new Thread(() -> {
+            if (!saveButton.isDisabled()) {
+                this.onSaveButtonPressed();
+            }
+        }));
     }
 
     private void attachListeners() {
@@ -146,6 +153,7 @@ public class Controller {
         NodeState.enable(openButton);
         NodeState.disable(journalContentEditor);
         NodeState.disable(saveButton);
+        journalEntryNameLabel.setText("");
         journalContentEditor.setHtmlText("");
 
     }
@@ -154,6 +162,12 @@ public class Controller {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().delete();
             this.refreshListView();
+
+            if (journalEntryListView.getItems().size() == 0) {
+                NodeState.disable(openButton);
+                NodeState.disable(deleteEntryButton);
+            }
+
             journalEntryNameLabel.setText("");
 
             if (!journalContentEditor.isDisabled()) {
@@ -163,13 +177,12 @@ public class Controller {
                 NodeState.disable(journalContentEditor);
                 journalContentEditor.setHtmlText("");
             }
-
-            if (journalEntryListView.getItems().size() == 0) NodeState.disable(deleteEntryButton);
         }
     }
 
     private void onOptionsButtonPressed() {
-        new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false).spawn();
+        FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
+        optionsWindow.spawn();
     }
     //**********Section end, dog**********\\
 

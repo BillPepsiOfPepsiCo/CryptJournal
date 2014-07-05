@@ -1,6 +1,10 @@
 package com.doktuhparadox.cryptjournal.core.option;
 
-import javafx.event.ActionEvent;
+import com.doktuhparadox.easel.utils.RuntimeUtils;
+
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -32,10 +36,16 @@ public class OptionsWindowController {
         timeFormatTextField.setText(OptionManager.TIME_FORMAT.getValue());
         useDarkThemeCheckbox.setSelected(OptionManager.THEME.getValue().equals("dark"));
         twelveHourTimeCheckbox.setSelected(Boolean.valueOf(OptionManager.TWELVE_HOUR_TIME.getValue()));
+
+        useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (Dialogs.create().masthead(null).title("Restart?").message("Switching themes requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
+                RuntimeUtils.restart("CryptJournal.jar");
+            }
+        });
     }
 
     @FXML
-    public void onApplyButtonPressed(ActionEvent actionEvent) {
+    public void onApplyButtonPressed() {
         Stage stage = (Stage) applyButton.getScene().getWindow();
         OptionManager.DATE_FORMAT.setValue(dateFormatTextField.getText());
         OptionManager.TIME_FORMAT.setValue(timeFormatTextField.getText());

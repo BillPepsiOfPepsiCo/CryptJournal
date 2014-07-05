@@ -16,7 +16,7 @@ public class Main extends Application {
         primaryStage.setTitle("CryptJournal");
         primaryStage.setScene(new Scene(root, 1000, 682));
         primaryStage.setResizable(false);
-        if (OptionManager.THEME.getValue().equals("dark")) root.getStylesheets().add("css/DarkTheme.css");
+        if (OptionManager.THEME.getValue().equals("dark")) root.getStylesheets().add(getClass().getResource("../../../resources/css/DarkTheme.css").toExternalForm());
         primaryStage.show();
     }
 
