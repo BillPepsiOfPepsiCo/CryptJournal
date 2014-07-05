@@ -158,6 +158,7 @@ public class Controller {
 
             if (!journalContentEditor.isDisabled()) {
                 NodeState.enable(createEntryButton);
+                NodeState.enable(openButton);
                 NodeState.disable(saveButton);
                 NodeState.disable(journalContentEditor);
                 journalContentEditor.setHtmlText("");
@@ -168,7 +169,7 @@ public class Controller {
     }
 
     private void onOptionsButtonPressed() {
-        new FXMLWindow(getClass().getResource("OptionWindow.fxml"), "Options", 346, 372, false).spawn();
+        new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false).spawn();
     }
     //**********Section end, dog**********\\
 
