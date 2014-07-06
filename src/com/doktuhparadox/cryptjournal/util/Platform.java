@@ -6,14 +6,14 @@ package com.doktuhparadox.cryptjournal.util;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 10:55 AM.
  */
-class Platform {
+public class Platform {
 
     private static String getPlatform() {
-        return System.getProperty("os.name");
+        return System.getProperty("os.name").toLowerCase();
     }
 
     public static boolean isMacOSX() {
-        return getPlatform().contains("osx");
+        return getPlatform().contains("mac");
     }
 
     public static boolean isWindows() {
