@@ -135,6 +135,7 @@ public class Controller {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().delete();
             this.refreshListView();
+            journalEntryListView.getSelectionModel().select(-1);
 
             if (journalEntryListView.getItems().size() == 0) {
                 NodeState.disable(openButton);
