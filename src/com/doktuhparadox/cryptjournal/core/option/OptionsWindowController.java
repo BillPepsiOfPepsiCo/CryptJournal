@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
@@ -16,6 +17,8 @@ import org.controlsfx.dialog.Dialogs;
  */
 public class OptionsWindowController {
 
+    @FXML
+    public AnchorPane root;
     @FXML
     private CheckBox useDarkThemeCheckbox;
     @FXML
@@ -30,6 +33,7 @@ public class OptionsWindowController {
 
     @FXML
     protected void initialize() {
+        if (OptionManager.THEME.getValue().equals("dark")) root.getStylesheets().add("/resources/css/DarkTheme.css");
         dateFormatTextField.setText(OptionManager.DATE_FORMAT.getValue());
         timeFormatTextField.setText(OptionManager.TIME_FORMAT.getValue());
         useDarkThemeCheckbox.setSelected(OptionManager.THEME.getValue().equals("dark"));
