@@ -1,7 +1,6 @@
 package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.cryptjournal.util.DateTimeFormatter;
-
 import javafx.scene.control.ListCell;
 
 import java.io.IOException;
@@ -23,7 +22,8 @@ public class JournalEntryListCellFactory extends ListCell<JournalEntry> {
                 String zuluDate = Files.getAttribute(item.getFile().toPath(), "creationTime").toString();
                 String[] yearMonthDay = zuluDate.substring(0, 10).split("-"), hourMinuteSecond = zuluDate.substring(11, 19).split(":");
 
-                if (!empty) this.setText(String.format("%s\n%s at %s", item.getName(), DateTimeFormatter.formatDate(yearMonthDay), DateTimeFormatter.formatTime(hourMinuteSecond)));
+                if (!empty)
+                    this.setText(String.format("%s\n%s at %s", item.getName(), DateTimeFormatter.formatDate(yearMonthDay), DateTimeFormatter.formatTime(hourMinuteSecond)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

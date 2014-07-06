@@ -1,14 +1,12 @@
 package com.doktuhparadox.cryptjournal.core.option;
 
 import com.doktuhparadox.easel.utils.RuntimeUtils;
-
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * Created and written with IntelliJ IDEA.

@@ -1,7 +1,6 @@
 package com.doktuhparadox.cryptjournal;
 
 import com.doktuhparadox.cryptjournal.core.option.OptionManager;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +15,8 @@ public class Main extends Application {
         primaryStage.setTitle("CryptJournal");
         primaryStage.setScene(new Scene(root, 1000, 682));
         primaryStage.setResizable(false);
-        if (OptionManager.THEME.getValue().equals("dark")) root.getStylesheets().add(getClass().getResource("../../../resources/css/DarkTheme.css").toExternalForm());
+        if (OptionManager.THEME.getValue().equals("dark"))
+            root.getStylesheets().add(getClass().getResource("../../../resources/css/DarkTheme.css").toExternalForm());
         primaryStage.show();
     }
 

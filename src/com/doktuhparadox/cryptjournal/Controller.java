@@ -1,9 +1,10 @@
-package com.doktuhparadox.cryptjournal.core;
+package com.doktuhparadox.cryptjournal;
 
+import com.doktuhparadox.cryptjournal.core.JournalEntry;
+import com.doktuhparadox.cryptjournal.core.JournalEntryListCellFactory;
 import com.doktuhparadox.cryptjournal.core.option.OptionManager;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
-import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,35 +18,40 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
+import javax.sound.sampled.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
 
 public class Controller {
 
     @FXML
-    private Button createEntryButton;
+    public Button createEntryButton;
     @FXML
-    private Button deleteEntryButton;
+    public Button deleteEntryButton;
     @FXML
-    private Button openButton;
+    public Button openButton;
     @FXML
-    private Button optionsButton;
+    public Button optionsButton;
     @FXML
-    private Button saveButton;
+    public Button saveButton;
     @FXML
-    private Label journalEntryNameLabel;
+    public Label journalEntryDateLabel;
     @FXML
-    private ListView<JournalEntry> journalEntryListView;
+    public Label journalEntryNameLabel;
     @FXML
-    private HTMLEditor journalContentEditor;
+    public ListView<JournalEntry> journalEntryListView;
+    @FXML
+    public HTMLEditor journalContentEditor;
 
-    private static final File journalDir = new File("Journals/");
+    public static final File journalDir = new File("Journals/");
 
     @FXML
     protected void initialize() {
         OptionManager.initialize();
         journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
-        if (!journalDir.exists() && journalDir.mkdir()) System.out.println("Created journal entry directory");
+        if (!journalDir.exists() && !journalDir.mkdir()) System.out.println("Created journal entry directory");
         this.attachListeners();
         this.refreshListView();
         //Prevent exceptions
@@ -58,6 +64,7 @@ public class Controller {
     private void attachListeners() {
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER)) this.onOpenButtonPressed();
+            keyEvent.consume();
         });
 
         journalEntryListView.itemsProperty().addListener(observable -> {
@@ -78,8 +85,19 @@ public class Controller {
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
-        new KeySequence(journalContentEditor, () -> Clippy.playSound("/resources/sound/smoke_weed_erryday.wav"), "WEED", delimiters).attach();
-        new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).spawn(), "DOGE", delimiters).attach();
+        new KeySequence(journalContentEditor, () -> {
+            try {
+                URL url = this.getClass().getResource("/resources/sound/smoke_weed_erryday.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        }, "WEED", delimiters).attach();
+
+        new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "CryptDoge", 510, 385, false).spawn(), "DOGE", delimiters).attach();
     }
 
     //**********Button event methods**********\\
@@ -87,16 +105,15 @@ public class Controller {
         Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
         if (!input.equals(Optional.empty())) {
-            JournalEntry newEntry = new JournalEntry(input.toString().replace("Optional[", "").replace("]", ""));
+            new JournalEntry(input.toString().replace("Optional[", "").replace("]", ""));
             this.refreshListView();
             NodeState.enable(saveButton);
             NodeState.enable(journalContentEditor);
             NodeState.enable(deleteEntryButton);
             NodeState.disable(createEntryButton);
             NodeState.disable(openButton);
-            NodeState.disable(journalEntryListView);
-            journalEntryListView.getSelectionModel().select(newEntry);
-            journalEntryNameLabel.setText(newEntry.getName());
+            journalContentEditor.requestFocus();
+            journalEntryNameLabel.setText(this.getSelectedEntry().getName());
         }
     }
 
@@ -105,6 +122,7 @@ public class Controller {
 
         if (decodedContent.equals("BAD_PASSWORD")) {
             this.createDialog("Error", "Incorrect password.").showError();
+            //TODO should I make another password entry field pop up until they get it right or press cancel?
             return;
         }
 
@@ -112,8 +130,8 @@ public class Controller {
         NodeState.enable(saveButton);
         NodeState.enable(journalContentEditor);
         NodeState.enable(deleteEntryButton);
-        NodeState.disable(journalEntryListView);
         NodeState.disable(createEntryButton);
+        journalContentEditor.requestFocus();
         journalEntryNameLabel.setText(this.getSelectedEntry().getName());
     }
 
@@ -124,52 +142,52 @@ public class Controller {
         this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
         NodeState.enable(createEntryButton);
         NodeState.enable(openButton);
-        NodeState.enable(journalEntryListView);
         NodeState.disable(journalContentEditor);
         NodeState.disable(saveButton);
-        journalEntryNameLabel.setText("");
         journalContentEditor.setHtmlText("");
+
     }
 
     private void onDeleteButtonPressed() {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().delete();
             this.refreshListView();
-
-            if (journalEntryListView.getItems().size() == 0) {
-                NodeState.disable(openButton);
-                NodeState.disable(deleteEntryButton);
-            }
-
             journalEntryNameLabel.setText("");
 
             if (!journalContentEditor.isDisabled()) {
                 NodeState.enable(createEntryButton);
-                NodeState.enable(openButton);
                 NodeState.disable(saveButton);
                 NodeState.disable(journalContentEditor);
                 journalContentEditor.setHtmlText("");
+            }
+
+            if (journalEntryListView.getItems().size() == 0) {
+                NodeState.disable(deleteEntryButton);
+                NodeState.disable(openButton);
             }
         }
     }
 
     private void onOptionsButtonPressed() {
-        FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
-        optionsWindow.spawn();
+        new FXMLWindow(getClass().getResource("OptionWindow.fxml"), "Options", 346, 372, false).spawn();
     }
     //**********Section end, dog**********\\
 
 
     private void refreshListView() {
+        int currentIndex = journalEntryListView.getSelectionModel().getSelectedIndex() + 1;
         ObservableList<JournalEntry> entries = FXCollections.observableArrayList();
 
         //noinspection ConstantConditions
-        for (File file : journalDir.listFiles()) {
+        for (File file : journalDir.listFiles())
             if (file != null && file.getName().endsWith(".journal"))
                 entries.add(new JournalEntry(file.getName().replace(".journal", "")));
-        }
 
+        //Currently a bug with a "ghost entry" that cannot be selected. Believed to be a bug with custom list cell factories.
         journalEntryListView.setItems(entries);
+        //There's some stupid ass off-by-one error somewhere in here and I can't find it. It may be an error with custom list cell factories.
+        //I honestly don't fucking care if it's on my side because this fixes it and I don't care.
+        journalEntryListView.getSelectionModel().select(currentIndex);
     }
 
     private String promptForPassword() {
@@ -178,9 +196,8 @@ public class Controller {
         while ((password = this.createDialog("Enter password", "Input password for this entry\n(16 chars max)").showTextInput().toString().replace("Optional[", "").replace("]", ""))
                 .length() > 16 || password.length() < 16 || password.length() == 0) {
 
-            if (password.equals("Optional.empty")) {
-                return null;
-            } else if (password.length() > 16) {
+            if (password.equals("Optional.empty")) return null;
+            if (password.length() > 16) {
                 this.createDialog("Error", "Password is too long.").showError();
             } else if (password.length() < 16) {
                 while (password.length() < 16) password += "=";

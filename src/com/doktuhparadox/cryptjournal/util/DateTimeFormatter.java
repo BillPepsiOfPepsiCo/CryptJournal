@@ -7,12 +7,13 @@ import com.doktuhparadox.cryptjournal.core.option.OptionManager;
  * Module of: CryptJournal
  * User: brennanforrest
  * Date of creation: 6/28/14, at 9:18 PM.
- *
+ * <p>
  * Just a dummy class that could have some use outside of {@link com.doktuhparadox.cryptjournal.core.JournalEntryListCellFactory}.
  */
 public class DateTimeFormatter {
     /**
      * Formats the passed string array into a date.
+     *
      * @param yearMonthDay the array that contains the year, month, and day. The contents of the array must be ordered as follows: <br>
      *                     <code>yearMonthDay[0]</code> must be the year, <br>
      *                     <code>yearMonthDay[1]</code> must be the month, and <br>
@@ -28,6 +29,7 @@ public class DateTimeFormatter {
 
     /**
      * Formats the passed string array into a time.
+     *
      * @param hourMinuteSecond the array that contains the hour, minute and second. The contents of the array must be ordered as follows: <br>
      *                         <code>hourMinuteSecond[0]</code> must be the hour, <br>
      *                         <code>hourMinuteSecond[1]</code> must be the minute, <br>
