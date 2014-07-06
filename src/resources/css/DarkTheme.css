@@ -2,16 +2,17 @@
     -fx-background-color: rgb(85, 85, 90);
 }
 
-.list-view {
+.list-view, .list-view .list-cell {
     -fx-background-color: rgb(68, 71, 77);
+    -fx-text-fill: rgb(199, 199, 199);
 }
 
 .list-view .list-cell:even {
-    -fx-background-color: rgb(85, 85, 85);
+    -fx-background-color: rgb(90, 90, 90);
 }
 
 .list-view .list-cell:odd {
-    -fx-background-color: rgb(90, 90, 90);
+    -fx-background-color: rgb(80, 80, 80);
 }
 
 .list-view .list-cell:selected {
