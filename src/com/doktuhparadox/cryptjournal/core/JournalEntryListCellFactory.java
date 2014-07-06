@@ -17,16 +17,16 @@ public class JournalEntryListCellFactory extends ListCell<JournalEntry> {
     public void updateItem(JournalEntry item, boolean empty) {
         super.updateItem(item, empty);
 
-        if (item != null) {
+        if (!empty) {
             try {
                 String zuluDate = Files.getAttribute(item.getFile().toPath(), "creationTime").toString();
                 String[] yearMonthDay = zuluDate.substring(0, 10).split("-"), hourMinuteSecond = zuluDate.substring(11, 19).split(":");
-
-                if (!empty)
-                    this.setText(String.format("%s\n%s at %s", item.getName(), DateTimeFormatter.formatDate(yearMonthDay), DateTimeFormatter.formatTime(hourMinuteSecond)));
+                this.setText(String.format("%s\n%s at %s", item.getName(), DateTimeFormatter.formatDate(yearMonthDay), DateTimeFormatter.formatTime(hourMinuteSecond)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            this.setText(null);
         }
     }
 }

@@ -36,10 +36,10 @@ public class OptionsWindowController {
         twelveHourTimeCheckbox.setSelected(Boolean.valueOf(OptionManager.TWELVE_HOUR_TIME.getValue()));
 
         useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (Dialogs.create().masthead(null).title("Restart?").message("Switching themes requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES)
+            if (Dialogs.create().masthead(null).title("Restart?").message("Switching themes requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
+                this.onApplyButtonPressed();
                 RuntimeUtils.restart("CryptJournal.jar");
-
-            this.onApplyButtonPressed();
+            }
         });
     }
 

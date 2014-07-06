@@ -111,9 +111,9 @@ public class Controller {
         journalContentEditor.setHtmlText(decodedContent);
         NodeState.enable(saveButton);
         NodeState.enable(journalContentEditor);
-        NodeState.enable(deleteEntryButton);
         NodeState.disable(journalEntryListView);
         NodeState.disable(createEntryButton);
+        NodeState.disable(deleteEntryButton);
         journalEntryNameLabel.setText(this.getSelectedEntry().getName());
     }
 

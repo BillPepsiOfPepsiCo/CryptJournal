@@ -41,9 +41,9 @@ Screenshots
 Downloads
 ============
 
-Download the current stable build (here)[].
+Download the current stable build [here](http://google.com/). (not yet!)
 
 Dependencies
 ============
 
-This app depends on (ControlsFX)[] and my own commons library, (Easel)[]. Neither of these have to be downloaded for the binary to work.
+This app depends on [ControlsFX](http://fxexperience.com/controlsfx/) and my own commons library, [Easel](https://github.com/DoktuhParadox/Easel). Neither of these have to be downloaded for the binary to work.
