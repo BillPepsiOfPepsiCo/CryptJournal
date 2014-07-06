@@ -94,7 +94,7 @@ public class Controller {
             this.refreshListView();
             NodeState.enable(saveButton);
             NodeState.enable(journalContentEditor);
-            NodeState.enable(deleteEntryButton);
+            NodeState.disable(deleteEntryButton);
             NodeState.disable(createEntryButton);
             NodeState.disable(openButton);
             NodeState.disable(journalEntryListView);
@@ -104,7 +104,11 @@ public class Controller {
     }
 
     private void onOpenButtonPressed() {
-        String decodedContent = this.getSelectedEntry().read(this.promptForPassword());
+        String decodedContent;
+
+        //Tests to see if the password for this entry is empty (an empty password is sixteen equal signs) and skips the password prompt if so
+        if ((decodedContent = this.getSelectedEntry().read("================")).equals("BAD_PASSWORD"))
+            decodedContent = this.getSelectedEntry().read(this.promptForPassword());
 
         if (decodedContent.equals("BAD_PASSWORD")) {
             this.createDialog("Error", "Incorrect password.").showError();
@@ -168,10 +172,9 @@ public class Controller {
         ObservableList<JournalEntry> entries = FXCollections.observableArrayList();
 
         //noinspection ConstantConditions
-        for (File file : journalDir.listFiles()) {
+        for (File file : journalDir.listFiles())
             if (file != null && file.getName().endsWith(".journal"))
                 entries.add(new JournalEntry(file.getName().replace(".journal", "")));
-        }
 
         journalEntryListView.setItems(entries);
     }
@@ -180,7 +183,7 @@ public class Controller {
         String password;
 
         while ((password = this.createDialog("Enter password", "Input password for this entry\n(16 chars max)").showTextInput().toString().replace("Optional[", "").replace("]", ""))
-                .length() > 16 || password.length() < 16 || password.length() == 0) {
+                .length() > 16 || password.length() < 16) {
 
             if (password.equals("Optional.empty")) {
                 return null;
