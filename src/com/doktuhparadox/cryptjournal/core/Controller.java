@@ -57,7 +57,10 @@ public class Controller {
 
     private void attachListeners() {
         journalEntryListView.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode().equals(KeyCode.ENTER)) this.onOpenButtonPressed();
+            if (this.getSelectedEntry() != null) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) this.onOpenButtonPressed();
+                if (keyEvent.getCode().equals(KeyCode.DELETE)) this.onDeleteButtonPressed();
+            }
         });
 
         journalEntryListView.itemsProperty().addListener(observable -> {
