@@ -5,6 +5,11 @@ import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
+
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,9 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.DialogStyle;
-import org.controlsfx.dialog.Dialogs;
 
 import java.io.File;
 import java.util.Optional;
@@ -130,12 +132,17 @@ public class Controller {
         if (password == null) return;
 
         this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
+
+	    if (journalEntryListView.getItems().size() > 0) {
+		    NodeState.enable(openButton);
+		    NodeState.enable(deleteEntryButton);
+	    }
         NodeState.enable(createEntryButton);
-        NodeState.enable(openButton);
         NodeState.enable(journalEntryListView);
         NodeState.disable(journalContentEditor);
         NodeState.disable(saveButton);
-        journalEntryNameLabel.setText("");
+	    journalEntryListView.requestFocus();
+	    journalEntryNameLabel.setText("");
         journalContentEditor.setHtmlText("");
     }
 
