@@ -60,8 +60,8 @@ public class Controller {
     private void attachListeners() {
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (this.getSelectedEntry() != null) {
-                if (keyEvent.getCode().equals(KeyCode.ENTER)) this.onOpenButtonPressed();
-                if (keyEvent.getCode().equals(KeyCode.DELETE)) this.onDeleteButtonPressed();
+	            if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
+	            if (keyEvent.getCode().equals(KeyCode.DELETE)) this.deleteEntry();
             }
         });
 
@@ -75,11 +75,11 @@ public class Controller {
             }
         });
 
-        createEntryButton.setOnAction(event -> this.onCreateButtonPressed());
-        saveButton.setOnAction(event -> this.onSaveButtonPressed());
-        deleteEntryButton.setOnAction(event -> this.onDeleteButtonPressed());
-        openButton.setOnAction(event -> this.onOpenButtonPressed());
-        optionsButton.setOnAction(event -> this.onOptionsButtonPressed());
+	    createEntryButton.setOnAction(event -> this.createNewEntry());
+	    saveButton.setOnAction(event -> this.saveEntry());
+	    deleteEntryButton.setOnAction(event -> this.deleteEntry());
+	    openButton.setOnAction(event -> this.openEntry());
+	    optionsButton.setOnAction(event -> this.onOptionsButtonPressed());
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
@@ -88,7 +88,7 @@ public class Controller {
     }
 
     //**********Button event methods**********\\
-    private void onCreateButtonPressed() {
+    public void createNewEntry() {
         Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
         if (!input.equals(Optional.empty())) {
@@ -105,8 +105,8 @@ public class Controller {
         }
     }
 
-    private void onOpenButtonPressed() {
-        String decodedContent;
+	public void openEntry() {
+		String decodedContent;
 
         //Tests to see if the password for this entry is empty (an empty password is sixteen equal signs) and skips the password prompt if so
         if ((decodedContent = this.getSelectedEntry().read("================")).equals("BAD_PASSWORD"))
@@ -127,8 +127,8 @@ public class Controller {
         journalEntryNameLabel.setText(this.getSelectedEntry().getName());
     }
 
-    private void onSaveButtonPressed() {
-        String password = this.promptForPassword();
+	public void saveEntry() {
+		String password = this.promptForPassword();
         if (password == null) return;
 
         this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
@@ -146,8 +146,8 @@ public class Controller {
         journalContentEditor.setHtmlText("");
     }
 
-    private void onDeleteButtonPressed() {
-        if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
+	public void deleteEntry() {
+		if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().delete();
             this.refreshListView();
             journalEntryListView.getSelectionModel().select(-1);
