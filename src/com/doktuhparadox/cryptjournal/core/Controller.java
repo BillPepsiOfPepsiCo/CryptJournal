@@ -20,6 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 public class Controller {
@@ -87,21 +88,36 @@ public class Controller {
         new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).spawn(), "DOGE", delimiters).attach();
     }
 
-    //**********Button event methods**********\\
-    public void createNewEntry() {
+	//**********Event methods**********\\
+	public void createNewEntry() {
         Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
         if (!input.equals(Optional.empty())) {
             JournalEntry newEntry = new JournalEntry(input.toString().replace("Optional[", "").replace("]", ""));
-            this.refreshListView();
-            NodeState.enable(saveButton);
-            NodeState.enable(journalContentEditor);
-            NodeState.disable(deleteEntryButton);
-            NodeState.disable(createEntryButton);
-            NodeState.disable(openButton);
-            NodeState.disable(journalEntryListView);
-            journalEntryListView.getSelectionModel().select(newEntry);
-            journalEntryNameLabel.setText(newEntry.getName());
+	        try {
+		        if (newEntry.create()) {
+			        System.out.println("Created new journal entry " + newEntry.getName());
+		        } else {
+			        if (newEntry.getFile().exists()) {
+				        this.createDialog("Error", "Could not create new entry: entry with that name already exists.").showWarning();
+			        } else {
+				        this.createDialog("Error", "Could not create new entry: unknown error.").showWarning();
+			        }
+			        return;
+		        }
+	        } catch (IOException e) {
+		        Dialogs.create().masthead(null).title("Exception").message("Exception caught when trying to create new journal entry").showException(e);
+	        }
+
+	        this.refreshListView();
+	        NodeState.enable(saveButton);
+	        NodeState.enable(journalContentEditor);
+	        NodeState.disable(deleteEntryButton);
+	        NodeState.disable(createEntryButton);
+	        NodeState.disable(openButton);
+	        NodeState.disable(journalEntryListView);
+	        journalEntryListView.getSelectionModel().select(newEntry);
+	        journalEntryNameLabel.setText(newEntry.getName());
         }
     }
 

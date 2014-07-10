@@ -1,15 +1,17 @@
 package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.easel.io.ReadWriter;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.Key;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.IOException;
-import java.security.Key;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -25,13 +27,6 @@ public class JournalEntry {
     public JournalEntry(String name) {
         this.name = name.endsWith(".journal") ? name.replace(".journal", "") : name;
         this.readWriter = new ReadWriter(this.getFile());
-
-        try {
-            if (!this.getFile().exists() && this.getFile().createNewFile())
-                System.out.println("Created new journal entry: " + this.name);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void write(String data, String password) {
@@ -81,7 +76,11 @@ public class JournalEntry {
         return this.name;
     }
 
-    public void delete() {
+	public boolean create() throws IOException {
+		return !this.getFile().exists() && this.getFile().createNewFile();
+	}
+
+	public void delete() {
         if (this.getFile().delete())
             System.out.println("Deleted journal entry " + this.name);
         else
