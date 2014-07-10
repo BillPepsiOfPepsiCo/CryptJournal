@@ -20,6 +20,7 @@ public class OptionManager {
     public static Option TIME_FORMAT;
     public static Option ENCRYPTION_ALGORITHM;
     public static Option TWELVE_HOUR_TIME;
+	public static Option CACHE_PASSWORDS;
 
     public static void initialize() {
         THEME = new Option(optionHandler, "theme", "light");
@@ -27,5 +28,6 @@ public class OptionManager {
         TIME_FORMAT = new Option(optionHandler, "time_format", "h:m:s");
         ENCRYPTION_ALGORITHM = new Option(optionHandler, "algorithm", "AES");
         TWELVE_HOUR_TIME = new Option(optionHandler, "twelve_hour_time", "true");
+	    CACHE_PASSWORDS = new Option(optionHandler, "cache_passwords", "true");
     }
 }
