@@ -7,7 +7,6 @@ import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 
 import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.collections.FXCollections;
@@ -80,7 +79,7 @@ public class Controller {
 	    saveButton.setOnAction(event -> this.saveEntry());
 	    deleteEntryButton.setOnAction(event -> this.deleteEntry());
 	    openButton.setOnAction(event -> this.openEntry());
-	    optionsButton.setOnAction(event -> this.onOptionsButtonPressed());
+	    optionsButton.setOnAction(event -> this.openOptionsWindow());
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
@@ -99,9 +98,9 @@ public class Controller {
 			        System.out.println("Created new journal entry " + newEntry.getName());
 		        } else {
 			        if (newEntry.getFile().exists()) {
-				        this.createDialog("Error", "Could not create new entry: entry with that name already exists.").showWarning();
+				        this.createDialog("Could not create new entry", "An entry with that name already exists.").showError();
 			        } else {
-				        this.createDialog("Error", "Could not create new entry: unknown error.").showWarning();
+				        this.createDialog("Could not create new entry", "Unknown error.").showError();
 			        }
 			        return;
 		        }
@@ -185,8 +184,8 @@ public class Controller {
         }
     }
 
-    private void onOptionsButtonPressed() {
-        FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
+	private void openOptionsWindow() {
+		FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
         optionsWindow.spawn();
     }
     //**********Section end, dog**********\\
@@ -223,7 +222,7 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-        return Dialogs.create().masthead(null).style(DialogStyle.NATIVE).title(title).message(message);
+	    return Dialogs.create().masthead(null).title(title).message(message);
     }
 
     private JournalEntry getSelectedEntry() {
