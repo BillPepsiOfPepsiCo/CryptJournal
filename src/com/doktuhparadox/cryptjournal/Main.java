@@ -3,13 +3,14 @@ package com.doktuhparadox.cryptjournal;
 import com.doktuhparadox.cryptjournal.core.option.OptionManager;
 import com.doktuhparadox.easel.platform.IPlatformDifferentiator;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.awt.*;
+import java.awt.Toolkit;
 
 public class Main extends Application implements IPlatformDifferentiator {
 
@@ -20,8 +21,8 @@ public class Main extends Application implements IPlatformDifferentiator {
         primaryStage.setTitle("CryptJournal");
         primaryStage.setScene(new Scene(root, 1000, 682));
         primaryStage.setResizable(false);
-        if (OptionManager.THEME.getValue().equals("dark"))
-            root.getStylesheets().add(getClass().getResource("/resources/css/DarkTheme.css").toExternalForm());
+	    if (OptionManager.optionHandler.get("theme").equals("dark"))
+		    root.getStylesheets().add(getClass().getResource("/resources/css/DarkTheme.css").toExternalForm());
         primaryStage.show();
     }
 

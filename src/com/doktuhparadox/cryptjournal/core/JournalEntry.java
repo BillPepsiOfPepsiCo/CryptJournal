@@ -1,6 +1,6 @@
 package com.doktuhparadox.cryptjournal.core;
 
-import com.doktuhparadox.easel.io.ReadWriter;
+import com.doktuhparadox.easel.io.FileProprietor;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +22,11 @@ import sun.misc.BASE64Encoder;
 public class JournalEntry {
 
     private final String name;
-    private final ReadWriter readWriter;
+	private final FileProprietor readWriter;
 
     public JournalEntry(String name) {
         this.name = name.endsWith(".journal") ? name.replace(".journal", "") : name;
-        this.readWriter = new ReadWriter(this.getFile());
+	    this.readWriter = new FileProprietor(this.getFile());
     }
 
     public void write(String data, String password) {

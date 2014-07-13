@@ -1,13 +1,15 @@
 package com.doktuhparadox.cryptjournal.core.option;
 
 import com.doktuhparadox.easel.utils.RuntimeUtils;
+
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -33,11 +35,13 @@ public class OptionsWindowController {
 
     @FXML
     protected void initialize() {
-        if (OptionManager.THEME.getValue().equals("dark")) root.getStylesheets().add("/resources/css/DarkTheme.css");
-        dateFormatTextField.setText(OptionManager.DATE_FORMAT.getValue());
-        timeFormatTextField.setText(OptionManager.TIME_FORMAT.getValue());
-        useDarkThemeCheckbox.setSelected(OptionManager.THEME.getValue().equals("dark"));
-        twelveHourTimeCheckbox.setSelected(Boolean.valueOf(OptionManager.TWELVE_HOUR_TIME.getValue()));
+	    if (OptionManager.optionHandler.get("theme").equals("dark")) {
+		    root.getStylesheets().add("/resources/css/DarkTheme.css");
+		    useDarkThemeCheckbox.setSelected(true);
+	    }
+	    dateFormatTextField.setText(OptionManager.optionHandler.get("date_format"));
+	    timeFormatTextField.setText(OptionManager.optionHandler.get("time_format"));
+	    twelveHourTimeCheckbox.setSelected(Boolean.valueOf(OptionManager.optionHandler.get("twelve_hour_time")));
 
         useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (Dialogs.create().masthead(null).title("Restart?").message("Switching themes requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
@@ -49,9 +53,9 @@ public class OptionsWindowController {
 
     @FXML
     public void onApplyButtonPressed() {
-        OptionManager.DATE_FORMAT.setValue(dateFormatTextField.getText());
-        OptionManager.TIME_FORMAT.setValue(timeFormatTextField.getText());
-        OptionManager.TWELVE_HOUR_TIME.setValue(String.valueOf(twelveHourTimeCheckbox.isSelected()));
-        OptionManager.THEME.setValue(useDarkThemeCheckbox.isSelected() ? "dark" : "light");
+	    OptionManager.optionHandler.set("date_format", dateFormatTextField.getText());
+	    OptionManager.optionHandler.set("time_format", timeFormatTextField.getText());
+	    OptionManager.optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected()));
+	    OptionManager.optionHandler.set("theme", useDarkThemeCheckbox.isSelected() ? "dark" : "light");
     }
 }
