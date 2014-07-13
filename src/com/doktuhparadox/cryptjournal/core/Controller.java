@@ -55,6 +55,13 @@ public class Controller {
             openButton.setDisable(true);
             deleteEntryButton.setDisable(true);
         }
+
+	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		    if (!this.journalContentEditor.isDisabled()) {
+			    System.out.println("Application termination requested while entry is being edited, performing autosave...");
+			    this.saveEntry(true);
+		    }
+	    }));
     }
 
     private void attachListeners() {
@@ -76,7 +83,7 @@ public class Controller {
         });
 
 	    createEntryButton.setOnAction(event -> this.createNewEntry());
-	    saveButton.setOnAction(event -> this.saveEntry());
+	    saveButton.setOnAction(event -> this.saveEntry(false));
 	    deleteEntryButton.setOnAction(event -> this.deleteEntry());
 	    openButton.setOnAction(event -> this.openEntry());
 	    optionsButton.setOnAction(event -> this.openOptionsWindow());
@@ -124,13 +131,13 @@ public class Controller {
 		String decodedContent;
 
         //Tests to see if the password for this entry is empty (an empty password is sixteen equal signs) and skips the password prompt if so
-        if ((decodedContent = this.getSelectedEntry().read("================")).equals("BAD_PASSWORD"))
-            decodedContent = this.getSelectedEntry().read(this.promptForPassword());
-
-        if (decodedContent.equals("BAD_PASSWORD")) {
-            this.createDialog("Error", "Incorrect password.").showError();
-            return;
-        }
+		if ((decodedContent = this.getSelectedEntry().read("================")).equals("BAD_PASSWORD")) {
+			decodedContent = this.getSelectedEntry().read(this.promptForPassword());
+			if (decodedContent.equals("BAD_PASSWORD")) {
+				this.createDialog("Error", "Incorrect password.").showError();
+				return;
+			}
+		}
 
         journalContentEditor.setHtmlText(decodedContent);
         NodeState.enable(saveButton);
@@ -142,24 +149,29 @@ public class Controller {
         journalEntryNameLabel.setText(this.getSelectedEntry().getName());
     }
 
-	public void saveEntry() {
-		String password = this.promptForPassword();
-        if (password == null) return;
+	public void saveEntry(boolean isAutosave) {
+		if (isAutosave) {
+			this.getSelectedEntry().write(journalContentEditor.getHtmlText(), "================");
+		} else {
+			String password = this.promptForPassword();
+			if (password == null) return;
 
-        this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
+			this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
 
-	    if (journalEntryListView.getItems().size() > 0) {
-		    NodeState.enable(openButton);
-		    NodeState.enable(deleteEntryButton);
-	    }
-        NodeState.enable(createEntryButton);
-        NodeState.enable(journalEntryListView);
-        NodeState.disable(journalContentEditor);
-        NodeState.disable(saveButton);
-	    journalEntryListView.requestFocus();
-	    journalEntryNameLabel.setText("");
-        journalContentEditor.setHtmlText("");
-    }
+			if (journalEntryListView.getItems().size() > 0) {
+				NodeState.enable(openButton);
+				NodeState.enable(deleteEntryButton);
+			}
+
+			NodeState.enable(createEntryButton);
+			NodeState.enable(journalEntryListView);
+			NodeState.disable(journalContentEditor);
+			NodeState.disable(saveButton);
+			journalEntryListView.requestFocus();
+			journalEntryNameLabel.setText("");
+			journalContentEditor.setHtmlText("");
+		}
+	}
 
 	public void deleteEntry() {
 		if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
