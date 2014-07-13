@@ -22,8 +22,8 @@ public class DateTimeFormatter {
      */
     public static String formatDate(String[] yearMonthDay) {
         return OptionManager.DATE_FORMAT.getValue()
-                .replace("y", yearMonthDay[0])
-                .replace("m", yearMonthDay[1])
+		        .replace("y", yearMonthDay[0].substring(2, 4))
+		        .replace("m", yearMonthDay[1])
                 .replace("d", yearMonthDay[2]);
     }
 
