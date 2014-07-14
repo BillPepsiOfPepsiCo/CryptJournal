@@ -1,6 +1,6 @@
 package com.doktuhparadox.cryptjournal;
 
-import com.doktuhparadox.cryptjournal.core.option.OptionManager;
+import com.doktuhparadox.cryptjournal.core.option.OptionsManager;
 import com.doktuhparadox.easel.platform.IPlatformDifferentiator;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 
@@ -21,7 +21,7 @@ public class Main extends Application implements IPlatformDifferentiator {
         primaryStage.setTitle("CryptJournal");
         primaryStage.setScene(new Scene(root, 1000, 682));
         primaryStage.setResizable(false);
-	    if (OptionManager.optionHandler.get("theme").equals("dark"))
+	    if (OptionsManager.optionHandler.get("theme").equals("dark"))
 		    root.getStylesheets().add(getClass().getResource("/resources/css/DarkTheme.css").toExternalForm());
         primaryStage.show();
     }

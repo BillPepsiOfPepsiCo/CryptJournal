@@ -11,6 +11,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.File;
+
+import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
+
 /**
  * Created and written with IntelliJ IDEA.
  * Module of: CryptJournal
@@ -19,12 +23,14 @@ import javafx.scene.layout.AnchorPane;
  */
 public class OptionsWindowController {
 
-    @FXML
-    public AnchorPane root;
-    @FXML
-    private CheckBox useDarkThemeCheckbox;
-    @FXML
-    private TextField dateFormatTextField;
+	@FXML
+	private AnchorPane root;
+	@FXML
+	private CheckBox useDarkThemeCheckbox;
+	@FXML
+	private TextField autosaveIntervalTextField;
+	@FXML
+	private TextField dateFormatTextField;
     @FXML
     private TextField timeFormatTextField;
     @FXML
@@ -32,30 +38,29 @@ public class OptionsWindowController {
     @FXML
     private Button applyButton;
 
+	private static final File optionsFile = new File("Options.txt");
 
-    @FXML
-    protected void initialize() {
-	    if (OptionManager.optionHandler.get("theme").equals("dark")) {
+	@FXML
+	protected void initialize() {
+		if (optionHandler.get("theme").equals("dark")) {
 		    root.getStylesheets().add("/resources/css/DarkTheme.css");
 		    useDarkThemeCheckbox.setSelected(true);
 	    }
-	    dateFormatTextField.setText(OptionManager.optionHandler.get("date_format"));
-	    timeFormatTextField.setText(OptionManager.optionHandler.get("time_format"));
-	    twelveHourTimeCheckbox.setSelected(Boolean.valueOf(OptionManager.optionHandler.get("twelve_hour_time")));
-
-        useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (Dialogs.create().masthead(null).title("Restart?").message("Switching themes requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
-                this.onApplyButtonPressed();
-                RuntimeUtils.restart("CryptJournal.jar");
-            }
-        });
-    }
+		dateFormatTextField.setText(optionHandler.get("date_format"));
+		timeFormatTextField.setText(optionHandler.get("time_format"));
+		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
+		twelveHourTimeCheckbox.setSelected(Boolean.valueOf(optionHandler.get("twelve_hour_time")));
+	}
 
     @FXML
     public void onApplyButtonPressed() {
-	    OptionManager.optionHandler.set("date_format", dateFormatTextField.getText());
-	    OptionManager.optionHandler.set("time_format", timeFormatTextField.getText());
-	    OptionManager.optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected()));
-	    OptionManager.optionHandler.set("theme", useDarkThemeCheckbox.isSelected() ? "dark" : "light");
+	    optionHandler.set("date_format", dateFormatTextField.getText());
+	    optionHandler.set("time_format", timeFormatTextField.getText());
+	    optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected()));
+	    optionHandler.set("theme", useDarkThemeCheckbox.isSelected() ? "dark" : "light");
+	    optionHandler.set("autosave_interval", autosaveIntervalTextField.getText());
+	    if (Dialogs.create().masthead(null).title("Restart?").message("Applying these options requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
+		    RuntimeUtils.restart("CryptJournal.jar");
+	    }
     }
 }

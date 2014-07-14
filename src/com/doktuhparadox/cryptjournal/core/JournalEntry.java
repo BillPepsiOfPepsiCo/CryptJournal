@@ -5,6 +5,7 @@ import com.doktuhparadox.easel.io.FileProprietor;
 import java.io.File;
 import java.io.IOException;
 import java.security.Key;
+import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -35,8 +36,8 @@ public class JournalEntry {
         try {
             Key key = this.generateKey(password);
             Cipher c = Cipher.getInstance("AES");
-            c.init(Cipher.ENCRYPT_MODE, key);
-            encodedStringBytes = c.doFinal(data.getBytes());
+	        c.init(Cipher.ENCRYPT_MODE, key, new SecureRandom(password.getBytes()));
+	        encodedStringBytes = c.doFinal(data.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,8 +56,8 @@ public class JournalEntry {
         try {
             Key key = this.generateKey(password);
             Cipher c = Cipher.getInstance("AES");
-            c.init(Cipher.DECRYPT_MODE, key);
-            byte[] decodedValue = new BASE64Decoder().decodeBuffer(builder.toString());
+	        c.init(Cipher.DECRYPT_MODE, key, new SecureRandom(password.getBytes()));
+	        byte[] decodedValue = new BASE64Decoder().decodeBuffer(builder.toString());
             decodedStringBytes = c.doFinal(decodedValue);
         } catch (BadPaddingException e) {
             return "BAD_PASSWORD";
@@ -64,8 +65,7 @@ public class JournalEntry {
             e.printStackTrace();
         }
 
-        if (decodedStringBytes == null) return null;
-        return new String(decodedStringBytes);
+	    return decodedStringBytes == null ? null : new String(decodedStringBytes);
     }
 
     public File getFile() {

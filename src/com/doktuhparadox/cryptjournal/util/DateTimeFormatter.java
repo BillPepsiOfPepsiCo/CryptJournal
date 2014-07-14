@@ -1,6 +1,6 @@
 package com.doktuhparadox.cryptjournal.util;
 
-import com.doktuhparadox.cryptjournal.core.option.OptionManager;
+import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -21,7 +21,7 @@ public class DateTimeFormatter {
      * @return the date, formatted according to the format in the configuration file.
      */
     public static String formatDate(String[] yearMonthDay) {
-	    return OptionManager.optionHandler.get("date_format")
+	    return optionHandler.get("date_format")
 		        .replace("y", yearMonthDay[0].substring(2, 4))
 		        .replace("m", yearMonthDay[1])
                 .replace("d", yearMonthDay[2]);
@@ -39,8 +39,8 @@ public class DateTimeFormatter {
     public static String formatTime(String[] hourMinuteSecond) {
         int hour = Integer.valueOf(hourMinuteSecond[0]) + 7;
 
-	    return OptionManager.optionHandler.get("time_format")
-			    .replace("h", String.valueOf(!Boolean.valueOf(OptionManager.optionHandler.get("twelve_hour_time")) ? hour : Math.signum(hour - 12) == -1 || hour - 12 == 0 ? hour : hour - 12))
+	    return optionHandler.get("time_format")
+			    .replace("h", String.valueOf(!Boolean.valueOf(optionHandler.get("twelve_hour_time")) ? hour : Math.signum(hour - 12) == -1 || hour - 12 == 0 ? hour : hour - 12))
 			    .replace("m", hourMinuteSecond[1])
                 .replace("s", hourMinuteSecond[2]);
     }
