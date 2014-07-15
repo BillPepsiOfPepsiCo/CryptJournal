@@ -13,8 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
-import java.io.InputStream;
-
 import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
 
 /**
@@ -48,7 +46,6 @@ public class OptionsWindowController {
 
 	@FXML
 	protected void initialize() {
-		InputStream mplus = this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf");
 		root.getStylesheets().add("/resources/css/RootStyle.css");
 
 		if (optionHandler.get("theme").equals("dark")) {
