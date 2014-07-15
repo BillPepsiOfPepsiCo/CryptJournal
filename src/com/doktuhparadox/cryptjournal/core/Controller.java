@@ -42,16 +42,14 @@ public class Controller {
     @FXML
     private HTMLEditor journalContentEditor;
 
-	private final File journalDir = new File("Journals/"), infoDir = new File("Journals/.info/");
-
-    @FXML
-    protected void initialize() {
+	@FXML
+	protected void initialize() {
 	    journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
-	    if (FileProprietor.pollDir(journalDir))
-		    System.out.println("Created journal entry directory at " + infoDir.getAbsolutePath());
-	    if (FileProprietor.pollDir(infoDir))
-		    System.out.println("Created journal entry metadata directory at " + infoDir.getAbsolutePath());
-        this.attachListeners();
+		if (FileProprietor.pollDir(JournalEntry.journalDir))
+			System.out.println("Created journal entry directory at " + JournalEntry.infoDir.getAbsolutePath());
+		if (FileProprietor.pollDir(JournalEntry.infoDir))
+			System.out.println("Created journal entry metadata directory at " + JournalEntry.infoDir.getAbsolutePath());
+		this.attachListeners();
         this.refreshListView();
         //Prevent exceptions
         if (journalEntryListView.getItems().size() == 0) {
@@ -84,6 +82,16 @@ public class Controller {
                 NodeState.enable(deleteEntryButton);
             }
         });
+
+	    journalEntryListView.getFocusModel().focusedItemProperty().addListener((observable, oldValue, newValue) -> {
+		    if (newValue == null) {
+			    NodeState.disable(openButton);
+			    NodeState.disable(deleteEntryButton);
+		    } else {
+			    NodeState.enable(openButton);
+			    NodeState.enable(deleteEntryButton);
+		    }
+	    });
 
 	    createEntryButton.setOnAction(event -> this.createNewEntry());
 	    saveButton.setOnAction(event -> this.saveEntry(false));
@@ -210,8 +218,8 @@ public class Controller {
         ObservableList<JournalEntry> entries = FXCollections.observableArrayList();
 
         //noinspection ConstantConditions
-        for (File file : journalDir.listFiles())
-            if (file != null && file.getName().endsWith(".journal"))
+	    for (File file : JournalEntry.journalDir.listFiles())
+		    if (file != null && file.getName().endsWith(".journal"))
                 entries.add(new JournalEntry(file.getName().replace(".journal", "")));
 
         journalEntryListView.setItems(entries);
