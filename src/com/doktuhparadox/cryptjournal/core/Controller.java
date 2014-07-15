@@ -58,6 +58,8 @@ public class Controller {
             deleteEntryButton.setDisable(true);
         }
 
+	    Timer autoSaveTimer = new Timer();
+
 	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 		    if (!this.journalContentEditor.isDisabled()) {
 			    System.out.println("Application termination requested while entry is being edited, performing autosave...");
@@ -65,15 +67,19 @@ public class Controller {
 		    }
 	    }));
 
-	    new Timer().schedule(new TimerTask() {
-		    @Override
-		    public void run() {
-			    if (!journalContentEditor.isDisabled()) {
-				    System.out.printf("Entry %s has been autosaved.\n", getSelectedEntry().getName());
-				    saveEntry(true);
+	    try {
+		    autoSaveTimer.schedule(new TimerTask() {
+			    @Override
+			    public void run() {
+				    if (!journalContentEditor.isDisabled()) {
+					    System.out.printf("Entry %s has been autosaved.\n", getSelectedEntry().getName());
+					    saveEntry(true);
+				    }
 			    }
-		    }
-	    }, 0, Integer.valueOf(OptionsManager.optionHandler.get("autosave_interval")) * 1000);
+		    }, 0, Integer.valueOf(OptionsManager.optionHandler.get("autosave_interval")) * 1000 /*Put into seconds*/);
+	    } finally {
+		    autoSaveTimer.cancel();
+	    }
     }
 
     private void attachListeners() {
