@@ -1,10 +1,6 @@
 package com.doktuhparadox.cryptjournal.core;
 
-import com.doktuhparadox.cryptjournal.util.DateTimeFormatter;
 import javafx.scene.control.ListCell;
-
-import java.io.IOException;
-import java.nio.file.Files;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -18,13 +14,18 @@ public class JournalEntryListCellFactory extends ListCell<JournalEntry> {
         super.updateItem(item, empty);
 
         if (!empty) {
-            try {
-                String zuluDate = Files.getAttribute(item.getFile().toPath(), "creationTime").toString();
-                String[] yearMonthDay = zuluDate.substring(0, 10).split("-"), hourMinuteSecond = zuluDate.substring(11, 19).split(":");
-                this.setText(String.format("%s\n%s at %s", item.getName(), DateTimeFormatter.formatDate(yearMonthDay), DateTimeFormatter.formatTime(hourMinuteSecond)));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+	        String[] creationTime = item.fetchProperty("CREATION").split("\\|");
+	        StringBuilder builder = new StringBuilder();
+
+	        for (String s : item.getName().split("(?<=\\G......................)")) {
+		        if (s.length() == 22) builder.append(s).append("-\n");
+		        else builder.append(s);
+	        }
+
+	        if (builder.toString().endsWith("-"))
+		        builder.replace(builder.lastIndexOf("-"), builder.lastIndexOf("-") + 1, "");
+
+	        this.setText(String.format("%s\n%s at %s", builder.toString(), creationTime[0], creationTime[1]));
         } else {
             this.setText(null);
         }
