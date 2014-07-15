@@ -22,6 +22,7 @@ public class Main extends Application implements IPlatformDifferentiator {
         primaryStage.setTitle("CryptJournal");
         primaryStage.setScene(new Scene(root, 1000, 682));
         primaryStage.setResizable(false);
+	    root.getStylesheets().add(getClass().getResource("/resources/css/RootStyle.css").toExternalForm());
 	    if (OptionsManager.optionHandler.get("theme").equals("dark"))
 		    root.getStylesheets().add(getClass().getResource("/resources/css/DarkTheme.css").toExternalForm());
         primaryStage.show();

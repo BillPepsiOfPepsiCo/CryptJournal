@@ -1,0 +1,3 @@
+.list-view, .list-view .list-cell, .button, .label, .check-box, .combo-box .list-cell {
+    -fx-font-family: "helvetica light";
+}
