@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.io.IOException;
@@ -196,8 +197,8 @@ public class Controller {
 
 	private void openOptionsWindow() {
 		FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
-        optionsWindow.spawn();
-    }
+		optionsWindow.spawn(StageStyle.UNDECORATED, null);
+	}
     //**********Section end, dog**********\\
 
 
