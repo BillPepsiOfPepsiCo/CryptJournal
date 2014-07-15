@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Key;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -34,11 +36,17 @@ public class JournalEntry {
 
 		this.entryFileProprietor = new FileProprietor(this.getFile());
 		this.entryInfoFileProprietor = new FileProprietor(this.getInfoFile());
+
+		String timeFormat = optionHandler.get("time_format");
+		if (Boolean.getBoolean("twelve_hour_time")) timeFormat = timeFormat.replace("HH", "hh");
+		else timeFormat = timeFormat.replace("hh", "HH");
+
+		this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", optionHandler.get("date_format").replace("mm", "MM"), timeFormat)).format(new Date()));
+		this.writeProperty("ENCRYPTION", optionHandler.get("encryption_algorithm"));
 	}
 
 	public void write(String data, String password) {
 		String configuredEncryptionAlgorithm = optionHandler.get("encryption_algorithm");
-		this.writeProperties(); //Important to do this before the key generation
 
 		byte[] encodedStringBytes = null;
 
@@ -103,16 +111,11 @@ public class JournalEntry {
 			System.out.println("Could not delete entry " + this.name);
 	}
 
-	private void writeProperties() {
-		this.entryInfoFileProprietor.write("# !!!!!!!!!!!DO NOT EDIT ANYTHING IN THIS FILE FOR ANY REASON!!!!!!!!!!!", true);
-		this.entryInfoFileProprietor.append("$ENCRYPTION=" + optionHandler.get("encryption_algorithm"), true);
-	}
-
 	private Key generateKey(String password) {
 		return new SecretKeySpec(password.getBytes(), this.fetchProperty("ENCRYPTION"));
 	}
 
-	private String fetchProperty(String key) {
+	public String fetchProperty(String key) {
 		for (String s : this.entryInfoFileProprietor.read()) {
 			if (!s.startsWith("#") && s.startsWith("$")) {
 				String[] pair = s.split("=");
@@ -121,5 +124,11 @@ public class JournalEntry {
 		}
 
 		return null;
+	}
+
+	public void writeProperty(String key, String value) {
+		if (this.fetchProperty(key) == null) {
+			this.entryInfoFileProprietor.appendf("$%s=%s", true, key, value);
+		}
 	}
 }
