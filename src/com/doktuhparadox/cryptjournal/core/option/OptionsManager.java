@@ -16,8 +16,8 @@ public class OptionsManager {
 
     public static void initialize() {
 	    optionHandler.add("theme", "light");
-	    optionHandler.add("date_format", "m/d/y");
-	    optionHandler.add("time_format", "h:m:s");
+	    optionHandler.add("date_format", "dd/mm/yyyy");
+	    optionHandler.add("time_format", "hh:mm:ss");
 	    optionHandler.add("encryption_algorithm", "AES");
 	    optionHandler.add("twelve_hour_time", "true");
 	    optionHandler.add("cache_passwords", "false");
