@@ -57,25 +57,25 @@ public class OptionsWindowController {
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
 		twelveHourTimeCheckbox.setSelected(Boolean.valueOf(optionHandler.get("twelve_hour_time")));
 
-		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+		useDarkThemeCheckbox.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			optionHandler.set("theme", newValue ? "dark" : "light");
 			promptForRestartOnApply = true;
 		});
 
-		autosaveIntervalTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-			optionHandler.set("autosave_interval", newValue);
+		autosaveIntervalTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			optionHandler.set("autosave_interval", autosaveIntervalTextField.getText());
 			promptForRestartOnApply = true;
 		});
 
 		twelveHourTimeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected())));
-		dateFormatTextField.textProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
-		timeFormatTextField.textProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
-		encryptionAlgorithmComboBox.selectionModelProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
+		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
+		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
+		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
 	}
 
     @FXML
     public void onApplyButtonPressed() {
-	    if (this.promptForRestartOnApply && Dialogs.create().masthead(null).title("Restart?").message("Applying these options requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
+	    if (this.promptForRestartOnApply && Dialogs.create().masthead(null).title("Restart?").message("An option that requires a restart to take effect was changed. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
 		    RuntimeUtils.restart("CryptJournal.jar");
 		    return;
 	    }

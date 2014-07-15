@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="372.0" prefWidth="346.0" style="-fx-background-color: 0;" xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="372.0" prefWidth="346.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.doktuhparadox.cryptjournal.core.option.OptionsWindowController">
     <children>
         <Label layoutX="132.0" layoutY="14.0" text="Options">
@@ -24,7 +23,7 @@
             </font>
         </CheckBox>
         <Button fx:id="applyButton" layoutX="146.0" layoutY="332.0" mnemonicParsing="false"
-                onAction="#onApplyButtonPressed" text="Apply"/>
+                onAction="#onApplyButtonPressed" text="Close"/>
         <TextField fx:id="dateFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="92.0" prefHeight="26.0"
                    prefWidth="92.0"/>
         <Label layoutX="27.0" layoutY="95.0" text="Date format">
