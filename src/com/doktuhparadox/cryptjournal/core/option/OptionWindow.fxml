@@ -2,12 +2,14 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="372.0" prefWidth="346.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="372.0" prefWidth="346.0" style="-fx-background-color: transparent;"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.doktuhparadox.cryptjournal.core.option.OptionsWindowController">
     <children>
         <Label layoutX="132.0" layoutY="14.0" text="Options">
@@ -23,19 +25,19 @@
         </CheckBox>
         <Button fx:id="applyButton" layoutX="146.0" layoutY="332.0" mnemonicParsing="false"
                 onAction="#onApplyButtonPressed" text="Apply"/>
-        <TextField fx:id="dateFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="69.0" prefHeight="26.0"
+        <TextField fx:id="dateFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="92.0" prefHeight="26.0"
                    prefWidth="92.0"/>
-        <Label layoutX="27.0" layoutY="72.0" text="Date format">
+        <Label layoutX="27.0" layoutY="95.0" text="Date format">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <Label layoutX="26.0" layoutY="108.0" text="Time format">
+        <Label layoutX="26.0" layoutY="131.0" text="Time format">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="105.0" prefHeight="26.0"
+        <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="128.0" prefHeight="26.0"
                    prefWidth="92.0"/>
         <CheckBox fx:id="twelveHourTimeCheckbox" layoutX="33.0" layoutY="295.0" mnemonicParsing="false"
                   text="12 Hour time">
@@ -43,17 +45,29 @@
                 <Font name="Helvetica" size="13.0"/>
             </font>
         </CheckBox>
-        <Label layoutX="27.0" layoutY="140.0" text="Autosave interval">
+        <Label layoutX="27.0" layoutY="163.0" text="Autosave interval">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <TextField fx:id="autosaveIntervalTextField" layoutX="215.0" layoutY="137.0" prefHeight="26.0"
+        <TextField fx:id="autosaveIntervalTextField" layoutX="215.0" layoutY="160.0" prefHeight="26.0"
                    prefWidth="39.0"/>
-        <Label layoutX="261.0" layoutY="143.0" text="seconds">
+        <Label layoutX="261.0" layoutY="166.0" text="seconds">
             <font>
                 <Font name="Helvetica" size="12.0"/>
             </font>
         </Label>
+        <CheckBox layoutX="33.0" layoutY="267.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="133.0"
+                  text="Cache passwords">
+            <font>
+                <Font name="Helvetica" size="13.0"/>
+            </font>
+        </CheckBox>
+        <Label layoutX="26.0" layoutY="60.0" text="Encryption algorithm">
+            <font>
+                <Font name="Helvetica" size="16.0"/>
+            </font>
+        </Label>
+        <ComboBox layoutX="215.0" layoutY="57.0" prefHeight="26.0" prefWidth="100.0"/>
     </children>
 </AnchorPane>
