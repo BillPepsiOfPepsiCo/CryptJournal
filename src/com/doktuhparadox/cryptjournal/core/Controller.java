@@ -2,6 +2,7 @@ package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
+import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 
@@ -41,12 +42,15 @@ public class Controller {
     @FXML
     private HTMLEditor journalContentEditor;
 
-	private final File journalDir = new File("Journals/");
+	private final File journalDir = new File("Journals/"), infoDir = new File("Journals/.info/");
 
     @FXML
     protected void initialize() {
 	    journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
-        if (!journalDir.exists() && journalDir.mkdir()) System.out.println("Created journal entry directory");
+	    if (FileProprietor.pollDir(journalDir))
+		    System.out.println("Created journal entry directory at " + infoDir.getAbsolutePath());
+	    if (FileProprietor.pollDir(infoDir))
+		    System.out.println("Created journal entry metadata directory at " + infoDir.getAbsolutePath());
         this.attachListeners();
         this.refreshListView();
         //Prevent exceptions
