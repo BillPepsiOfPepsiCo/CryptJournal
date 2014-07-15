@@ -1,6 +1,5 @@
 package com.doktuhparadox.cryptjournal.core;
 
-import com.doktuhparadox.cryptjournal.core.option.OptionsManager;
 import com.doktuhparadox.easel.io.FileProprietor;
 
 import java.io.File;
@@ -12,6 +11,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -23,73 +23,103 @@ import sun.misc.BASE64Encoder;
  */
 public class JournalEntry {
 
-    private final String name;
-	private final FileProprietor readWriter;
-	private String encryptionAlgorithm = OptionsManager.optionHandler.get("encryption_algorithm");
+	private static final String journalDirName = "Journals/", infoDirName = ".metadata/";
+	public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
 
-    public JournalEntry(String name) {
-        this.name = name.endsWith(".journal") ? name.replace(".journal", "") : name;
-	    this.readWriter = new FileProprietor(this.getFile());
-    }
+	private final String name;
+	private final FileProprietor entryFileProprietor, entryInfoFileProprietor;
 
-    public void write(String data, String password) {
-        byte[] encodedStringBytes = null;
+	public JournalEntry(String name) {
+		this.name = name.endsWith(".journal") ? name.replace(".journal", "") : name;
 
-        try {
-            Key key = this.generateKey(password);
-	        Cipher c = Cipher.getInstance(encryptionAlgorithm);
-	        c.init(Cipher.ENCRYPT_MODE, key, new SecureRandom(password.getBytes()));
-	        encodedStringBytes = c.doFinal(data.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		this.entryFileProprietor = new FileProprietor(this.getFile());
+		this.entryInfoFileProprietor = new FileProprietor(this.getInfoFile());
+	}
 
-        this.readWriter.write(new BASE64Encoder().encode(encodedStringBytes), false);
-    }
+	public void write(String data, String password) {
+		String configuredEncryptionAlgorithm = optionHandler.get("encryption_algorithm");
+		this.writeProperties(); //Important to do this before the key generation
 
-    public String read(String password) {
-        StringBuilder builder = new StringBuilder();
+		byte[] encodedStringBytes = null;
 
-        for (String s : this.readWriter.read())
-            builder.append(s);
+		try {
+			Key key = this.generateKey(password);
+			Cipher c = Cipher.getInstance(configuredEncryptionAlgorithm);
+			c.init(Cipher.ENCRYPT_MODE, key, new SecureRandom(password.getBytes()));
+			encodedStringBytes = c.doFinal(data.getBytes());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        byte[] decodedStringBytes = null;
+		this.entryFileProprietor.write(new BASE64Encoder().encode(encodedStringBytes), true);
+	}
 
-        try {
-            Key key = this.generateKey(password);
-	        Cipher c = Cipher.getInstance(encryptionAlgorithm);
-	        c.init(Cipher.DECRYPT_MODE, key, new SecureRandom(password.getBytes()));
-	        byte[] decodedValue = new BASE64Decoder().decodeBuffer(builder.toString());
-            decodedStringBytes = c.doFinal(decodedValue);
-        } catch (BadPaddingException e) {
-            return "BAD_PASSWORD";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	public String read(String password) {
+		String entryEncryptionAlgorithm = this.fetchProperty("ENCRYPTION");
 
-	    return decodedStringBytes == null ? null : new String(decodedStringBytes);
-    }
+		StringBuilder builder = new StringBuilder();
 
-    public File getFile() {
-        return new File("Journals/" + this.name + ".journal");
-    }
+		for (String s : this.entryFileProprietor.read()) {
+			builder.append(s);
+		}
 
-    public String getName() {
-        return this.name;
-    }
+		byte[] decodedStringBytes = null;
+
+		try {
+			Key key = this.generateKey(password);
+			Cipher c = Cipher.getInstance(entryEncryptionAlgorithm);
+			c.init(Cipher.DECRYPT_MODE, key, new SecureRandom(password.getBytes()));
+			byte[] decodedValue = new BASE64Decoder().decodeBuffer(builder.toString());
+			decodedStringBytes = c.doFinal(decodedValue);
+		} catch (BadPaddingException e) {
+			return "BAD_PASSWORD";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return decodedStringBytes == null ? null : new String(decodedStringBytes);
+	}
+
+	public File getFile() {
+		return new File(String.format("%s%s.journal", journalDirName, this.name));
+	}
+
+	public File getInfoFile() {
+		return new File(String.format("%s%s%s.nfo", journalDirName, infoDirName, this.name));
+	}
+
+	public String getName() {
+		return this.name;
+	}
 
 	public boolean create() throws IOException {
-		return !this.getFile().exists() && this.getFile().createNewFile();
+		return FileProprietor.poll(this.getFile());
 	}
 
 	public void delete() {
-        if (this.getFile().delete())
-            System.out.println("Deleted journal entry " + this.name);
-        else
-            System.out.println("Could not delete entry " + this.name);
-    }
+		if (this.getFile().delete() && this.getInfoFile().delete())
+			System.out.println("Deleted journal entry " + this.name);
+		else
+			System.out.println("Could not delete entry " + this.name);
+	}
 
-    private Key generateKey(String password) {
-	    return new SecretKeySpec(password.getBytes(), encryptionAlgorithm);
-    }
+	private void writeProperties() {
+		this.entryInfoFileProprietor.write("# !!!!!!!!!!!DO NOT EDIT ANYTHING IN THIS FILE FOR ANY REASON!!!!!!!!!!!", true);
+		this.entryInfoFileProprietor.append("$ENCRYPTION=" + optionHandler.get("encryption_algorithm"), true);
+	}
+
+	private Key generateKey(String password) {
+		return new SecretKeySpec(password.getBytes(), this.fetchProperty("ENCRYPTION"));
+	}
+
+	private String fetchProperty(String key) {
+		for (String s : this.entryInfoFileProprietor.read()) {
+			if (!s.startsWith("#") && s.startsWith("$")) {
+				String[] pair = s.split("=");
+				if (key.equals(pair[0].replace("$", ""))) return pair[1];
+			}
+		}
+
+		return null;
+	}
 }
