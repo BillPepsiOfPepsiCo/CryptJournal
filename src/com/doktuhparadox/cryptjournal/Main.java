@@ -16,8 +16,9 @@ public class Main extends Application implements IPlatformDifferentiator {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        PlatformDifferentiator.setPlatformDifferentiator(this);
-        Parent root = FXMLLoader.load(getClass().getResource("core/CryptJournal.fxml"));
+	    OptionsManager.initialize();
+	    PlatformDifferentiator.setPlatformDifferentiator(this);
+	    Parent root = FXMLLoader.load(getClass().getResource("core/CryptJournal.fxml"));
         primaryStage.setTitle("CryptJournal");
         primaryStage.setScene(new Scene(root, 1000, 682));
         primaryStage.setResizable(false);
