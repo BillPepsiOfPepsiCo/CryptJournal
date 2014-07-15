@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal.core;
 
+import com.doktuhparadox.cryptjournal.core.option.OptionsManager;
 import com.doktuhparadox.easel.io.FileProprietor;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class JournalEntry {
 
     private final String name;
 	private final FileProprietor readWriter;
+	private String encryptionAlgorithm = OptionsManager.optionHandler.get("encryption_algorithm");
 
     public JournalEntry(String name) {
         this.name = name.endsWith(".journal") ? name.replace(".journal", "") : name;
@@ -35,7 +37,7 @@ public class JournalEntry {
 
         try {
             Key key = this.generateKey(password);
-            Cipher c = Cipher.getInstance("AES");
+	        Cipher c = Cipher.getInstance(encryptionAlgorithm);
 	        c.init(Cipher.ENCRYPT_MODE, key, new SecureRandom(password.getBytes()));
 	        encodedStringBytes = c.doFinal(data.getBytes());
         } catch (Exception e) {
@@ -55,7 +57,7 @@ public class JournalEntry {
 
         try {
             Key key = this.generateKey(password);
-            Cipher c = Cipher.getInstance("AES");
+	        Cipher c = Cipher.getInstance(encryptionAlgorithm);
 	        c.init(Cipher.DECRYPT_MODE, key, new SecureRandom(password.getBytes()));
 	        byte[] decodedValue = new BASE64Decoder().decodeBuffer(builder.toString());
             decodedStringBytes = c.doFinal(decodedValue);
@@ -88,6 +90,6 @@ public class JournalEntry {
     }
 
     private Key generateKey(String password) {
-        return new SecretKeySpec(password.getBytes(), "AES");
+	    return new SecretKeySpec(password.getBytes(), encryptionAlgorithm);
     }
 }

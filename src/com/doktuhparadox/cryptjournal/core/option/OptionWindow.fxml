@@ -8,8 +8,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="372.0" prefWidth="346.0" style="-fx-background-color: transparent;"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="372.0" prefWidth="346.0" style="-fx-background-color: 0;" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.doktuhparadox.cryptjournal.core.option.OptionsWindowController">
     <children>
         <Label layoutX="132.0" layoutY="14.0" text="Options">
@@ -57,8 +57,8 @@
                 <Font name="Helvetica" size="12.0"/>
             </font>
         </Label>
-        <CheckBox layoutX="33.0" layoutY="267.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="133.0"
-                  text="Cache passwords">
+        <CheckBox fx:id="cachePasswordsCheckBox" layoutX="33.0" layoutY="267.0" mnemonicParsing="false"
+                  prefHeight="18.0" prefWidth="133.0" text="Cache passwords">
             <font>
                 <Font name="Helvetica" size="13.0"/>
             </font>
@@ -68,6 +68,7 @@
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <ComboBox layoutX="215.0" layoutY="57.0" prefHeight="26.0" prefWidth="100.0"/>
+        <ComboBox fx:id="encryptionAlgorithmComboBox" layoutX="215.0" layoutY="57.0" prefHeight="26.0"
+                  prefWidth="100.0"/>
     </children>
 </AnchorPane>

@@ -9,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
@@ -25,9 +26,13 @@ public class OptionsWindowController {
 	@FXML
 	private AnchorPane root;
 	@FXML
+	private ComboBox<String> encryptionAlgorithmComboBox;
+	@FXML
 	private CheckBox useDarkThemeCheckbox;
 	@FXML
 	private TextField autosaveIntervalTextField;
+	@FXML
+	private CheckBox cachePasswordsCheckBox;
 	@FXML
 	private TextField dateFormatTextField;
     @FXML
@@ -45,6 +50,9 @@ public class OptionsWindowController {
 		    root.getStylesheets().add("/resources/css/DarkTheme.css");
 		    useDarkThemeCheckbox.setSelected(true);
 	    }
+
+		encryptionAlgorithmComboBox.getItems().addAll("AES", "Blowfish");
+		encryptionAlgorithmComboBox.getSelectionModel().select(optionHandler.get("encryption_algorithm"));
 		dateFormatTextField.setText(optionHandler.get("date_format"));
 		timeFormatTextField.setText(optionHandler.get("time_format"));
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
@@ -63,6 +71,7 @@ public class OptionsWindowController {
 	    optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected()));
 	    optionHandler.set("theme", useDarkThemeCheckbox.isSelected() ? "dark" : "light");
 	    optionHandler.set("autosave_interval", autosaveIntervalTextField.getText());
+	    optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue());
 	    if (this.promptForRestartOnApply && Dialogs.create().masthead(null).title("Restart?").message("Applying these options requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
 		    RuntimeUtils.restart("CryptJournal.jar");
 		    return;
