@@ -5,7 +5,6 @@ import com.doktuhparadox.easel.utils.RuntimeUtils;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -58,25 +57,30 @@ public class OptionsWindowController {
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
 		twelveHourTimeCheckbox.setSelected(Boolean.valueOf(optionHandler.get("twelve_hour_time")));
 
-		ChangeListener<Object> changeListener = (observable, oldValue, newValue) -> promptForRestartOnApply = true;
+		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			optionHandler.set("theme", newValue ? "dark" : "light");
+			promptForRestartOnApply = true;
+		});
 
-		useDarkThemeCheckbox.selectedProperty().addListener(changeListener);
-		autosaveIntervalTextField.textProperty().addListener(changeListener);
+		autosaveIntervalTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+			optionHandler.set("autosave_interval", newValue);
+			promptForRestartOnApply = true;
+		});
+
+		twelveHourTimeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected())));
+		dateFormatTextField.textProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
+		timeFormatTextField.textProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
+		encryptionAlgorithmComboBox.selectionModelProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
 	}
 
     @FXML
     public void onApplyButtonPressed() {
-	    optionHandler.set("date_format", dateFormatTextField.getText());
-	    optionHandler.set("time_format", timeFormatTextField.getText());
-	    optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected()));
-	    optionHandler.set("theme", useDarkThemeCheckbox.isSelected() ? "dark" : "light");
-	    optionHandler.set("autosave_interval", autosaveIntervalTextField.getText());
-	    optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue());
 	    if (this.promptForRestartOnApply && Dialogs.create().masthead(null).title("Restart?").message("Applying these options requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
 		    RuntimeUtils.restart("CryptJournal.jar");
 		    return;
 	    }
 
+	    root.getScene().getWindow().hide();
 	    promptForRestartOnApply = false;
     }
 }
