@@ -1,6 +1,5 @@
 package com.doktuhparadox.cryptjournal.core;
 
-import com.doktuhparadox.cryptjournal.core.option.OptionsManager;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.utils.Clippy;
@@ -21,8 +20,6 @@ import javafx.scene.web.HTMLEditor;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Controller {
 
@@ -47,7 +44,6 @@ public class Controller {
 
     @FXML
     protected void initialize() {
-	    OptionsManager.initialize();
 	    journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
         if (!journalDir.exists() && journalDir.mkdir()) System.out.println("Created journal entry directory");
         this.attachListeners();
@@ -58,28 +54,12 @@ public class Controller {
             deleteEntryButton.setDisable(true);
         }
 
-	    Timer autoSaveTimer = new Timer();
-
 	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 		    if (!this.journalContentEditor.isDisabled()) {
 			    System.out.println("Application termination requested while entry is being edited, performing autosave...");
 			    this.saveEntry(true);
 		    }
 	    }));
-
-	    try {
-		    autoSaveTimer.schedule(new TimerTask() {
-			    @Override
-			    public void run() {
-				    if (!journalContentEditor.isDisabled()) {
-					    System.out.printf("Entry %s has been autosaved.\n", getSelectedEntry().getName());
-					    saveEntry(true);
-				    }
-			    }
-		    }, 0, Integer.valueOf(OptionsManager.optionHandler.get("autosave_interval")) * 1000 /*Put into seconds*/);
-	    } finally {
-		    autoSaveTimer.cancel();
-	    }
     }
 
     private void attachListeners() {
