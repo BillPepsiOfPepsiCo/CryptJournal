@@ -5,13 +5,12 @@ import com.doktuhparadox.easel.utils.RuntimeUtils;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-
-import java.io.File;
 
 import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
 
@@ -38,7 +37,7 @@ public class OptionsWindowController {
     @FXML
     private Button applyButton;
 
-	private static final File optionsFile = new File("Options.txt");
+	private boolean promptForRestartOnApply = false;
 
 	@FXML
 	protected void initialize() {
@@ -50,6 +49,11 @@ public class OptionsWindowController {
 		timeFormatTextField.setText(optionHandler.get("time_format"));
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
 		twelveHourTimeCheckbox.setSelected(Boolean.valueOf(optionHandler.get("twelve_hour_time")));
+
+		ChangeListener<Object> changeListener = (observable, oldValue, newValue) -> promptForRestartOnApply = true;
+
+		useDarkThemeCheckbox.selectedProperty().addListener(changeListener);
+		autosaveIntervalTextField.textProperty().addListener(changeListener);
 	}
 
     @FXML
@@ -59,8 +63,11 @@ public class OptionsWindowController {
 	    optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected()));
 	    optionHandler.set("theme", useDarkThemeCheckbox.isSelected() ? "dark" : "light");
 	    optionHandler.set("autosave_interval", autosaveIntervalTextField.getText());
-	    if (Dialogs.create().masthead(null).title("Restart?").message("Applying these options requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
+	    if (this.promptForRestartOnApply && Dialogs.create().masthead(null).title("Restart?").message("Applying these options requires a restart. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
 		    RuntimeUtils.restart("CryptJournal.jar");
+		    return;
 	    }
+
+	    promptForRestartOnApply = false;
     }
 }
