@@ -34,21 +34,21 @@ public class OptionsWindowController {
 	private CheckBox cachePasswordsCheckBox;
 	@FXML
 	private TextField dateFormatTextField;
-    @FXML
-    private TextField timeFormatTextField;
-    @FXML
-    private CheckBox twelveHourTimeCheckbox;
-    @FXML
-    private Button applyButton;
+	@FXML
+	private TextField timeFormatTextField;
+	@FXML
+	private CheckBox twelveHourTimeCheckbox;
+	@FXML
+	private Button applyButton;
 
 	private boolean promptForRestartOnApply = false;
 
 	@FXML
 	protected void initialize() {
 		if (optionHandler.get("theme").equals("dark")) {
-		    root.getStylesheets().add("/resources/css/DarkTheme.css");
-		    useDarkThemeCheckbox.setSelected(true);
-	    }
+			root.getStylesheets().add("/resources/css/DarkTheme.css");
+			useDarkThemeCheckbox.setSelected(true);
+		}
 
 		encryptionAlgorithmComboBox.getItems().addAll("AES", "Blowfish");
 		encryptionAlgorithmComboBox.getSelectionModel().select(optionHandler.get("encryption_algorithm"));
@@ -57,7 +57,7 @@ public class OptionsWindowController {
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
 		twelveHourTimeCheckbox.setSelected(Boolean.valueOf(optionHandler.get("twelve_hour_time")));
 
-		useDarkThemeCheckbox.focusedProperty().addListener((observable, oldValue, newValue) -> {
+		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			optionHandler.set("theme", newValue ? "dark" : "light");
 			promptForRestartOnApply = true;
 		});
@@ -73,14 +73,14 @@ public class OptionsWindowController {
 		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
 	}
 
-    @FXML
-    public void onApplyButtonPressed() {
-	    if (this.promptForRestartOnApply && Dialogs.create().masthead(null).title("Restart?").message("An option that requires a restart to take effect was changed. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
-		    RuntimeUtils.restart("CryptJournal.jar");
-		    return;
-	    }
+	@FXML
+	public void onApplyButtonPressed() {
+		if (this.promptForRestartOnApply && Dialogs.create().masthead(null).title("Restart?").message("An option that requires a restart to take effect was changed. Would you like to restart?").showConfirm() == Dialog.Actions.YES) {
+			RuntimeUtils.restart("CryptJournal.jar");
+			return;
+		}
 
-	    root.getScene().getWindow().hide();
-	    promptForRestartOnApply = false;
-    }
+		root.getScene().getWindow().hide();
+		promptForRestartOnApply = false;
+	}
 }
