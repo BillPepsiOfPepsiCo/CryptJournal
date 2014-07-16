@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal;
 
+import com.doktuhparadox.cryptjournal.core.JournalEntry;
 import com.doktuhparadox.cryptjournal.core.option.OptionsManager;
 import com.doktuhparadox.easel.platform.IPlatformDifferentiator;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
@@ -12,6 +13,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class Main extends Application implements IPlatformDifferentiator {
 
@@ -41,7 +44,13 @@ public class Main extends Application implements IPlatformDifferentiator {
 
     @Override
     public void ifWindows() {
-
+	    if (JournalEntry.infoDir.exists()) {
+		    try {
+			    Files.setAttribute(JournalEntry.infoDir.toPath(), "dos:hidden", true); //Hide the metadata folder on Windows
+		    } catch (IOException e) {
+			    e.printStackTrace();
+		    }
+	    }
     }
 
     @Override

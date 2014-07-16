@@ -218,9 +218,16 @@ public class Controller {
         ObservableList<JournalEntry> entries = FXCollections.observableArrayList();
 
         //noinspection ConstantConditions
-	    for (File file : JournalEntry.journalDir.listFiles())
-		    if (file != null && file.getName().endsWith(".journal"))
-                entries.add(new JournalEntry(file.getName().replace(".journal", "")));
+	    for (File file : JournalEntry.journalDir.listFiles()) {
+		    if (file.getName().endsWith(".journal")) {
+			    JournalEntry newEntry = new JournalEntry(file.getName().replace(".journal", ""));
+			    if (newEntry.getFile().exists() && newEntry.getInfoFile().exists()) {
+				    entries.add(newEntry);
+			    } else {
+				    throw new RuntimeException(String.format("Metadata file for entry %s was not found", newEntry.getName()));
+			    }
+		    }
+	    }
 
         journalEntryListView.setItems(entries);
     }
