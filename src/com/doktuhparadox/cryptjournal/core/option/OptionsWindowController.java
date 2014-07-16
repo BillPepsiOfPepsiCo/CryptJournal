@@ -70,6 +70,7 @@ public class OptionsWindowController {
 			promptForRestartOnApply = true;
 		});
 
+		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("cache_passwords", "true"));
 		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
 		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
 		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
