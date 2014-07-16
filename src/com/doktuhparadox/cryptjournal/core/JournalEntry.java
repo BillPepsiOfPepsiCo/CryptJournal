@@ -1,6 +1,7 @@
 package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.easel.io.FileProprietor;
+import com.doktuhparadox.easel.io.TempFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +22,13 @@ public class JournalEntry {
 	public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
 
 	private final String name;
-	private final FileProprietor entryFileProprietor, entryInfoFileProprietor;
+	private final FileProprietor entryFileProprietor, entryMetadataFileProprietor;
 
 	public JournalEntry(String name) {
 		this.name = name.endsWith(".journal") ? name.replace(".journal", "") : name;
 
 		this.entryFileProprietor = new FileProprietor(this.getFile());
-		this.entryInfoFileProprietor = new FileProprietor(this.getInfoFile());
+		this.entryMetadataFileProprietor = new FileProprietor(this.getMetadataFile());
 
 		String timeFormat = optionHandler.get("time_format");
 
@@ -53,8 +54,8 @@ public class JournalEntry {
 		return new File(String.format("%s%s.journal", journalDirName, this.name));
 	}
 
-	public File getInfoFile() {
-		return new File(String.format("%s%s%s.nfo", journalDirName, infoDirName, this.name));
+	public File getMetadataFile() {
+		return new File(String.format("%s%s%s.journalmetadata", journalDirName, infoDirName, this.name));
 	}
 
 	public String getName() {
@@ -62,18 +63,18 @@ public class JournalEntry {
 	}
 
 	public boolean create() throws IOException {
-		return FileProprietor.poll(this.getFile());
+		return FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile());
 	}
 
 	public void delete() {
-		if (this.getFile().delete() && this.getInfoFile().delete())
+		if (this.getFile().delete() && this.getMetadataFile().delete())
 			System.out.println("Deleted journal entry " + this.name);
 		else
 			System.out.println("Could not delete entry " + this.name);
 	}
 
 	public String fetchProperty(String key) {
-		for (String s : this.entryInfoFileProprietor.read()) {
+		for (String s : this.entryMetadataFileProprietor.read()) {
 			if (!s.startsWith("#") && s.startsWith("$")) {
 				String[] pair = s.split("=");
 				if (key.equals(pair[0].replace("$", ""))) return pair[1];
@@ -85,7 +86,21 @@ public class JournalEntry {
 
 	public void writeProperty(String key, String value) {
 		if (this.fetchProperty(key) == null) {
-			this.entryInfoFileProprietor.appendf("$%s=%s", true, key, value);
+			this.entryMetadataFileProprietor.appendf("$%s=%s", true, key, value);
+		}
+	}
+
+	public void setProperty(String key, String value) {
+		if (this.fetchProperty(key) != null) {
+			TempFile metadataTempFile = new TempFile(this.getMetadataFile());
+
+			for (String s : this.entryMetadataFileProprietor.read()) {
+				String[] arr = s.split("=");
+				if (arr[0].replace("$", "").equals(key)) metadataTempFile.proprietor.appendf("%s=%s", true, key, value);
+				else metadataTempFile.proprietor.append(s, true);
+			}
+
+			metadataTempFile.assumeParent();
 		}
 	}
 }
