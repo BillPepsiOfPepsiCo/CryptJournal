@@ -209,7 +209,7 @@ public class Controller {
 
 	private void openOptionsWindow() {
 		FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
-		optionsWindow.spawn(StageStyle.UNDECORATED, null);
+		optionsWindow.spawn(StageStyle.UNIFIED, null);
 	}
     //**********Section end, dog**********\\
 

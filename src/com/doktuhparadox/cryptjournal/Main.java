@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.awt.Toolkit;
 
@@ -21,7 +22,8 @@ public class Main extends Application implements IPlatformDifferentiator {
 	    Parent root = FXMLLoader.load(getClass().getResource("core/CryptJournal.fxml"));
         primaryStage.setTitle("CryptJournal");
         primaryStage.setScene(new Scene(root, 1000, 682));
-        primaryStage.setResizable(false);
+	    primaryStage.initStyle(StageStyle.UNIFIED);
+	    primaryStage.setResizable(false);
 	    root.getStylesheets().add(getClass().getResource("/resources/css/RootStyle.css").toExternalForm());
 	    if (OptionsManager.optionHandler.get("theme").equals("dark"))
 		    root.getStylesheets().add(getClass().getResource("/resources/css/DarkTheme.css").toExternalForm());

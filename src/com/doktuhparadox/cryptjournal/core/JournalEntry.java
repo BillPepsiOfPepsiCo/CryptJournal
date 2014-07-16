@@ -38,8 +38,6 @@ public class JournalEntry {
 		this.entryInfoFileProprietor = new FileProprietor(this.getInfoFile());
 
 		String timeFormat = optionHandler.get("time_format");
-		if (Boolean.getBoolean("twelve_hour_time")) timeFormat = timeFormat.replace("HH", "hh");
-		else timeFormat = timeFormat.replace("hh", "HH");
 
 		this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", optionHandler.get("date_format").replace("mm", "MM"), timeFormat)).format(new Date()));
 		this.writeProperty("ENCRYPTION", optionHandler.get("encryption_algorithm"));

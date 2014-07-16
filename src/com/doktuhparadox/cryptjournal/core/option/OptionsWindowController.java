@@ -38,8 +38,6 @@ public class OptionsWindowController {
 	@FXML
 	private TextField timeFormatTextField;
 	@FXML
-	private CheckBox twelveHourTimeCheckbox;
-	@FXML
 	private Button applyButton;
 
 	private boolean promptForRestartOnApply = false;
@@ -61,7 +59,6 @@ public class OptionsWindowController {
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
 		encryptionAlgorithmComboBox.getItems().addAll("AES", "Blowfish");
 		encryptionAlgorithmComboBox.getSelectionModel().select(optionHandler.get("encryption_algorithm"));
-		twelveHourTimeCheckbox.setSelected(Boolean.valueOf(optionHandler.get("twelve_hour_time")));
 
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			optionHandler.set("theme", newValue ? "dark" : "light");
@@ -73,7 +70,6 @@ public class OptionsWindowController {
 			promptForRestartOnApply = true;
 		});
 
-		twelveHourTimeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("twelve_hour_time", String.valueOf(twelveHourTimeCheckbox.isSelected())));
 		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
 		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
 		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));

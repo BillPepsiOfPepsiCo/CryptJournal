@@ -19,7 +19,6 @@ public class OptionsManager {
 	    optionHandler.add("date_format", "dd/mm/yyyy");
 	    optionHandler.add("time_format", "hh:mm:ss");
 	    optionHandler.add("encryption_algorithm", "AES");
-	    optionHandler.add("twelve_hour_time", "true");
 	    optionHandler.add("cache_passwords", "false");
 	    optionHandler.add("autosave_interval", "60");
     }

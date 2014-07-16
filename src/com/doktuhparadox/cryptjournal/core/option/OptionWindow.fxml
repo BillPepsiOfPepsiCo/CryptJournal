@@ -38,12 +38,6 @@
         </Label>
         <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="215.0" layoutY="128.0" prefHeight="26.0"
                    prefWidth="100.0"/>
-        <CheckBox fx:id="twelveHourTimeCheckbox" layoutX="33.0" layoutY="295.0" mnemonicParsing="false"
-                  text="12 Hour time">
-            <font>
-                <Font name="Helvetica" size="13.0"/>
-            </font>
-        </CheckBox>
         <Label layoutX="27.0" layoutY="163.0" text="Autosave interval">
             <font>
                 <Font name="Helvetica" size="16.0"/>
@@ -56,7 +50,7 @@
                 <Font name="Helvetica" size="12.0"/>
             </font>
         </Label>
-        <CheckBox fx:id="cachePasswordsCheckBox" layoutX="33.0" layoutY="267.0" mnemonicParsing="false"
+        <CheckBox fx:id="cachePasswordsCheckBox" layoutX="33.0" layoutY="295.0" mnemonicParsing="false"
                   prefHeight="18.0" prefWidth="133.0" text="Cache passwords">
             <font>
                 <Font name="Helvetica" size="13.0"/>
