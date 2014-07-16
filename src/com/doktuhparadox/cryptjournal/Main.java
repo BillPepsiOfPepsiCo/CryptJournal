@@ -46,7 +46,7 @@ public class Main extends Application implements IPlatformDifferentiator {
     public void ifWindows() {
 	    if (JournalEntry.infoDir.exists()) {
 		    try {
-			    Files.setAttribute(JournalEntry.infoDir.toPath(), "dos:hidden", true); //Hide the metadata folder on Windows
+			    Files.setAttribute(JournalEntry.infoDir.toPath(), "dos:hidden", true); //Hide the .metadata folder on Windows
 		    } catch (IOException e) {
 			    e.printStackTrace();
 		    }
