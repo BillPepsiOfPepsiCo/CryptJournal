@@ -4,18 +4,10 @@ import com.doktuhparadox.easel.io.FileProprietor;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Key;
-import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
 import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -44,46 +36,17 @@ public class JournalEntry {
 	}
 
 	public void write(String data, String password) {
-		String configuredEncryptionAlgorithm = optionHandler.get("encryption_algorithm");
-
-		byte[] encodedStringBytes = null;
-
-		try {
-			Key key = this.generateKey(password);
-			Cipher c = Cipher.getInstance(configuredEncryptionAlgorithm);
-			c.init(Cipher.ENCRYPT_MODE, key, new SecureRandom(password.getBytes()));
-			encodedStringBytes = c.doFinal(data.getBytes());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		this.entryFileProprietor.write(new BASE64Encoder().encode(encodedStringBytes), true);
+		this.entryFileProprietor.write(Cryptor.en(this.fetchProperty("ENCRYPTION"), data, password), true);
 	}
 
 	public String read(String password) {
-		String entryEncryptionAlgorithm = this.fetchProperty("ENCRYPTION");
-
 		StringBuilder builder = new StringBuilder();
 
 		for (String s : this.entryFileProprietor.read()) {
 			builder.append(s);
 		}
 
-		byte[] decodedStringBytes = null;
-
-		try {
-			Key key = this.generateKey(password);
-			Cipher c = Cipher.getInstance(entryEncryptionAlgorithm);
-			c.init(Cipher.DECRYPT_MODE, key, new SecureRandom(password.getBytes()));
-			byte[] decodedValue = new BASE64Decoder().decodeBuffer(builder.toString());
-			decodedStringBytes = c.doFinal(decodedValue);
-		} catch (BadPaddingException e) {
-			return "BAD_PASSWORD";
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return decodedStringBytes == null ? null : new String(decodedStringBytes);
+		return Cryptor.de(this.fetchProperty("ENCRYPTION"), builder.toString(), password);
 	}
 
 	public File getFile() {
@@ -107,10 +70,6 @@ public class JournalEntry {
 			System.out.println("Deleted journal entry " + this.name);
 		else
 			System.out.println("Could not delete entry " + this.name);
-	}
-
-	private Key generateKey(String password) {
-		return new SecretKeySpec(password.getBytes(), this.fetchProperty("ENCRYPTION"));
 	}
 
 	public String fetchProperty(String key) {
