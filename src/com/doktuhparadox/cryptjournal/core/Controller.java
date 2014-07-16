@@ -43,7 +43,7 @@ public class Controller {
     private HTMLEditor journalContentEditor;
 
 	@FXML
-	protected void initialize() {
+	void initialize() {
 	    journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
 		if (FileProprietor.pollDir(JournalEntry.journalDir))
 			System.out.println("Created journal entry directory at " + JournalEntry.infoDir.getAbsolutePath());
@@ -102,7 +102,7 @@ public class Controller {
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
         new KeySequence(journalContentEditor, () -> Clippy.playSound("/resources/sound/smoke_weed_erryday.wav"), "WEED", delimiters).attach();
-        new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).spawn(), "DOGE", delimiters).attach();
+	    new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", delimiters).attach();
     }
 
 	//**********Event methods**********\\
@@ -209,7 +209,8 @@ public class Controller {
 
 	private void openOptionsWindow() {
 		FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
-		optionsWindow.spawn(StageStyle.UNIFIED, null);
+		optionsWindow.stage.setAlwaysOnTop(true);
+		optionsWindow.show(StageStyle.UNIFIED, null);
 	}
     //**********Section end, dog**********\\
 
@@ -221,10 +222,10 @@ public class Controller {
 	    for (File file : JournalEntry.journalDir.listFiles()) {
 		    if (file.getName().endsWith(".journal")) {
 			    JournalEntry newEntry = new JournalEntry(file.getName().replace(".journal", ""));
-			    if (newEntry.getFile().exists() && newEntry.getInfoFile().exists()) {
+			    if (newEntry.getFile().exists() && newEntry.getMetadataFile().exists()) {
 				    entries.add(newEntry);
 			    } else {
-				    throw new RuntimeException(String.format("Metadata file for entry %s was not found", newEntry.getName()));
+				    System.out.printf("Metadata for entry %s was not found and it will not be indexed.\n", newEntry.getName());
 			    }
 		    }
 	    }
