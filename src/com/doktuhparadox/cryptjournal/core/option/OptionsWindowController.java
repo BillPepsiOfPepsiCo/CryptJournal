@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal.core.option;
 
+import com.doktuhparadox.cryptjournal.core.EncryptionAlgorithm;
 import com.doktuhparadox.easel.utils.RuntimeUtils;
 
 import org.controlsfx.dialog.Dialog;
@@ -12,6 +13,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
 
@@ -57,7 +61,7 @@ public class OptionsWindowController {
 		dateFormatTextField.setText(optionHandler.get("date_format"));
 		timeFormatTextField.setText(optionHandler.get("time_format"));
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
-		encryptionAlgorithmComboBox.getItems().addAll("AES", "Blowfish");
+		encryptionAlgorithmComboBox.getItems().addAll(Arrays.asList(EncryptionAlgorithm.values()).stream().map(Enum::toString).collect(Collectors.toList()));
 		encryptionAlgorithmComboBox.getSelectionModel().select(optionHandler.get("encryption_algorithm"));
 
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {

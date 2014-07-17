@@ -241,18 +241,18 @@ public class Controller {
     private String promptForPassword() {
         String password;
 
-        while ((password = this.createDialog("Enter password", "Input password for this entry\n(16 chars max)").showTextInput().toString().replace("Optional[", "").replace("]", ""))
-                .length() > 16 || password.length() < 16) {
+	    int keyLength = EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION")).keyLength;
+	    while ((password = this.createDialog("Enter password", String.format("Input password for this entry\n(%s chars max)", keyLength)).showTextInput().toString().replace("Optional[", "").replace("]", ""))
+			    .length() > keyLength || password.length() < keyLength) {
 
             if (password.equals("Optional.empty")) {
                 return null;
-            } else if (password.length() > 16) {
+            } else if (password.length() > keyLength) {
                 this.createDialog("Error", "Password is too long.").showError();
-            } else if (password.length() < 16) {
-                while (password.length() < 16) password += "=";
-                break;
             }
-        }
+
+		    while (password.length() < keyLength) password += "=";
+	    }
 
         return password;
     }
@@ -260,6 +260,15 @@ public class Controller {
     private Dialogs createDialog(String title, String message) {
 	    return Dialogs.create().masthead(null).title(title).message(message);
     }
+
+	private String defaultPassword() {
+		String s = "";
+
+		while (s.length() < EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION")).keyLength)
+			s += "=";
+
+		return s;
+	}
 
     private JournalEntry getSelectedEntry() {
         return journalEntryListView.getSelectionModel().getSelectedItem();
