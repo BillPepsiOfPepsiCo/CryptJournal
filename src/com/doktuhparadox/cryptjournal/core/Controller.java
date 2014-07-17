@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal.core;
 
+import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.io.FileProprietor;
@@ -135,6 +136,7 @@ public class Controller {
 	        NodeState.disable(journalEntryListView);
 	        journalEntryListView.getSelectionModel().select(newEntry);
 	        journalEntryNameLabel.setText(newEntry.getName());
+	        MethodProxy.setDockBadge("*");
         }
     }
 
@@ -158,7 +160,8 @@ public class Controller {
         NodeState.disable(createEntryButton);
         NodeState.disable(deleteEntryButton);
         journalEntryNameLabel.setText(this.getSelectedEntry().getName());
-    }
+		MethodProxy.setDockBadge("*");
+	}
 
 	public void saveEntry(boolean isAutosave) {
 		if (isAutosave) {
@@ -182,6 +185,8 @@ public class Controller {
 			journalEntryNameLabel.setText("");
 			journalContentEditor.setHtmlText("");
 		}
+
+		MethodProxy.setDockBadge(null);
 	}
 
 	public void deleteEntry() {
