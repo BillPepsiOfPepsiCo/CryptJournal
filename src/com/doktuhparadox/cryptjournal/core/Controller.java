@@ -249,9 +249,10 @@ public class Controller {
                 return null;
             } else if (password.length() > keyLength) {
                 this.createDialog("Error", "Password is too long.").showError();
+            } else if (password.length() < keyLength) {
+	            while (password.length() < keyLength) password += "=";
+	            break;
             }
-
-		    while (password.length() < keyLength) password += "=";
 	    }
 
         return password;
