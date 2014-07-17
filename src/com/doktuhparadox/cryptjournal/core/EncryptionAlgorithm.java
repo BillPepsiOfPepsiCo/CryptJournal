@@ -5,9 +5,10 @@ package com.doktuhparadox.cryptjournal.core;
  * Package: com.doktuhparadox.cryptjournal.core
  * Module of: CryptJournal
  * Author: Brennan Forrest (DoktuhParadox)
- * Date of creation: 7/16/14 at 7:55 PM.
+ * Date of creation: 7/16/14 at 7:5PM.
  */
 public enum EncryptionAlgorithm {
+
 
 	AES(16),
 	Blowfish(16),

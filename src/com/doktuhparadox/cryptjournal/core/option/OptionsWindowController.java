@@ -33,6 +33,8 @@ public class OptionsWindowController {
 	@FXML
 	private ComboBox<String> encryptionAlgorithmComboBox;
 	@FXML
+	private ComboBox<String> paddingComboBox;
+	@FXML
 	private CheckBox useDarkThemeCheckbox;
 	@FXML
 	private TextField autosaveIntervalTextField;
@@ -59,11 +61,29 @@ public class OptionsWindowController {
 		dateFormatTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
 		timeFormatTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
 		autosaveIntervalTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
+
 		dateFormatTextField.setText(optionHandler.get("date_format"));
 		timeFormatTextField.setText(optionHandler.get("time_format"));
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
+
+		String[] encryptionAlgorithmAndPadding = optionHandler.get("encryption_algorithm").split("/");
 		encryptionAlgorithmComboBox.getItems().addAll(Arrays.asList(EncryptionAlgorithm.values()).stream().map(Enum::toString).collect(Collectors.toList()));
-		encryptionAlgorithmComboBox.getSelectionModel().select(optionHandler.get("encryption_algorithm"));
+		paddingComboBox.getItems().addAll("None", "CBC NoPadding", "CBC PKCS5Padding", "ECB NoPadding", "CBC PKCS5Padding");
+		encryptionAlgorithmComboBox.getSelectionModel().select(encryptionAlgorithmAndPadding[0]);
+
+		if (encryptionAlgorithmAndPadding.length > 1)
+			paddingComboBox.getSelectionModel().select(encryptionAlgorithmAndPadding[1] + " " + encryptionAlgorithmAndPadding[2]);
+		else paddingComboBox.getSelectionModel().select("None");
+
+		encryptionAlgorithmComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue.equals("Blowfish")) {
+				paddingComboBox.setDisable(true);
+				paddingComboBox.getSelectionModel().select(-1);
+			} else {
+				paddingComboBox.setDisable(false);
+				paddingComboBox.getSelectionModel().select(0);
+			}
+		});
 
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			optionHandler.set("theme", newValue ? "dark" : "light");
@@ -75,10 +95,12 @@ public class OptionsWindowController {
 			promptForRestartOnApply = true;
 		});
 
+
 		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("cache_passwords", "true"));
 		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
 		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
-		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
+		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue() + paddingComboBox.getValue()));
+		paddingComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", String.format("%s/%s", encryptionAlgorithmComboBox.getValue(), paddingComboBox.getValue().replace("None", "").replace(" ", "/"))));
 	}
 
 	@FXML
