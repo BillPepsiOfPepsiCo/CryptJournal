@@ -29,11 +29,6 @@ public class JournalEntry {
 
 		this.entryFileProprietor = new FileProprietor(this.getFile());
 		this.entryMetadataFileProprietor = new FileProprietor(this.getMetadataFile());
-
-		String timeFormat = optionHandler.get("time_format");
-
-		this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", optionHandler.get("date_format").replace("mm", "MM"), timeFormat)).format(new Date()));
-		this.writeProperty("ENCRYPTION", optionHandler.get("encryption_algorithm"));
 	}
 
 	public void write(String data, String password) {
@@ -63,7 +58,15 @@ public class JournalEntry {
 	}
 
 	public boolean create() throws IOException {
-		return FileProprietor.poll(this.getFile());
+		boolean success = FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile());
+
+		if (success) {
+			String timeFormat = optionHandler.get("time_format");
+			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", optionHandler.get("date_format").replace("mm", "MM"), timeFormat)).format(new Date()));
+			this.writeProperty("ENCRYPTION", optionHandler.get("encryption_algorithm"));
+		}
+
+		return success;
 	}
 
 	public void delete() {
