@@ -63,7 +63,7 @@ public class JournalEntry {
 	}
 
 	public boolean create() throws IOException {
-		return FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile());
+		return FileProprietor.poll(this.getFile());
 	}
 
 	public void delete() {
