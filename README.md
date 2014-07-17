@@ -28,10 +28,10 @@ Not to worry, you can still view your dirty little secrets if you remember the p
 
 A new innovation in the software engineering community: options! You can currently configure:
 
-A) The encryption algorithm you wish to use (currently only AES and Blowfish; DES and others to come soon). You do not have to remember
-which you used when opening entries because the encryption algorithm used is written to the entry's metadata file (located in Journals/.metadata/).
+A) The encryption algorithm you wish to use (currently supports AES, Blowfish and DES; RSA and DESede to come soon; they require some internal changes). 
+You do not have to remember which you used when opening entries because the encryption algorithm used is written to the entry's metadata file (located in Journals/.metadata/).
 However, if you switch the encryption algorithm and re-save an entry, the algorithm in its metadata file will not be updated, so be sure you have the
-algorithm you wish to use with that particular entry selected when you create it, because there is no way to change it.
+algorithm you wish to use with that particular entry selected when you create it, because there is no way to change it. 3rd party encryption providers could be supported one day.
 
 B) The date and time display formats (and 12/24 hour time). 
 This is a small convenience feature for those in the glorious U.S.A. and for those in commieland and Australia (m8). 
@@ -39,7 +39,7 @@ Though the U.S. is best, the default date format is day/month/year for ease on m
 
 C) The interval at which CryptJournal autosaves your entries. Currently, this feature is not in the program due to an issue with closing the application that I'm having trouble resolving,
 so this option has no effect. Autosaving does occur when the program is terminated while an entry is currently open in the editor; it writes it to the journal entry file with the default password
-"================" (which doesn't matter to you because it skips password entry if it is the default).
+which is a string of equal signs corresponding to the current encryption algorithm's key length (which doesn't matter to you because it skips password entry if it is the default).
 
 D) Toggle password caching (defaults "off"). This option is currently only for show, but password caching will be implemented in the future (the new
 journal entry metadata system will be the basis for that).
