@@ -37,7 +37,7 @@ public class Cryptor {
 		byte[] decodedStringBytes = null;
 
 		try {
-			Key key = generateKey(password, algorithm);
+			Key key = generateKey(algorithm, password);
 			Cipher c = Cipher.getInstance(algorithm);
 			c.init(Cipher.DECRYPT_MODE, key, new SecureRandom(password.getBytes()));
 			byte[] decodedValue = new BASE64Decoder().decodeBuffer(data);
