@@ -144,7 +144,7 @@ public class Controller {
 		String decodedContent;
 
         //Tests to see if the password for this entry is empty (an empty password is sixteen equal signs) and skips the password prompt if so
-		if ((decodedContent = this.getSelectedEntry().read("================")).equals("BAD_PASSWORD")) {
+		if ((decodedContent = this.getSelectedEntry().read(this.defaultPassword())).equals("BAD_PASSWORD")) {
 			decodedContent = this.getSelectedEntry().read(this.promptForPassword());
 			if (decodedContent.equals("BAD_PASSWORD")) {
 				this.createDialog("Error", "Incorrect password.").showError();
@@ -165,7 +165,7 @@ public class Controller {
 
 	public void saveEntry(boolean isAutosave) {
 		if (isAutosave) {
-			this.getSelectedEntry().write(journalContentEditor.getHtmlText(), "================");
+			this.getSelectedEntry().write(journalContentEditor.getHtmlText(), this.defaultPassword());
 		} else {
 			String password = this.promptForPassword();
 			if (password == null) return;
