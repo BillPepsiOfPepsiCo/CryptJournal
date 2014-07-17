@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
+import resources.Index;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -48,10 +49,10 @@ public class OptionsWindowController {
 
 	@FXML
 	protected void initialize() {
-		root.getStylesheets().add("/resources/css/RootStyle.css");
+		root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
 
 		if (optionHandler.get("theme").equals("dark")) {
-			root.getStylesheets().add("/resources/css/DarkTheme.css");
+			root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 			useDarkThemeCheckbox.setSelected(true);
 		}
 

@@ -16,6 +16,8 @@ import java.awt.Toolkit;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import resources.Index;
+
 public class Main extends Application implements IPlatformDifferentiator {
 
     @Override
@@ -27,10 +29,10 @@ public class Main extends Application implements IPlatformDifferentiator {
         primaryStage.setScene(new Scene(root, 1000, 682));
 	    primaryStage.initStyle(StageStyle.UNIFIED);
 	    primaryStage.setResizable(false);
-	    root.getStylesheets().add(getClass().getResource("/resources/css/RootStyle.css").toExternalForm());
+	    root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
 	    if (OptionsManager.optionHandler.get("theme").equals("dark"))
-		    root.getStylesheets().add(getClass().getResource("/resources/css/DarkTheme.css").toExternalForm());
-        primaryStage.show();
+		    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
+	    primaryStage.show();
     }
 
     public static void main(String[] args) {
