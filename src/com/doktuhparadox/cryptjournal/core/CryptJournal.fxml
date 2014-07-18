@@ -30,9 +30,9 @@
         <Button fx:id="deleteEntryButton" layoutX="171.0" layoutY="645.0" mnemonicParsing="false" text="Delete"/>
         <Label layoutX="96.0" layoutY="650.0" prefHeight="16.0" prefWidth="68.0">
         </Label>
-        <Button fx:id="saveButton" disable="true" layoutX="256.33837890625" layoutY="645.0" mnemonicParsing="false"
-                text="Save"/>
+        <Button fx:id="saveButton" disable="true" layoutX="339.0" layoutY="645.0" mnemonicParsing="false" text="Save"/>
         <Button fx:id="openButton" layoutX="105.0" layoutY="645.0" mnemonicParsing="false" text="Open"/>
         <Button fx:id="optionsButton" layoutX="909.0" layoutY="645.0" mnemonicParsing="false" text="Options"/>
+        <Button fx:id="renameButton" layoutX="256.0" layoutY="645.0" mnemonicParsing="false" text="Rename"/>
     </children>
 </AnchorPane>

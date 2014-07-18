@@ -21,12 +21,13 @@ import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Controller {
 
-    @FXML
-    private Button createEntryButton;
+	@FXML
+	private Button createEntryButton;
     @FXML
     private Button deleteEntryButton;
     @FXML
@@ -35,7 +36,9 @@ public class Controller {
     private Button optionsButton;
     @FXML
     private Button saveButton;
-    @FXML
+	@FXML
+	private Button renameButton;
+	@FXML
     private Label journalEntryNameLabel;
     @FXML
     private ListView<JournalEntry> journalEntryListView;
@@ -73,9 +76,11 @@ public class Controller {
             if (journalEntryListView.getItems().size() == 0) {
                 NodeState.disable(openButton);
                 NodeState.disable(deleteEntryButton);
+	            NodeState.disable(renameButton);
             } else {
                 NodeState.enable(openButton);
                 NodeState.enable(deleteEntryButton);
+	            NodeState.enable(renameButton);
             }
         });
 
@@ -94,6 +99,7 @@ public class Controller {
 	    deleteEntryButton.setOnAction(event -> this.deleteEntry());
 	    openButton.setOnAction(event -> this.openEntry());
 	    optionsButton.setOnAction(event -> this.openOptionsWindow());
+	    renameButton.setOnAction(event -> this.renameEntry());
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
@@ -106,7 +112,8 @@ public class Controller {
         Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
         if (!input.equals(Optional.empty())) {
-            JournalEntry newEntry = new JournalEntry(input.toString().replace("Optional[", "").replace("]", ""));
+	        JournalEntry newEntry = new JournalEntry(String.valueOf(input.get()));
+
 	        try {
 		        if (newEntry.create()) {
 			        System.out.println("Created new journal entry " + newEntry.getName());
@@ -130,6 +137,7 @@ public class Controller {
 	        NodeState.disable(createEntryButton);
 	        NodeState.disable(openButton);
 	        NodeState.disable(journalEntryListView);
+	        NodeState.disable(renameButton);
 	        journalEntryListView.getSelectionModel().select(newEntry);
 	        journalEntryNameLabel.setText(newEntry.getName());
 	        MethodProxy.setDockBadge("*");
@@ -155,7 +163,8 @@ public class Controller {
         NodeState.disable(openButton);
         NodeState.disable(createEntryButton);
         NodeState.disable(deleteEntryButton);
-        journalEntryNameLabel.setText(this.getSelectedEntry().getName());
+		NodeState.disable(renameButton);
+		journalEntryNameLabel.setText(this.getSelectedEntry().getName());
 		MethodProxy.setDockBadge("*");
 	}
 
@@ -175,6 +184,7 @@ public class Controller {
 
 			NodeState.enable(createEntryButton);
 			NodeState.enable(journalEntryListView);
+			NodeState.enable(renameButton);
 			NodeState.disable(journalContentEditor);
 			NodeState.disable(saveButton);
 			journalEntryListView.requestFocus();
@@ -183,6 +193,14 @@ public class Controller {
 		}
 
 		MethodProxy.setDockBadge(null);
+	}
+
+	public void renameEntry() {
+		Optional<String> newName = Dialogs.create().masthead(null).message("Enter new entry name").showTextInput();
+		try {
+			this.getSelectedEntry().rename(newName.get());
+		} catch (NoSuchElementException ignored) {
+		}
 	}
 
 	public void deleteEntry() {
@@ -194,6 +212,7 @@ public class Controller {
             if (journalEntryListView.getItems().size() == 0) {
                 NodeState.disable(openButton);
                 NodeState.disable(deleteEntryButton);
+	            NodeState.disable(renameButton);
             }
 
             journalEntryNameLabel.setText("");
@@ -235,20 +254,21 @@ public class Controller {
     }
 
     private String promptForPassword() {
-        String password;
+	    String password = null;
 
 	    int keyLength = EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION").split("/")[0]).keyLength;
-	    while ((password = this.createDialog("Enter password", String.format("Input password for this entry\n(%s chars max)", keyLength)).showTextInput().toString().replace("Optional[", "").replace("]", ""))
-			    .length() > keyLength || password.length() < keyLength) {
+	    try {
+		    while ((password = this.createDialog("Enter password", String.format("Input password for this entry\n(%s chars max)", keyLength)).showTextInput().get())
+				    .length() > keyLength || password.length() < keyLength) {
 
-            if (password.equals("Optional.empty")) {
-                return null;
-            } else if (password.length() > keyLength) {
-                this.createDialog("Error", "Password is too long.").showError();
-            } else if (password.length() < keyLength) {
-	            while (password.length() < keyLength) password += "=";
-	            break;
-            }
+			    if (password.length() > keyLength) {
+				    this.createDialog("Error", "Password is too long.").showError();
+			    } else if (password.length() < keyLength) {
+				    while (password.length() < keyLength) password += "=";
+				    break;
+			    }
+		    }
+	    } catch (NoSuchElementException ignored) {
 	    }
 
         return password;

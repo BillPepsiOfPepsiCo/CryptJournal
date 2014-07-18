@@ -3,8 +3,11 @@ package com.doktuhparadox.cryptjournal.core;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.io.TempFile;
 
+import org.controlsfx.dialog.Dialogs;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,7 +24,7 @@ public class JournalEntry {
 	private static final String journalDirName = "Journals/", infoDirName = ".metadata/";
 	public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
 
-	private final String name;
+	private String name;
 	private final FileProprietor entryFileProprietor, entryMetadataFileProprietor;
 
 	public JournalEntry(String name) {
@@ -67,6 +70,27 @@ public class JournalEntry {
 		}
 
 		return success;
+	}
+
+	public void rename(String newName) {
+		File newEntryFile = new File(journalDirName + newName + ".journal"),
+				newMetadataFile = new File(journalDirName + infoDirName + newName + ".journalmetadata");
+
+		if (!newEntryFile.exists() && !newMetadataFile.exists()) {
+			try {
+				Files.move(this.getFile().toPath(), newEntryFile.toPath());
+				Files.move(this.getMetadataFile().toPath(), newMetadataFile.toPath());
+
+				if (this.getFile().delete() && this.getMetadataFile().delete()) {
+					this.name = newName;
+					System.out.println("Renamed entry to " + newName);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Dialogs.create().masthead(null).title("Could not rename entry").message("An entry or metadata file with that name already exists.");
+		}
 	}
 
 	public void delete() {
