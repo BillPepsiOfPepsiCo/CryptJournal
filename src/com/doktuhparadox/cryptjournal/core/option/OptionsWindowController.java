@@ -6,6 +6,7 @@ import com.doktuhparadox.easel.utils.RuntimeUtils;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -95,12 +96,20 @@ public class OptionsWindowController {
 			promptForRestartOnApply = true;
 		});
 
+		ChangeListener<String> changeListener = (observable, oldValue, newValue) -> {
+			String s = paddingComboBox.getValue();
+			if (s == null || s.equals("None")) {
+				optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue());
+			} else {
+				optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue() + "/" + s);
+			}
+		};
 
 		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("cache_passwords", "true"));
 		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
 		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
-		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue() + paddingComboBox.getValue()));
-		paddingComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", String.format("%s/%s", encryptionAlgorithmComboBox.getValue(), paddingComboBox.getValue().replace("None", "").replace(" ", "/"))));
+		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener(changeListener);
+		paddingComboBox.getSelectionModel().selectedItemProperty().addListener(changeListener);
 	}
 
 	@FXML
