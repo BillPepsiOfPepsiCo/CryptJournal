@@ -124,7 +124,8 @@ public class Controller {
 			        return;
 		        }
 	        } catch (IOException e) {
-		        Dialogs.create().masthead(null).title("Exception").message("Exception caught when trying to create new journal entry").showException(e);
+		        this.createDialog("Exception Raised", "Exception caught when trying to create new journal entry (read the first line and you may understand the issue):").showException(e);
+		        return;
 	        }
 
 	        this.refreshListView();

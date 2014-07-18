@@ -18,6 +18,7 @@ import sun.misc.BASE64Encoder;
  * Date of creation: 7/15/14 at 10:09 PM.
  */
 public class Cryptor {
+	//TODO Implement proper handling for padding
 	public static String en(String algorithm, String data, String password) {
 		byte[] encodedStringBytes = null;
 
