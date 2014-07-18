@@ -1,5 +1,7 @@
 package com.doktuhparadox.cryptjournal.core;
 
+import com.doktuhparadox.easel.utils.Stringly;
+
 import javafx.scene.control.ListCell;
 
 /**
@@ -17,13 +19,16 @@ public class JournalEntryListCellFactory extends ListCell<JournalEntry> {
 	        String[] creationTime = item.fetchProperty("CREATION").split("\\|");
 	        StringBuilder builder = new StringBuilder();
 
-	        for (String s : item.getName().split("(?<=\\G......................)")) {
-		        if (s.length() == 22) builder.append(s).append("-\n");
-		        else builder.append(s);
-	        }
+	        String regex = "(?<=\\G..............................)";
 
-	        if (builder.toString().endsWith("-"))
-		        builder.replace(builder.lastIndexOf("-"), builder.lastIndexOf("-") + 1, "");
+	        for (String s : item.getName().split(regex)) {
+		        builder.append(s);
+
+		        if (s.length() == Stringly.countMatches(regex, '.')) {
+			        if (!Character.isSpaceChar(s.charAt(s.length() - 1))) builder.append("-\n");
+			        else builder.append("\n");
+		        }
+	        }
 
 	        this.setText(String.format("%s\n%s at %s", builder.toString(), creationTime[0], creationTime[1]));
         } else {
