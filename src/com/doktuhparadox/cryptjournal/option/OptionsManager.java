@@ -1,4 +1,4 @@
-package com.doktuhparadox.cryptjournal.core.option;
+package com.doktuhparadox.cryptjournal.option;
 
 import com.doktuhparadox.easel.options.SimpleOptionsHandler;
 

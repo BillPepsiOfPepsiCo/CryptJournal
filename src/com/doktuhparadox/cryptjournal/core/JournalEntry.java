@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
+import static com.doktuhparadox.cryptjournal.option.OptionsManager.optionHandler;
 
 /**
  * Created and written with IntelliJ IDEA.

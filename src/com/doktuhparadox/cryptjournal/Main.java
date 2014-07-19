@@ -1,7 +1,8 @@
 package com.doktuhparadox.cryptjournal;
 
 import com.doktuhparadox.cryptjournal.core.JournalEntry;
-import com.doktuhparadox.cryptjournal.core.option.OptionsManager;
+import com.doktuhparadox.cryptjournal.core.MacAppModule;
+import com.doktuhparadox.cryptjournal.option.OptionsManager;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.platform.IPlatformDifferentiator;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
@@ -20,6 +21,8 @@ import java.nio.file.Files;
 import resources.Index;
 
 public class Main extends Application implements IPlatformDifferentiator {
+
+	public static String version = "0.7_1";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -47,7 +50,12 @@ public class Main extends Application implements IPlatformDifferentiator {
 
     @Override
     public void ifMac() {
-        com.apple.eawt.Application.getApplication().setDockIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/img/Icon.png")));
+	    com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
+	    app.setDockIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/img/Icon.png")));
+	    app.setAboutHandler(new MacAppModule());
+	    System.setProperty("apple.awt.graphics.EnableQ2DX", "true");
+	    System.setProperty("apple.laf.useScreenMenuBar", "true");
+	    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "CryptJournal");
     }
 
     @Override

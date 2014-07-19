@@ -1,4 +1,4 @@
-package com.doktuhparadox.cryptjournal.core.option;
+package com.doktuhparadox.cryptjournal.option;
 
 import com.doktuhparadox.cryptjournal.core.EncryptionAlgorithm;
 import com.doktuhparadox.easel.utils.RuntimeUtils;
@@ -18,7 +18,7 @@ import javafx.scene.text.Font;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.doktuhparadox.cryptjournal.core.option.OptionsManager.optionHandler;
+import static com.doktuhparadox.cryptjournal.option.OptionsManager.optionHandler;
 import resources.Index;
 
 /**
