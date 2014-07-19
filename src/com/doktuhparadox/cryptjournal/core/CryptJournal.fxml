@@ -34,5 +34,6 @@
         <Button fx:id="openButton" layoutX="105.0" layoutY="645.0" mnemonicParsing="false" text="Open"/>
         <Button fx:id="optionsButton" layoutX="909.0" layoutY="645.0" mnemonicParsing="false" text="Options"/>
         <Button fx:id="renameButton" layoutX="256.0" layoutY="645.0" mnemonicParsing="false" text="Rename"/>
+        <Button fx:id="aboutButton" layoutX="842.0" layoutY="645.0" mnemonicParsing="false" text="About"/>
     </children>
 </AnchorPane>

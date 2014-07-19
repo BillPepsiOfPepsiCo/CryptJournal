@@ -27,6 +27,8 @@ import java.util.Optional;
 public class Controller {
 
 	@FXML
+	private Button aboutButton;
+	@FXML
 	private Button createEntryButton;
     @FXML
     private Button deleteEntryButton;
@@ -100,6 +102,7 @@ public class Controller {
 	    openButton.setOnAction(event -> this.openEntry());
 	    optionsButton.setOnAction(event -> this.openOptionsWindow());
 	    renameButton.setOnAction(event -> this.renameEntry());
+	    aboutButton.setOnAction(event -> new FXMLWindow(getClass().getResource("../etc/AboutMenu.fxml"), "About", 336, 312, false).show(StageStyle.UNIFIED, null));
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
@@ -257,6 +260,7 @@ public class Controller {
 	    String password = null;
 
 	    int keyLength = EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION").split("/")[0]).keyLength;
+
 	    try {
 		    while ((password = this.createDialog("Enter password", String.format("Input password for this entry\n(%s chars max)", keyLength)).showTextInput().get())
 				    .length() > keyLength || password.length() < keyLength) {
