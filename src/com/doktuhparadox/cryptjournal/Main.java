@@ -3,7 +3,6 @@ package com.doktuhparadox.cryptjournal;
 import com.doktuhparadox.cryptjournal.core.JournalEntry;
 import com.doktuhparadox.cryptjournal.core.MacAppModule;
 import com.doktuhparadox.cryptjournal.option.OptionsManager;
-import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.platform.IPlatformDifferentiator;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 
@@ -37,11 +36,6 @@ public class Main extends Application implements IPlatformDifferentiator {
 	    if (OptionsManager.optionHandler.get("theme").equals("dark"))
 		    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 	    primaryStage.show();
-
-	    if (FileProprietor.pollDir(JournalEntry.journalDir))
-		    System.out.println("Created journal entry directory at " + JournalEntry.infoDir.getAbsolutePath());
-	    if (FileProprietor.pollDir(JournalEntry.infoDir))
-		    System.out.println("Created journal entry metadata directory at " + JournalEntry.infoDir.getAbsolutePath());
     }
 
     public static void main(String[] args) {

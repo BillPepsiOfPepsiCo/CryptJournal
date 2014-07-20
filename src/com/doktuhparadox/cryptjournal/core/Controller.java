@@ -3,6 +3,7 @@ package com.doktuhparadox.cryptjournal.core;
 import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
+import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 
@@ -49,6 +50,11 @@ public class Controller {
 
 	@FXML
 	void initialize() {
+        if (FileProprietor.pollDir(JournalEntry.journalDir))
+            System.out.println("Created journal entry directory at " + JournalEntry.infoDir.getAbsolutePath());
+        if (FileProprietor.pollDir(JournalEntry.infoDir))
+            System.out.println("Created journal entry metadata directory at " + JournalEntry.infoDir.getAbsolutePath());
+
 	    journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
 		this.attachListeners();
         this.refreshListView();
