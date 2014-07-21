@@ -10,8 +10,6 @@ import com.doktuhparadox.easel.utils.FXMLWindow;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,8 +18,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.StageStyle;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -237,29 +237,21 @@ public class Controller {
     }
 
 	private void openOptionsWindow() {
-		FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("option/OptionWindow.fxml"), "Options", 346, 372, false);
-		optionsWindow.stage.setAlwaysOnTop(true);
+        FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("../option/OptionWindow.fxml"), "Options", 346, 372, false);
+        optionsWindow.stage.setAlwaysOnTop(true);
 		optionsWindow.show(StageStyle.UNIFIED, null);
 	}
     //**********Section end, dog**********\\
 
 
     private void refreshListView() {
-        ObservableList<JournalEntry> entries = FXCollections.observableArrayList();
+        journalEntryListView.getItems().clear();
 
-        //noinspection ConstantConditions
-	    for (File file : JournalEntry.journalDir.listFiles()) {
-		    if (file.getName().endsWith(".journal")) {
-			    JournalEntry newEntry = new JournalEntry(file.getName().replace(".journal", ""));
-			    if (newEntry.getFile().exists() && newEntry.getMetadataFile().exists()) {
-				    entries.add(newEntry);
-			    } else {
-				    System.out.printf("Metadata for entry %s was not found and it will not be indexed.\n", newEntry.getName());
-			    }
-		    }
-	    }
-
-        journalEntryListView.setItems(entries);
+        if (JournalEntry.journalDir.exists()) //noinspection ConstantConditions
+            Arrays.asList(JournalEntry.journalDir.listFiles()).stream()
+                    .filter(f -> f.getName().endsWith(".journal") && Files.exists(Paths.get("Journals/.metadata/" + f.getName() + "metadata")))
+                    .map(f -> new JournalEntry(f.getName()))
+                    .forEach(e -> journalEntryListView.getItems().add((JournalEntry) e));
     }
 
     private String promptForPassword() {
