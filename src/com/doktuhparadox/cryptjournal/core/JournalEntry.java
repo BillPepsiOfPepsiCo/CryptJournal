@@ -2,6 +2,7 @@ package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.io.TempFile;
+import com.doktuhparadox.easel.utils.StringUtils;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -39,13 +40,7 @@ public class JournalEntry {
 	}
 
 	public String read(String password) {
-		StringBuilder builder = new StringBuilder();
-
-		for (String s : this.entryFileProprietor.read()) {
-			builder.append(s);
-		}
-
-		return Cryptor.de(this.fetchProperty("ENCRYPTION"), builder.toString(), password);
+		return Cryptor.de(this.fetchProperty("ENCRYPTION"), StringUtils.collect(this.entryFileProprietor.read()), password);
 	}
 
 	public File getFile() {
