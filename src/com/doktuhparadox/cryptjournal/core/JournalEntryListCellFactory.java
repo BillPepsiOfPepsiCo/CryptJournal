@@ -10,7 +10,7 @@ import javafx.scene.control.ListCell;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 12:57 PM.
  */
-public class JournalEntryListCellFactory extends ListCell<JournalEntry> {
+class JournalEntryListCellFactory extends ListCell<JournalEntry> {
     @Override
     public void updateItem(JournalEntry item, boolean empty) {
         super.updateItem(item, empty);

@@ -138,7 +138,7 @@ public class Controller {
     }
 
 	//**********Event methods**********\\
-	public void createNewEntry() {
+    void createNewEntry() {
         Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
         if (!input.equals(Optional.empty())) {
@@ -174,8 +174,8 @@ public class Controller {
         }
     }
 
-	public void openEntry() {
-		String decodedContent;
+    void openEntry() {
+        String decodedContent;
 
         //Tests to see if the password for this entry is empty (an empty password is sixteen equal signs) and skips the password prompt if so
 		if ((decodedContent = this.getSelectedEntry().read(this.defaultPassword())).equals("BAD_PASSWORD")) {
@@ -198,10 +198,10 @@ public class Controller {
 		MethodProxy.setDockBadge("*");
 	}
 
-	public void saveEntry(boolean isAutosave) {
-		if (isAutosave) {
-			this.getSelectedEntry().write(journalContentEditor.getHtmlText(), this.defaultPassword());
-		} else {
+    void saveEntry(boolean isAutosave) {
+        if (isAutosave) {
+            this.getSelectedEntry().write(journalContentEditor.getHtmlText(), this.defaultPassword());
+        } else {
 			String password = this.promptForPassword();
 			if (password == null) return;
 
@@ -225,16 +225,16 @@ public class Controller {
 		MethodProxy.setDockBadge(null);
 	}
 
-	public void renameEntry() {
-		Optional<String> newName = Dialogs.create().masthead(null).message("Enter new entry name").showTextInput();
-		try {
-			this.getSelectedEntry().rename(newName.get());
+    void renameEntry() {
+        Optional<String> newName = Dialogs.create().masthead(null).message("Enter new entry name").showTextInput();
+        try {
+            this.getSelectedEntry().rename(newName.get());
 		} catch (NoSuchElementException ignored) {
 		}
 	}
 
-	public void deleteEntry() {
-		if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
+    void deleteEntry() {
+        if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().delete();
             this.refreshListView();
             journalEntryListView.getSelectionModel().select(-1);

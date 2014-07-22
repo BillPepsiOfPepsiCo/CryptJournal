@@ -21,7 +21,11 @@ import resources.Index;
 
 public class Main extends Application implements IPlatformDifferentiator {
 
-    public static String version = "1.0";
+    public static final String version = "1.0";
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,10 +40,6 @@ public class Main extends Application implements IPlatformDifferentiator {
 	    if (OptionsManager.optionHandler.get("theme").equals("dark"))
 		    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 	    primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     @Override

@@ -24,9 +24,8 @@ public class JournalEntry {
 
 	private static final String journalDirName = "Journals/", infoDirName = ".metadata/";
 	public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
-
-	private String name;
 	private final FileProprietor entryFileProprietor, entryMetadataFileProprietor;
+    private String name;
 
 	public JournalEntry(String name) {
 		this.name = name.endsWith(".journal") ? StringUtils.strip(name, ".journal") : name;
@@ -47,9 +46,9 @@ public class JournalEntry {
 		return new File(String.format("%s%s.journal", journalDirName, this.name));
 	}
 
-	public File getMetadataFile() {
-		return new File(String.format("%s%s%s.journalmetadata", journalDirName, infoDirName, this.name));
-	}
+    File getMetadataFile() {
+        return new File(String.format("%s%s%s.journalmetadata", journalDirName, infoDirName, this.name));
+    }
 
 	public String getName() {
 		return this.name;
@@ -106,10 +105,10 @@ public class JournalEntry {
 		return null;
 	}
 
-	public void writeProperty(String key, String value) {
-		if (this.fetchProperty(key) == null) {
-			this.entryMetadataFileProprietor.appendf("$%s=%s", true, key, value);
-		}
+    void writeProperty(String key, String value) {
+        if (this.fetchProperty(key) == null) {
+            this.entryMetadataFileProprietor.appendf("$%s=%s", true, key, value);
+        }
 	}
 
 	public void setProperty(String key, String value) {
