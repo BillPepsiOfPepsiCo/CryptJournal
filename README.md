@@ -74,7 +74,7 @@ Screenshots
 Downloads
 ============
 
-Download the current stable build [here](http://google.com/). (not yet!)
+Download the current stable build [here](https://github.com/DoktuhParadox/CryptJournal/releases/). 
 
 Dependencies
 ============
