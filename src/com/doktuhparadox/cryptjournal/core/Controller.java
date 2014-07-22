@@ -11,11 +11,15 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
@@ -108,7 +112,24 @@ public class Controller {
 	    openButton.setOnAction(event -> this.openEntry());
 	    optionsButton.setOnAction(event -> this.openOptionsWindow());
 	    renameButton.setOnAction(event -> this.renameEntry());
-	    aboutButton.setOnAction(event -> new FXMLWindow(getClass().getResource("../etc/AboutMenu.fxml"), "About", 336, 312, false).show(StageStyle.UNIFIED, null));
+        aboutButton.setOnAction(event -> {
+            Parent root = null;
+            Stage stage = new Stage();
+
+            try {
+                root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/etc/AboutMenu.fxml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Scene scene = new Scene(root, 336, 312);
+
+            stage.initStyle(StageStyle.UNIFIED);
+            stage.setTitle("About CryptJournal");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        });
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
@@ -237,10 +258,23 @@ public class Controller {
     }
 
 	private void openOptionsWindow() {
-        FXMLWindow optionsWindow = new FXMLWindow(getClass().getResource("../option/OptionWindow.fxml"), "Options", 346, 372, false);
-        optionsWindow.stage.setAlwaysOnTop(true);
-		optionsWindow.show(StageStyle.UNIFIED, null);
-	}
+        Parent root = null;
+        Stage stage = new Stage();
+
+        try {
+            root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Scene scene = new Scene(root, 346, 372);
+
+        stage.initStyle(StageStyle.UNIFIED);
+        stage.setTitle("Options");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
     //**********Section end, dog**********\\
 
 

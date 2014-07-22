@@ -21,7 +21,7 @@ import resources.Index;
 
 public class Main extends Application implements IPlatformDifferentiator {
 
-	public static String version = "0.7_1";
+    public static String version = "1.0";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
