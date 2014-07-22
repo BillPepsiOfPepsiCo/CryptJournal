@@ -29,7 +29,7 @@ public class JournalEntry {
 	private final FileProprietor entryFileProprietor, entryMetadataFileProprietor;
 
 	public JournalEntry(String name) {
-		this.name = name.endsWith(".journal") ? name.replace(".journal", "") : name;
+		this.name = name.endsWith(".journal") ? StringUtils.strip(name, ".journal") : name;
 
 		this.entryFileProprietor = new FileProprietor(this.getFile());
 		this.entryMetadataFileProprietor = new FileProprietor(this.getMetadataFile());
@@ -99,7 +99,7 @@ public class JournalEntry {
 		for (String s : this.entryMetadataFileProprietor.read()) {
 			if (!s.startsWith("#") && s.startsWith("$")) {
 				String[] pair = s.split("=");
-				if (key.equals(pair[0].replace("$", ""))) return pair[1];
+				if (key.equals(StringUtils.strip(pair[0], "$"))) return pair[1];
 			}
 		}
 
@@ -118,7 +118,8 @@ public class JournalEntry {
 
 			for (String s : this.entryMetadataFileProprietor.read()) {
 				String[] arr = s.split("=");
-				if (arr[0].replace("$", "").equals(key)) metadataTempFile.proprietor.appendf("%s=%s", true, key, value);
+				if (StringUtils.strip(arr[0], "$").equals(key))
+					metadataTempFile.proprietor.appendf("%s=%s", true, key, value);
 				else metadataTempFile.proprietor.append(s, true);
 			}
 
