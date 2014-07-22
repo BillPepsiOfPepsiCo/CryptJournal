@@ -101,8 +101,8 @@ public class OptionsWindowController {
 			if (s == null || s.equals("None")) {
 				optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue());
 			} else {
-				optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue() + "/" + s);
-			}
+                optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue() + "/" + s.replace(" ", "/"));
+            }
 		};
 
 		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("cache_passwords", "true"));
