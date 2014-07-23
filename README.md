@@ -32,6 +32,7 @@ A) The encryption algorithm you wish to use (currently supports AES, Blowfish an
 You do not have to remember which you used when opening entries because the encryption algorithm used is written to the entry's metadata file (located in Journals/.metadata/).
 However, if you switch the encryption algorithm and re-save an entry, the algorithm in its metadata file will not be updated, so be sure you have the
 algorithm you wish to use with that particular entry selected when you create it, because there is no way to change it. 3rd party encryption providers (like Bouncy Castle) will be supported one day.
+Encryption algorithm padding selection will not be an option in the future. Sorry. :^|
 
 B) The date and time display formats (and 12/24 hour time). 
 This is a small convenience feature for those in the glorious U.S.A. and for those in commieland and Australia (m8). 
