@@ -6,7 +6,6 @@ import com.doktuhparadox.easel.utils.RuntimeUtils;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -33,8 +32,6 @@ public class OptionsWindowController {
 	private AnchorPane root;
 	@FXML
 	private ComboBox<String> encryptionAlgorithmComboBox;
-	@FXML
-	private ComboBox<String> paddingComboBox;
 	@FXML
 	private CheckBox useDarkThemeCheckbox;
 	@FXML
@@ -67,24 +64,9 @@ public class OptionsWindowController {
 		timeFormatTextField.setText(optionHandler.get("time_format"));
 		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
 
-		String[] encryptionAlgorithmAndPadding = optionHandler.get("encryption_algorithm").split("/");
 		encryptionAlgorithmComboBox.getItems().addAll(Arrays.asList(EncryptionAlgorithm.values()).stream().map(Enum::toString).collect(Collectors.toList()));
-		paddingComboBox.getItems().addAll("None", "CBC NoPadding", "CBC PKCS5Padding", "ECB NoPadding", "CBC PKCS5Padding");
-		encryptionAlgorithmComboBox.getSelectionModel().select(encryptionAlgorithmAndPadding[0]);
+		encryptionAlgorithmComboBox.getSelectionModel().select(optionHandler.get("encryption_algorithm"));
 
-		if (encryptionAlgorithmAndPadding.length > 1)
-			paddingComboBox.getSelectionModel().select(encryptionAlgorithmAndPadding[1] + " " + encryptionAlgorithmAndPadding[2]);
-		else paddingComboBox.getSelectionModel().select("None");
-
-		encryptionAlgorithmComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue.equals("Blowfish")) {
-				paddingComboBox.setDisable(true);
-				paddingComboBox.getSelectionModel().select(-1);
-			} else {
-				paddingComboBox.setDisable(false);
-				paddingComboBox.getSelectionModel().select(0);
-			}
-		});
 
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			optionHandler.set("theme", newValue ? "dark" : "light");
@@ -96,20 +78,10 @@ public class OptionsWindowController {
 			promptForRestartOnApply = true;
 		});
 
-		ChangeListener<String> changeListener = (observable, oldValue, newValue) -> {
-			String s = paddingComboBox.getValue();
-			if (s == null || s.equals("None")) {
-				optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue());
-			} else {
-                optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue() + "/" + s.replace(" ", "/"));
-            }
-		};
-
 		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("cache_passwords", "true"));
 		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
 		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
-		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener(changeListener);
-		paddingComboBox.getSelectionModel().selectedItemProperty().addListener(changeListener);
+		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
 	}
 
 	@FXML

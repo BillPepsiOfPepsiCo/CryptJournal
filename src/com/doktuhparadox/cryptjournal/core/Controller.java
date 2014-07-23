@@ -291,7 +291,7 @@ public class Controller {
     private String promptForPassword() {
 	    String password = null;
 
-	    int keyLength = EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION").split("/")[0]).keyLength;
+	    int keyLength = EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION")).keyLength;
 
 	    try {
 		    while ((password = this.createDialog("Enter password", String.format("Input password for this entry\n(%s chars max)", keyLength)).showTextInput().get())
@@ -317,7 +317,7 @@ public class Controller {
 	private String defaultPassword() {
 		String s = "";
 
-		while (s.length() < EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION").split("/")[0]).keyLength)
+		while (s.length() < EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION")).keyLength)
 			s += "=";
 
 		return s;
