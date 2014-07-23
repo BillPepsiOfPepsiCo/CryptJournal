@@ -80,4 +80,5 @@ Download the current stable build [here](https://github.com/DoktuhParadox/CryptJ
 Dependencies
 ============
 
-This app depends on [ControlsFX](http://fxexperience.com/controlsfx/) and my own commons library, [Easel](https://github.com/DoktuhParadox/Easel). Neither of these have to be downloaded for the binary to work.
+This app depends on [ControlsFX](http://fxexperience.com/controlsfx/), [Apache commons codec](https://commons.apache.org/proper/commons-codec/),
+and my own commons library, [Easel](https://github.com/DoktuhParadox/Easel). None of these have to be downloaded for the binary to work.
