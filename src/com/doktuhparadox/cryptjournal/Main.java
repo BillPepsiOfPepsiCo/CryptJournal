@@ -2,7 +2,7 @@ package com.doktuhparadox.cryptjournal;
 
 import com.doktuhparadox.cryptjournal.core.JournalEntry;
 import com.doktuhparadox.cryptjournal.core.MacAppModule;
-import com.doktuhparadox.cryptjournal.option.OptionsManager;
+import com.doktuhparadox.cryptjournal.option.OptionManager;
 import com.doktuhparadox.easel.platform.IPlatformDifferentiator;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 
@@ -29,7 +29,6 @@ public class Main extends Application implements IPlatformDifferentiator {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-	    OptionsManager.initialize();
 	    PlatformDifferentiator.setPlatformDifferentiator(this);
 	    Parent root = FXMLLoader.load(getClass().getResource("core/CryptJournal.fxml"));
         primaryStage.setTitle("CryptJournal");
@@ -37,7 +36,7 @@ public class Main extends Application implements IPlatformDifferentiator {
 	    primaryStage.initStyle(StageStyle.UNIFIED);
 	    primaryStage.setResizable(false);
 	    root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
-	    if (OptionsManager.optionHandler.get("theme").equals("dark"))
+	    if (OptionManager.theme.getValue().equals("dark"))
 		    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 	    primaryStage.show();
     }

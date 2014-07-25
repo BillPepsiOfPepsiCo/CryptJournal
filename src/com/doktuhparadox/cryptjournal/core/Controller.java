@@ -66,6 +66,7 @@ public class Controller {
         if (journalEntryListView.getItems().size() == 0) {
             openButton.setDisable(true);
             deleteEntryButton.setDisable(true);
+	        renameButton.setDisable(true);
         }
 
 	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {

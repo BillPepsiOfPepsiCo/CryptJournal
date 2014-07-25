@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal.core;
 
+import com.doktuhparadox.cryptjournal.option.OptionManager;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.io.TempFile;
 import com.doktuhparadox.easel.utils.StringUtils;
@@ -11,8 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.doktuhparadox.cryptjournal.option.OptionsManager.optionHandler;
 
 /**
  * Created and written with IntelliJ IDEA.
@@ -58,9 +57,9 @@ public class JournalEntry {
 		boolean success = FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile());
 
 		if (success) {
-			String timeFormat = optionHandler.get("time_format");
-			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", optionHandler.get("date_format").replace("mm", "MM"), timeFormat)).format(new Date()));
-			this.writeProperty("ENCRYPTION", optionHandler.get("encryption_algorithm"));
+			String timeFormat = OptionManager.timeFormat.getValue();
+			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
+			this.writeProperty("ENCRYPTION", OptionManager.encryptionAlgorithm.getValue());
 		}
 
 		return success;

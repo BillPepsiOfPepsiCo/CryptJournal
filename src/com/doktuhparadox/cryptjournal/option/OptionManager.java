@@ -1,6 +1,8 @@
 package com.doktuhparadox.cryptjournal.option;
 
 import com.doktuhparadox.cryptjournal.core.EncryptionAlgorithm;
+import com.doktuhparadox.easel.options.Option;
+import com.doktuhparadox.easel.options.SimpleOptionsHandler;
 import com.doktuhparadox.easel.utils.RuntimeUtils;
 
 import org.controlsfx.dialog.Dialog;
@@ -14,10 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.doktuhparadox.cryptjournal.option.OptionsManager.optionHandler;
 import resources.Index;
 
 /**
@@ -26,8 +28,16 @@ import resources.Index;
  * User: brennanforrest
  * Date of creation: 6/28/14, at 10:32 PM.
  */
-public class OptionsWindowController {
+public class OptionManager {
 
+	public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
+			dateFormat = new Option<>(optionHandler, "date format", "dd/mm/yyyy"),
+			timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss"),
+			encryptionAlgorithm = new Option<>(optionHandler, "encryption", "AES");
+	public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
+	public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60);
+	private static final File configFile = new File("Options.txt");
+	public static final SimpleOptionsHandler optionHandler = new SimpleOptionsHandler(configFile);
 	@FXML
 	private AnchorPane root;
 	@FXML
@@ -44,14 +54,13 @@ public class OptionsWindowController {
 	private TextField timeFormatTextField;
 	@FXML
 	private Button applyButton;
-
 	private boolean promptForRestartOnApply = false;
 
 	@FXML
-	protected void initialize() {
+	public void initialize() {
 		root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
 
-		if (optionHandler.get("theme").equals("dark")) {
+		if (theme.getValue().equals("dark")) {
 			root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 			useDarkThemeCheckbox.setSelected(true);
 		}
@@ -60,28 +69,28 @@ public class OptionsWindowController {
 		timeFormatTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
 		autosaveIntervalTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
 
-		dateFormatTextField.setText(optionHandler.get("date_format"));
-		timeFormatTextField.setText(optionHandler.get("time_format"));
-		autosaveIntervalTextField.setText(optionHandler.get("autosave_interval"));
+		dateFormatTextField.setText(dateFormat.getValue());
+		timeFormatTextField.setText(timeFormat.getValue());
+		autosaveIntervalTextField.setText(String.valueOf(autosaveInterval.getValue()));
 
 		encryptionAlgorithmComboBox.getItems().addAll(Arrays.asList(EncryptionAlgorithm.values()).stream().map(Enum::toString).collect(Collectors.toList()));
-		encryptionAlgorithmComboBox.getSelectionModel().select(optionHandler.get("encryption_algorithm"));
+		encryptionAlgorithmComboBox.getSelectionModel().select(encryptionAlgorithm.getValue());
 
 
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-			optionHandler.set("theme", newValue ? "dark" : "light");
+			theme.set(newValue ? "dark" : "light");
 			promptForRestartOnApply = true;
 		});
 
 		autosaveIntervalTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			optionHandler.set("autosave_interval", autosaveIntervalTextField.getText());
+			autosaveInterval.set(Integer.valueOf(autosaveIntervalTextField.getText()));
 			promptForRestartOnApply = true;
 		});
 
-		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("cache_passwords", "true"));
-		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("date_format", dateFormatTextField.getText()));
-		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("time_format", timeFormatTextField.getText()));
-		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> optionHandler.set("encryption_algorithm", encryptionAlgorithmComboBox.getValue()));
+		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.set(newValue));
+		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.set(dateFormatTextField.getText()));
+		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.set(timeFormatTextField.getText()));
+		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> encryptionAlgorithm.set(encryptionAlgorithmComboBox.getValue()));
 	}
 
 	@FXML
