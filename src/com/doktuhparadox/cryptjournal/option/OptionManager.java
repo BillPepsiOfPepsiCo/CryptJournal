@@ -30,14 +30,7 @@ import resources.Index;
  */
 public class OptionManager {
 
-	public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
-			dateFormat = new Option<>(optionHandler, "date format", "dd/mm/yyyy"),
-			timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss"),
-			encryptionAlgorithm = new Option<>(optionHandler, "encryption", "AES");
-	public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
-	public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60);
-	private static final File configFile = new File("Options.txt");
-	public static final SimpleOptionsHandler optionHandler = new SimpleOptionsHandler(configFile);
+
 	@FXML
 	private AnchorPane root;
 	@FXML
@@ -55,6 +48,16 @@ public class OptionManager {
 	@FXML
 	private Button applyButton;
 	private boolean promptForRestartOnApply = false;
+
+	private static final File configFile = new File("Options.txt");
+	public static final SimpleOptionsHandler optionHandler = new SimpleOptionsHandler(configFile);
+
+	public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
+			dateFormat = new Option<>(optionHandler, "date format", "dd/mm/yyyy"),
+			timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss"),
+			encryptionAlgorithm = new Option<>(optionHandler, "encryption", "AES");
+	public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
+	public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60);
 
 	@FXML
 	public void initialize() {
