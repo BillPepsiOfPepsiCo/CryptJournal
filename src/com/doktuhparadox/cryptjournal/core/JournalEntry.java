@@ -97,7 +97,7 @@ public class JournalEntry {
 		for (String s : this.entryMetadataFileProprietor.read()) {
 			if (!s.startsWith("#") && s.startsWith("$")) {
 				String[] pair = s.split("=");
-				if (key.equals(StringUtils.strip(pair[0], "$"))) return pair[1];
+				if (pair[0].equals("$" + key)) return pair[1];
 			}
 		}
 
@@ -116,7 +116,7 @@ public class JournalEntry {
 
 			for (String s : this.entryMetadataFileProprietor.read()) {
 				String[] arr = s.split("=");
-				if (StringUtils.strip(arr[0], "$").equals(key))
+				if (arr[0].equals("$" + key))
 					metadataTempFile.proprietor.appendf("%s=%s", true, key, value);
 				else metadataTempFile.proprietor.append(s, true);
 			}
