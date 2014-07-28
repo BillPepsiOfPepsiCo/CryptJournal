@@ -30,8 +30,8 @@ class Cryptor {
 			e.printStackTrace();
 		}
 
-	    return Base64.encodeBase64String(encodedStringBytes);
-	}
+        return new String(Base64.encodeBase64(encodedStringBytes));
+    }
 
 	public static String de(String algorithm, String data, String password) {
 		byte[] decodedStringBytes = null;
@@ -40,8 +40,8 @@ class Cryptor {
 			Key key = generateKey(algorithm, password);
 			Cipher c = Cipher.getInstance(algorithm);
 			c.init(Cipher.DECRYPT_MODE, key);
-			byte[] decodedValue = Base64.decodeBase64(data);
-			decodedStringBytes = c.doFinal(decodedValue);
+            byte[] decodedValue = Base64.decodeBase64(data.getBytes());
+            decodedStringBytes = c.doFinal(decodedValue);
 		} catch (BadPaddingException e) {
 			return "BAD_PASSWORD";
 		} catch (Exception e) {
