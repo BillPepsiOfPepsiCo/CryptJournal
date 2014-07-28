@@ -27,7 +27,7 @@ public class JournalEntry {
     private String name;
 
 	public JournalEntry(String name) {
-		this.name = name.endsWith(".journal") ? StringUtils.strip(name, ".journal") : name;
+		this.name = StringUtils.strip(name, ".journal");
 
 		this.entryFileProprietor = new FileProprietor(this.getFile());
 		this.entryMetadataFileProprietor = new FileProprietor(this.getMetadataFile());
