@@ -24,8 +24,8 @@ class JournalEntryListCellFactory extends ListCell<JournalEntry> {
 	        for (String s : item.getName().split(regex)) {
 		        builder.append(s);
 
-                if (s.length() == StringUtils.countMatches(regex, '.')) {
-                    if (!Character.isSpaceChar(s.charAt(s.length() - 1))) builder.append("-\n");
+		        if (s.length() == StringUtils.countMatches(regex, '.', false)) {
+			        if (!Character.isSpaceChar(s.charAt(s.length() - 1))) builder.append("-\n");
 			        else builder.append("\n");
 		        }
 	        }
