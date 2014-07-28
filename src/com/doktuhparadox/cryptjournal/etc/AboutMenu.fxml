@@ -24,7 +24,7 @@
         <Label layoutX="40.0" layoutY="228.0" text="A journaling application with encryption."/>
         <Label layoutX="74.0" layoutY="165.0" text="Developed by Brennan Forrest"/>
         <Button fx:id="openTwitterButton" layoutX="105.0" layoutY="191.0" mnemonicParsing="false"
-                style="-fx-background-color: transparent;" text="\@DoktuhParadox" textFill="#0095ff"/>
+                style="-fx-background-color: transparent; -fx-text-fill: #0095ff;" text="\@DoktuhParadox"/>
         <Label fx:id="versionLabel" layoutX="15.0" layoutY="282.0" text="Version "/>
         <Label layoutX="144.0" layoutY="250.0" text="and swag.">
             <font>
@@ -32,6 +32,6 @@
             </font>
         </Label>
         <Button fx:id="openGitHubButton" layoutX="170.0" layoutY="277.0" mnemonicParsing="false"
-                style="-fx-background-color: transparent;" text="CryptJournal on GitHub" textFill="#0095ff"/>
+                style="-fx-background-color: transparent; -fx-text-fill: #0095ff;" text="CryptJournal on GitHub"/>
     </children>
 </AnchorPane>
