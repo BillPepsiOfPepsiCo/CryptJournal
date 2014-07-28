@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal.core;
 
+import com.doktuhparadox.cryptjournal.option.OptionManager;
 import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
@@ -28,6 +29,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import resources.Index;
 
 public class Controller {
 
@@ -115,15 +118,19 @@ public class Controller {
 	    renameButton.setOnAction(event -> this.renameEntry());
         aboutButton.setOnAction(event -> {
             Parent root = null;
-            Stage stage = new Stage();
+	        Stage stage = new Stage(StageStyle.UNIFIED);
 
             try {
                 root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/etc/AboutMenu.fxml"));
             } catch (IOException e) {
                 e.printStackTrace();
+	            return;
             }
 
             Scene scene = new Scene(root, 336, 312);
+
+	        if (OptionManager.theme.getValue().equals("dark"))
+		        root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 
             stage.initStyle(StageStyle.UNIFIED);
             stage.setTitle("About CryptJournal");
