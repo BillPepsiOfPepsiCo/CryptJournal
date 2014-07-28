@@ -54,16 +54,15 @@ public class JournalEntry {
 	}
 
 	public boolean create() throws IOException {
-		boolean success = FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile());
-
-		if (success) {
-			String timeFormat = OptionManager.timeFormat.getValue();
+        if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
+            String timeFormat = OptionManager.timeFormat.getValue();
 			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
 			this.writeProperty("ENCRYPTION", OptionManager.encryptionAlgorithm.getValue());
-		}
+            return true;
+        }
 
-		return success;
-	}
+        return false;
+    }
 
 	public void rename(String newName) {
 		File newEntryFile = new File(journalDirName + newName + ".journal"),
@@ -108,7 +107,7 @@ public class JournalEntry {
         if (this.fetchProperty(key) == null) {
             this.entryMetadataFileProprietor.appendf("$%s=%s", true, key, value);
         }
-	}
+    }
 
 	public void setProperty(String key, String value) {
 		if (this.fetchProperty(key) != null) {
