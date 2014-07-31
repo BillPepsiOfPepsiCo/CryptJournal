@@ -25,7 +25,7 @@ class Cryptor {
 		try {
 			Key key = generateKey(algorithm, password);
 			Cipher c = Cipher.getInstance(algorithm);
-            c.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(c.getIV()));
+            c.init(Cipher.ENCRYPT_MODE, key);
             encodedStringBytes = c.doFinal(data.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();

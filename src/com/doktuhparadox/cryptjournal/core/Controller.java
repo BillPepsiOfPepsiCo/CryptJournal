@@ -312,8 +312,8 @@ public class Controller {
 				    break;
 			    }
 		    }
-	    } catch (NoSuchElementException ignored) {
-	    }
+        } catch (NoSuchElementException ignored) {
+        }
 
         return password;
     }
