@@ -6,6 +6,7 @@ import java.security.Key;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 
@@ -24,8 +25,8 @@ class Cryptor {
 		try {
 			Key key = generateKey(algorithm, password);
 			Cipher c = Cipher.getInstance(algorithm);
-			c.init(Cipher.ENCRYPT_MODE, key);
-			encodedStringBytes = c.doFinal(data.getBytes());
+            c.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(c.getIV()));
+            encodedStringBytes = c.doFinal(data.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -39,7 +40,7 @@ class Cryptor {
 		try {
 			Key key = generateKey(algorithm, password);
 			Cipher c = Cipher.getInstance(algorithm);
-			c.init(Cipher.DECRYPT_MODE, key);
+            c.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(c.getIV()));
             byte[] decodedValue = Base64.decodeBase64(data.getBytes());
             decodedStringBytes = c.doFinal(decodedValue);
 		} catch (BadPaddingException e) {
