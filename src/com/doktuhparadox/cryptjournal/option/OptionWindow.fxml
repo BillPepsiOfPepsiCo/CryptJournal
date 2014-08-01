@@ -2,14 +2,12 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="346.0"
-            xmlns="http://javafx.com/javafx/8"
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="372.0" prefWidth="346.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.doktuhparadox.cryptjournal.option.OptionManager">
     <children>
         <Label layoutX="132.0" layoutY="14.0" text="Options">
@@ -25,28 +23,28 @@
         </CheckBox>
         <Button fx:id="applyButton" layoutX="146.0" layoutY="332.0" mnemonicParsing="false"
                 onAction="#onApplyButtonPressed" text="Close"/>
-        <TextField fx:id="dateFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="93.0" prefHeight="26.0"
+        <TextField fx:id="dateFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="63.0" prefHeight="26.0"
                    prefWidth="133.0"/>
-        <Label layoutX="27.0" layoutY="96.0" text="Date format">
+        <Label layoutX="27.0" layoutY="66.0" text="Date format">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <Label layoutX="26.0" layoutY="132.0" text="Time format">
+        <Label layoutX="26.0" layoutY="102.0" text="Time format">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="129.0" prefHeight="26.0"
+        <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="99.0" prefHeight="26.0"
                    prefWidth="133.0"/>
-        <Label layoutX="27.0" layoutY="164.0" text="Autosave interval">
+        <Label layoutX="27.0" layoutY="134.0" text="Autosave interval">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <TextField fx:id="autosaveIntervalTextField" alignment="CENTER" layoutX="182.0" layoutY="161.0"
+        <TextField fx:id="autosaveIntervalTextField" alignment="CENTER" layoutX="182.0" layoutY="131.0"
                    prefHeight="26.0" prefWidth="45.0"/>
-        <Label layoutX="249.0" layoutY="166.0" text="seconds">
+        <Label layoutX="249.0" layoutY="136.0" text="seconds">
             <font>
                 <Font name="Helvetica" size="14.0"/>
             </font>
@@ -57,12 +55,5 @@
                 <Font name="Helvetica" size="13.0"/>
             </font>
         </CheckBox>
-        <Label layoutX="26.0" layoutY="60.0" text="Encryption">
-            <font>
-                <Font name="Helvetica" size="16.0"/>
-            </font>
-        </Label>
-        <ComboBox fx:id="encryptionAlgorithmComboBox" layoutX="182.0" layoutY="57.0" prefHeight="26.0"
-                  prefWidth="133.0"/>
     </children>
 </AnchorPane>

@@ -1,6 +1,5 @@
 package com.doktuhparadox.cryptjournal.option;
 
-import com.doktuhparadox.cryptjournal.core.EncryptionAlgorithm;
 import com.doktuhparadox.easel.options.Option;
 import com.doktuhparadox.easel.options.SimpleOptionsHandler;
 import com.doktuhparadox.easel.utils.RuntimeUtils;
@@ -11,14 +10,11 @@ import org.controlsfx.dialog.Dialogs;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import resources.Index;
 
@@ -32,8 +28,6 @@ public class OptionManager {
 
 	@FXML
 	private AnchorPane root;
-	@FXML
-	private ComboBox<String> encryptionAlgorithmComboBox;
 	@FXML
 	private CheckBox useDarkThemeCheckbox;
 	@FXML
@@ -52,9 +46,8 @@ public class OptionManager {
 
 	public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
 			dateFormat = new Option<>(optionHandler, "date format", "dd/mm/yyyy"),
-			timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss"),
-			encryptionAlgorithm = new Option<>(optionHandler, "encryption", "AES");
-	public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
+            timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss");
+    public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
 	public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60);
 
 	private boolean promptForRestartOnApply = false;
@@ -76,10 +69,6 @@ public class OptionManager {
 		timeFormatTextField.setText(timeFormat.getValue());
 		autosaveIntervalTextField.setText(String.valueOf(autosaveInterval.getValue()));
 
-		encryptionAlgorithmComboBox.getItems().addAll(Arrays.asList(EncryptionAlgorithm.values()).stream().map(Enum::toString).collect(Collectors.toList()));
-		encryptionAlgorithmComboBox.getSelectionModel().select(encryptionAlgorithm.getValue());
-
-
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			theme.set(newValue ? "dark" : "light");
 			promptForRestartOnApply = true;
@@ -93,7 +82,6 @@ public class OptionManager {
 		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.set(newValue));
 		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.set(dateFormatTextField.getText()));
 		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.set(timeFormatTextField.getText()));
-		encryptionAlgorithmComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> encryptionAlgorithm.set(encryptionAlgorithmComboBox.getValue()));
 	}
 
 	@FXML
