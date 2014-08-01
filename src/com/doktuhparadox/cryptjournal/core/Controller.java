@@ -55,6 +55,8 @@ public class Controller {
     @FXML
     private HTMLEditor journalContentEditor;
 
+    private final String defaultPassword = "dongerlord";
+
 	@FXML
 	void initialize() {
         if (FileProprietor.pollDir(JournalEntry.journalDir))
@@ -186,8 +188,13 @@ public class Controller {
         String decodedContent;
 
         //Tests to see if the password for this entry is empty (an empty password is sixteen equal signs) and skips the password prompt if so
-		if ((decodedContent = this.getSelectedEntry().read(this.defaultPassword())).equals("BAD_PASSWORD")) {
-			decodedContent = this.getSelectedEntry().read(this.promptForPassword());
+        if ((decodedContent = this.getSelectedEntry().read(this.defaultPassword)).equals("BAD_PASSWORD")) {
+            try {
+                decodedContent = this.getSelectedEntry().read(this.promptForPassword());
+            } catch (NoSuchElementException e) {
+                return; //The user either pressed "cancel" or entered nothing
+            }
+
 			if (decodedContent.equals("BAD_PASSWORD")) {
 				this.createDialog("Error", "Incorrect password.").showError();
 				return;
@@ -208,10 +215,15 @@ public class Controller {
 
     void saveEntry(boolean isAutosave) {
         if (isAutosave) {
-            this.getSelectedEntry().write(journalContentEditor.getHtmlText(), this.defaultPassword());
+            this.getSelectedEntry().write(journalContentEditor.getHtmlText(), this.defaultPassword);
         } else {
-			String password = this.promptForPassword();
-			if (password == null) return;
+            String password;
+
+            try {
+                password = this.promptForPassword();
+            } catch (NoSuchElementException e) {
+                return;
+            }
 
 			this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
 
@@ -296,40 +308,13 @@ public class Controller {
                     .forEach(e -> journalEntryListView.getItems().add((JournalEntry) e));
     }
 
-    private String promptForPassword() {
-	    String password = null;
-
-	    int keyLength = EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION")).keyLength;
-
-	    try {
-		    while ((password = this.createDialog("Enter password", String.format("Input password for this entry\n(%s chars max)", keyLength)).showTextInput().get())
-				    .length() > keyLength || password.length() < keyLength) {
-
-			    if (password.length() > keyLength) {
-				    this.createDialog("Error", "Password is too long.").showError();
-			    } else if (password.length() < keyLength) {
-				    while (password.length() < keyLength) password += "=";
-				    break;
-			    }
-		    }
-        } catch (NoSuchElementException ignored) {
-        }
-
-        return password;
+    private String promptForPassword() throws NoSuchElementException {
+        return this.createDialog("Enter password", "Password for this entry:").showTextInput().get();
     }
 
     private Dialogs createDialog(String title, String message) {
 	    return Dialogs.create().masthead(null).title(title).message(message);
     }
-
-	private String defaultPassword() {
-		String s = "";
-
-		while (s.length() < EncryptionAlgorithm.valueOf(this.getSelectedEntry().fetchProperty("ENCRYPTION")).keyLength)
-			s += "=";
-
-		return s;
-	}
 
     private JournalEntry getSelectedEntry() {
         return journalEntryListView.getSelectionModel().getSelectedItem();

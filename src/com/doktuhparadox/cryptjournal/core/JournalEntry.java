@@ -6,6 +6,8 @@ import com.doktuhparadox.easel.io.TempFile;
 import com.doktuhparadox.easel.utils.StringUtils;
 
 import org.controlsfx.dialog.Dialogs;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.jasypt.util.text.StrongTextEncryptor;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,12 +36,20 @@ public class JournalEntry {
 	}
 
 	public void write(String data, String password) {
-		this.entryFileProprietor.write(Cryptor.en(this.fetchProperty("ENCRYPTION"), data, password), true);
-	}
+        StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+        strongTextEncryptor.setPassword(password);
+        this.entryFileProprietor.write(strongTextEncryptor.encrypt(data), true);
+    }
 
 	public String read(String password) {
-		return Cryptor.de(this.fetchProperty("ENCRYPTION"), StringUtils.collect(this.entryFileProprietor.read()), password);
-	}
+        try {
+            StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+            strongTextEncryptor.setPassword(password);
+            return strongTextEncryptor.decrypt(StringUtils.collect(this.entryFileProprietor.read()));
+        } catch (EncryptionOperationNotPossibleException e) {
+            return "BAD_PASSWORD";
+        }
+    }
 
 	public File getFile() {
 		return new File(String.format("%s%s.journal", journalDirName, this.name));
@@ -50,14 +60,13 @@ public class JournalEntry {
     }
 
 	public String getName() {
-		return this.name;
-	}
+        return this.name;
+    }
 
 	public boolean create() throws IOException {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
             String timeFormat = OptionManager.timeFormat.getValue();
 			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
-			this.writeProperty("ENCRYPTION", OptionManager.encryptionAlgorithm.getValue());
             return true;
         }
 
