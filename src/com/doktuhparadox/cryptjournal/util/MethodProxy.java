@@ -2,6 +2,9 @@ package com.doktuhparadox.cryptjournal.util;
 
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.jasypt.util.text.StrongTextEncryptor;
+
 import com.apple.eawt.Application;
 
 /**
@@ -15,4 +18,20 @@ public class MethodProxy {
 	public static void setDockBadge(String badge) {
 		if (PlatformDifferentiator.isMacOSX()) Application.getApplication().setDockIconBadge(badge);
 	}
+
+    public static boolean strongEncryptionAvailable() {
+        try {
+            StrongTextEncryptor ste = new StrongTextEncryptor();
+            ste.setPassword("Donglord");
+            ste.encrypt("dongerlord");
+        } catch (EncryptionOperationNotPossibleException e) {
+            if (e.getMessage().contains(" (JCE) ")) {
+                return false;
+            }
+
+            e.printStackTrace();
+        }
+
+        return true;
+    }
 }

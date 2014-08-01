@@ -1,11 +1,13 @@
 package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.cryptjournal.option.OptionManager;
+import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.io.TempFile;
 import com.doktuhparadox.easel.utils.StringUtils;
 
 import org.controlsfx.dialog.Dialogs;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.StrongTextEncryptor;
 
@@ -36,16 +38,36 @@ public class JournalEntry {
 	}
 
 	public void write(String data, String password) {
-        StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
-        strongTextEncryptor.setPassword(password);
-        this.entryFileProprietor.write(strongTextEncryptor.encrypt(data), true);
+        String encData;
+
+        if (OptionManager.useStrongEncryption.getValue() && MethodProxy.strongEncryptionAvailable()) {
+            StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+            strongTextEncryptor.setPassword(password);
+            encData = strongTextEncryptor.encrypt(data);
+        } else {
+            StandardPBEStringEncryptor stringEncryptor = new StandardPBEStringEncryptor();
+            stringEncryptor.setAlgorithm("DESede/ECB/PKCS5Padding");
+            stringEncryptor.setPassword(password);
+            encData = stringEncryptor.encrypt(data);
+        }
+
+        this.entryFileProprietor.write(encData, true);
     }
 
 	public String read(String password) {
         try {
-            StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
-            strongTextEncryptor.setPassword(password);
-            return strongTextEncryptor.decrypt(StringUtils.collect(this.entryFileProprietor.read()));
+            String data = StringUtils.collect(this.entryFileProprietor.read());
+
+            if (MethodProxy.strongEncryptionAvailable()) {
+                StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+                strongTextEncryptor.setPassword(password);
+                return strongTextEncryptor.decrypt(data);
+            } else {
+                StandardPBEStringEncryptor stringEncryptor = new StandardPBEStringEncryptor();
+                stringEncryptor.setAlgorithm("DESede/ECB/PKCS5Padding");
+                stringEncryptor.setPassword(password);
+                return stringEncryptor.decrypt(data);
+            }
         } catch (EncryptionOperationNotPossibleException e) {
             return "BAD_PASSWORD";
         }
