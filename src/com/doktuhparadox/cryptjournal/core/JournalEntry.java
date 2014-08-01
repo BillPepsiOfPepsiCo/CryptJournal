@@ -46,7 +46,7 @@ public class JournalEntry {
             encData = strongTextEncryptor.encrypt(data);
         } else {
             StandardPBEStringEncryptor stringEncryptor = new StandardPBEStringEncryptor();
-            stringEncryptor.setAlgorithm("DESede/ECB/PKCS5Padding");
+            stringEncryptor.setAlgorithm("PBEWithMD5AndDES");
             stringEncryptor.setPassword(password);
             encData = stringEncryptor.encrypt(data);
         }
@@ -58,14 +58,15 @@ public class JournalEntry {
         try {
             String data = StringUtils.collect(this.entryFileProprietor.read());
 
-            if (MethodProxy.strongEncryptionAvailable()) {
+            if (MethodProxy.strongEncryptionAvailable() && Boolean.parseBoolean(String.valueOf(OptionManager.useStrongEncryption.getValue()))) {
                 StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
                 strongTextEncryptor.setPassword(password);
                 return strongTextEncryptor.decrypt(data);
             } else {
                 StandardPBEStringEncryptor stringEncryptor = new StandardPBEStringEncryptor();
-                stringEncryptor.setAlgorithm("DESede/ECB/PKCS5Padding");
+                stringEncryptor.setAlgorithm("PBEWithMD5AndDES");
                 stringEncryptor.setPassword(password);
+                stringEncryptor.setKeyObtentionIterations(6000);
                 return stringEncryptor.decrypt(data);
             }
         } catch (EncryptionOperationNotPossibleException e) {
