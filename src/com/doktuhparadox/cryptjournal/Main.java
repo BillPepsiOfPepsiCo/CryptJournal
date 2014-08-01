@@ -21,7 +21,7 @@ import resources.Index;
 
 public class Main extends Application implements IPlatformDifferentiator {
 
-    public static final String version = "1.2";
+    public static final String version = "1.2_1";
 
     public static void main(String[] args) {
         launch(args);
@@ -38,9 +38,7 @@ public class Main extends Application implements IPlatformDifferentiator {
 	    root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
 	    if (OptionManager.theme.getValue().equals("dark"))
 		    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
-	    primaryStage.show();
-
-        //TODO add installing code for Java Cryptography Extension Unlimited Strength Jurisdiction Policy Files
+        primaryStage.show();
     }
 
     @Override
