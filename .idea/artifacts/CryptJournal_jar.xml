@@ -5,6 +5,7 @@
       <element id="module-output" name="CryptJournal" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/controlsfx-8.0.6_20.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/Easel-1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jasypt-1.9.2.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
