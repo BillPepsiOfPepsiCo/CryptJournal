@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
@@ -83,13 +84,28 @@ public class OptionManager {
 		autosaveIntervalTextField.setText(String.valueOf(autosaveInterval.getValue()));
         keyObtentionIterationsTextField.setText(String.valueOf(keyObtentionIterations.getValue()));
 
+        dateFormatTextField.setTooltip(new Tooltip("Sets the date format for the list view.\nMake sure it\'s separated by slashes (/)."));
+        timeFormatTextField.setTooltip(new Tooltip("Sets the time format for the list view.\nMake sure it\'s separated by colons (:)."));
+        autosaveIntervalTextField.setTooltip(new Tooltip("N.Y.I."));
+        cachePasswordsCheckBox.setTooltip(new Tooltip("N.Y.I."));
+        keyObtentionIterationsTextField.setTooltip(new Tooltip("Higher number = more secure, but slower."));
+        useDarkThemeCheckbox.setTooltip(new Tooltip("Applies the sexy dark theme."));
+
+        Tooltip t = new Tooltip();
         if (!MethodProxy.strongEncryptionAvailable()) {
             useStrongEncryptionCheckbox.setSelected(false);
             useStrongEncryptionCheckbox.setDisable(true);
             useStrongEncryption.setValue(false);
+            t.setText("This is disabled because you don\'t have the " +
+                    "Java Cryptography Extension Unlimited Strength Jurisdiction Policy Files 8 installed.\nInstall them" +
+                    " to enable this option. :D");
         } else {
             useStrongEncryptionCheckbox.setSelected(Boolean.parseBoolean(String.valueOf(useStrongEncryption.getValue())));
+            t.setText("If checked, uses the StrongTextEncryptor from Jasypt. If it\'s not, uses " +
+                    "StandardPBEStringEncryptor\nfrom Jasypt (using PBEWithMD5AndDES as the algorithm)");
         }
+
+        useStrongEncryptionCheckbox.setTooltip(t);
 
         keyObtentionIterationsLabel.setVisible(!useStrongEncryptionCheckbox.isSelected());
         keyObtentionIterationsTextField.setVisible(!useStrongEncryptionCheckbox.isSelected());
