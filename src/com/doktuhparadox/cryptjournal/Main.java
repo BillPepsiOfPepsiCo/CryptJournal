@@ -38,6 +38,7 @@ public class Main extends Application implements IPlatformDifferentiator {
 	    root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
 	    if (OptionManager.theme.getValue().equals("dark"))
 		    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
+
         primaryStage.show();
     }
 
