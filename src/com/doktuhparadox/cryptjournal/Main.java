@@ -39,6 +39,8 @@ public class Main extends Application implements IPlatformDifferentiator {
 	    if (OptionManager.theme.getValue().equals("dark"))
 		    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 	    primaryStage.show();
+
+        //TODO add installing code for Java Cryptography Extension Unlimited Strength Jurisdiction Policy Files
     }
 
     @Override
