@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal.option;
 
+import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.easel.options.Option;
 import com.doktuhparadox.easel.options.SimpleOptionsHandler;
 import com.doktuhparadox.easel.utils.RuntimeUtils;
@@ -26,11 +27,14 @@ import resources.Index;
  */
 public class OptionManager {
 
-	@FXML
-	private AnchorPane root;
+
+    @FXML
+    private AnchorPane root;
 	@FXML
 	private CheckBox useDarkThemeCheckbox;
-	@FXML
+    @FXML
+    private CheckBox useStrongEncryptionCheckbox;
+    @FXML
 	private TextField autosaveIntervalTextField;
 	@FXML
 	private CheckBox cachePasswordsCheckBox;
@@ -47,7 +51,10 @@ public class OptionManager {
 	public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
 			dateFormat = new Option<>(optionHandler, "date format", "dd/mm/yyyy"),
             timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss");
-    public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
+
+    public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false),
+            useStrongEncryption = new Option<>(optionHandler, "use strong encryption", true);
+
 	public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60);
 
 	private boolean promptForRestartOnApply = false;
@@ -69,6 +76,14 @@ public class OptionManager {
 		timeFormatTextField.setText(timeFormat.getValue());
 		autosaveIntervalTextField.setText(String.valueOf(autosaveInterval.getValue()));
 
+        if (MethodProxy.strongEncryptionAvailable()) {
+            useStrongEncryptionCheckbox.setSelected(false);
+            useStrongEncryptionCheckbox.setDisable(true);
+            useStrongEncryption.set(false);
+        } else {
+            useStrongEncryptionCheckbox.setSelected(useStrongEncryption.getValue());
+        }
+
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			theme.set(newValue ? "dark" : "light");
 			promptForRestartOnApply = true;
@@ -82,7 +97,8 @@ public class OptionManager {
 		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.set(newValue));
 		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.set(dateFormatTextField.getText()));
 		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.set(timeFormatTextField.getText()));
-	}
+        useStrongEncryptionCheckbox.focusedProperty().addListener((observable, oldValue, newValue) -> useStrongEncryption.set(newValue));
+    }
 
 	@FXML
 	public void onApplyButtonPressed() {

@@ -55,5 +55,11 @@
                 <Font name="Helvetica" size="13.0"/>
             </font>
         </CheckBox>
+        <CheckBox fx:id="useStrongEncryptionCheckbox" layoutX="33.318603515625" layoutY="264.25" mnemonicParsing="false"
+                  text="Use strong encryption">
+            <font>
+                <Font name="Helvetica" size="13.0"/>
+            </font>
+        </CheckBox>
     </children>
 </AnchorPane>
