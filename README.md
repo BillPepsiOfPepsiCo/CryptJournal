@@ -16,23 +16,18 @@ buggy and that's really not in my capabilities to fix).
 
 **2) Encryption!**
 
-So, what if a snoopy douchewagon tries to open your journal entries and view them in plaintext? You're one step ahead because CryptJournal
-takes care of that for you! When you save your entries, CryptJournal automagically encrypts the text using the AES encryption algorithm
-so it looks as if you wrote it while having a seizure drunk on your keyboard!
+All of your text is safe. Every last character you enter is thoroughly encrypted with Jasypt!
+
+This program uses [Jasypt](http://http://www.jasypt.org/)'s StrongTextEncryptor for its backend. This means the algorithm is always"PBEWithMD5AndTripleDES." This is super duper secure.
+***Super duper*** secure. This features requires the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files, which CryptJournal will install for you.
 
 Each time an entry is saved, you are prompted for a password, so each time you save your entry it can be re-encrypted using a different password.
 
-Not to worry, you can still view your dirty little secrets if you remember the password you used! But, if you cannot remember your password, you cannot recover the lost data.
+Not to worry, you can still view your dirty little secrets if you remember the password you used! But, if you cannot remember your password, ***you cannot recover the lost data***.
 
 **3) Configuration!**
 
-A new innovation in the software engineering community: options! You can currently configure:
-
-A) The encryption algorithm you wish to use (currently supports AES, Blowfish and DES; RSA and DESede to come soon; they require some internal changes). 
-You do not have to remember which you used when opening entries because the encryption algorithm used is written to the entry's metadata file (located in Journals/.metadata/).
-However, if you switch the encryption algorithm and re-save an entry, the algorithm in its metadata file will not be updated, so be sure you have the
-algorithm you wish to use with that particular entry selected when you create it, because there is no way to change it. 3rd party encryption providers (like Bouncy Castle) will be supported one day.
-Encryption algorithm padding selection will not be an option in the future. Sorry. :^|
+A) new innovation in the software engineering community: options! You can currently configure:
 
 B) The date and time display formats (and 12/24 hour time). 
 This is a small convenience feature for those in the glorious U.S.A. and for those in commieland and Australia (m8). 
@@ -80,5 +75,5 @@ Download the current stable build [here](https://github.com/DoktuhParadox/CryptJ
 Dependencies
 ============
 
-This app depends on [ControlsFX](http://fxexperience.com/controlsfx/), [Apache commons codec](https://commons.apache.org/proper/commons-codec/),
+This app depends on [ControlsFX](http://fxexperience.com/controlsfx/), [Jasypt](http://http://www.jasypt.org/),
 and my own commons library, [Easel](https://github.com/DoktuhParadox/Easel). None of these have to be downloaded for the binary to work.
