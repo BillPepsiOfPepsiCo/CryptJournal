@@ -30,21 +30,21 @@
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <Label layoutX="26.0" layoutY="102.0" text="Time format">
+        <Label layoutX="26.0" layoutY="106.0" text="Time format">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="99.0" prefHeight="26.0"
+        <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="103.0" prefHeight="26.0"
                    prefWidth="133.0"/>
-        <Label layoutX="27.0" layoutY="134.0" text="Autosave interval">
+        <Label layoutX="26.0" layoutY="146.0" text="Autosave interval">
             <font>
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <TextField fx:id="autosaveIntervalTextField" alignment="CENTER" layoutX="182.0" layoutY="131.0"
+        <TextField fx:id="autosaveIntervalTextField" alignment="CENTER" layoutX="182.0" layoutY="143.0"
                    prefHeight="26.0" prefWidth="45.0"/>
-        <Label layoutX="249.0" layoutY="136.0" text="seconds">
+        <Label layoutX="236.0" layoutY="148.0" text="seconds">
             <font>
                 <Font name="Helvetica" size="14.0"/>
             </font>
@@ -61,5 +61,12 @@
                 <Font name="Helvetica" size="13.0"/>
             </font>
         </CheckBox>
+        <TextField fx:id="keyObtentionIterationsTextField" alignment="CENTER" layoutX="182.0" layoutY="183.0"
+                   prefHeight="26.0" prefWidth="64.0"/>
+        <Label fx:id="keyObtentionIterationsLabel" layoutX="26.0" layoutY="186.0" text="Key obtention iterations">
+            <font>
+                <Font name="Helvetica" size="14.0"/>
+            </font>
+        </Label>
     </children>
 </AnchorPane>

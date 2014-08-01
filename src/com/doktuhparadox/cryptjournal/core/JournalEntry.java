@@ -66,7 +66,7 @@ public class JournalEntry {
                 StandardPBEStringEncryptor stringEncryptor = new StandardPBEStringEncryptor();
                 stringEncryptor.setAlgorithm("PBEWithMD5AndDES");
                 stringEncryptor.setPassword(password);
-                stringEncryptor.setKeyObtentionIterations(6000);
+                stringEncryptor.setKeyObtentionIterations(Integer.parseInt(this.fetchProperty("OBTENTION_ITERATIONS")));
                 return stringEncryptor.decrypt(data);
             }
         } catch (EncryptionOperationNotPossibleException e) {
@@ -90,6 +90,7 @@ public class JournalEntry {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
             String timeFormat = OptionManager.timeFormat.getValue();
 			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
+            this.writeProperty("OBTENTION_ITERATIONS", String.valueOf(OptionManager.keyObtentionIterations.getValue()));
             return true;
         }
 

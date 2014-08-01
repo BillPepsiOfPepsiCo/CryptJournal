@@ -11,6 +11,7 @@ import org.controlsfx.dialog.Dialogs;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
@@ -27,7 +28,6 @@ import resources.Index;
  */
 public class OptionManager {
 
-
     @FXML
     private AnchorPane root;
 	@FXML
@@ -38,8 +38,12 @@ public class OptionManager {
 	private TextField autosaveIntervalTextField;
 	@FXML
 	private CheckBox cachePasswordsCheckBox;
-	@FXML
-	private TextField dateFormatTextField;
+    @FXML
+    private TextField keyObtentionIterationsTextField;
+    @FXML
+    private Label keyObtentionIterationsLabel;
+    @FXML
+    private TextField dateFormatTextField;
 	@FXML
 	private TextField timeFormatTextField;
 	@FXML
@@ -55,7 +59,8 @@ public class OptionManager {
     public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
     public static final Option<Boolean> useStrongEncryption = new Option<>(optionHandler, "use strong encryption", true);
 
-	public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60);
+    public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60),
+            keyObtentionIterations = new Option<>(optionHandler, "key obtention iterations", 1000);
 
 	private boolean promptForRestartOnApply = false;
 
@@ -71,10 +76,12 @@ public class OptionManager {
 		dateFormatTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
 		timeFormatTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
 		autosaveIntervalTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
+        keyObtentionIterationsTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
 
 		dateFormatTextField.setText(dateFormat.getValue());
 		timeFormatTextField.setText(timeFormat.getValue());
 		autosaveIntervalTextField.setText(String.valueOf(autosaveInterval.getValue()));
+        keyObtentionIterationsTextField.setText(String.valueOf(keyObtentionIterations.getValue()));
 
         if (!MethodProxy.strongEncryptionAvailable()) {
             useStrongEncryptionCheckbox.setSelected(false);
@@ -83,6 +90,9 @@ public class OptionManager {
         } else {
             useStrongEncryptionCheckbox.setSelected(Boolean.parseBoolean(String.valueOf(useStrongEncryption.getValue())));
         }
+
+        keyObtentionIterationsLabel.setVisible(!useStrongEncryptionCheckbox.isSelected());
+        keyObtentionIterationsTextField.setVisible(!useStrongEncryptionCheckbox.isSelected());
 
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             theme.setValue(newValue ? "dark" : "light");
@@ -97,7 +107,12 @@ public class OptionManager {
         cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.setValue(newValue));
         dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.setValue(dateFormatTextField.getText()));
         timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.setValue(timeFormatTextField.getText()));
-        useStrongEncryptionCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> useStrongEncryption.setValue(newValue));
+        keyObtentionIterationsTextField.focusedProperty().addListener((observable, oldValue, newValue) -> keyObtentionIterations.setValue(Integer.valueOf(keyObtentionIterationsTextField.getText())));
+        useStrongEncryptionCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            useStrongEncryption.setValue(newValue);
+            keyObtentionIterationsLabel.setVisible(!newValue);
+            keyObtentionIterationsTextField.setVisible(!newValue);
+        });
     }
 
 	@FXML
