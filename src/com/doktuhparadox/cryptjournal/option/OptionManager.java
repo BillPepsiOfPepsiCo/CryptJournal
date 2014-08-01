@@ -46,14 +46,14 @@ public class OptionManager {
 	private Button applyButton;
 
 	private static final File configFile = new File("Options.txt");
-	public static final SimpleOptionsHandler optionHandler = new SimpleOptionsHandler(configFile);
+    public static final SimpleOptionsHandler optionHandler = new SimpleOptionsHandler(configFile, false);
 
 	public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
 			dateFormat = new Option<>(optionHandler, "date format", "dd/mm/yyyy"),
             timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss");
 
-    public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false),
-            useStrongEncryption = new Option<>(optionHandler, "use strong encryption", true);
+    public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
+    public static final Option<Boolean> useStrongEncryption = new Option<>(optionHandler, "use strong encryption", true);
 
 	public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60);
 
@@ -76,28 +76,28 @@ public class OptionManager {
 		timeFormatTextField.setText(timeFormat.getValue());
 		autosaveIntervalTextField.setText(String.valueOf(autosaveInterval.getValue()));
 
-        if (MethodProxy.strongEncryptionAvailable()) {
+        if (!MethodProxy.strongEncryptionAvailable()) {
             useStrongEncryptionCheckbox.setSelected(false);
             useStrongEncryptionCheckbox.setDisable(true);
-            useStrongEncryption.set(false);
+            useStrongEncryption.setValue(false);
         } else {
-            useStrongEncryptionCheckbox.setSelected(useStrongEncryption.getValue());
+            useStrongEncryptionCheckbox.setSelected(Boolean.parseBoolean(String.valueOf(useStrongEncryption.getValue())));
         }
 
 		useDarkThemeCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-			theme.set(newValue ? "dark" : "light");
-			promptForRestartOnApply = true;
-		});
+            theme.setValue(newValue ? "dark" : "light");
+            promptForRestartOnApply = true;
+        });
 
 		autosaveIntervalTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			autosaveInterval.set(Integer.valueOf(autosaveIntervalTextField.getText()));
-			promptForRestartOnApply = true;
-		});
+            autosaveInterval.setValue(Integer.valueOf(autosaveIntervalTextField.getText()));
+            promptForRestartOnApply = true;
+        });
 
-		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.set(newValue));
-		dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.set(dateFormatTextField.getText()));
-		timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.set(timeFormatTextField.getText()));
-        useStrongEncryptionCheckbox.focusedProperty().addListener((observable, oldValue, newValue) -> useStrongEncryption.set(newValue));
+        cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.setValue(newValue));
+        dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.setValue(dateFormatTextField.getText()));
+        timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.setValue(timeFormatTextField.getText()));
+        useStrongEncryptionCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> useStrongEncryption.setValue(newValue));
     }
 
 	@FXML

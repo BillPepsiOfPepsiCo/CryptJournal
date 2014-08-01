@@ -40,7 +40,7 @@ public class JournalEntry {
 	public void write(String data, String password) {
         String encData;
 
-        if (OptionManager.useStrongEncryption.getValue() && MethodProxy.strongEncryptionAvailable()) {
+        if (MethodProxy.strongEncryptionAvailable() && Boolean.parseBoolean(String.valueOf(OptionManager.useStrongEncryption.getValue()))) {
             StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
             strongTextEncryptor.setPassword(password);
             encData = strongTextEncryptor.encrypt(data);
