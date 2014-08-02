@@ -81,8 +81,8 @@ public class OptionManager {
 
 		dateFormatTextField.setText(dateFormat.getValue());
 		timeFormatTextField.setText(timeFormat.getValue());
-		autosaveIntervalTextField.setText(String.valueOf(autosaveInterval.getValue()));
-        keyObtentionIterationsTextField.setText(String.valueOf(keyObtentionIterations.getValue()));
+		autosaveIntervalTextField.setText(autosaveInterval.value().asString());
+		keyObtentionIterationsTextField.setText(keyObtentionIterations.value().asString());
 
         dateFormatTextField.setTooltip(new Tooltip("Sets the date format for the list view.\nMake sure it\'s separated by slashes (/)."));
         timeFormatTextField.setTooltip(new Tooltip("Sets the time format for the list view.\nMake sure it\'s separated by colons (:)."));
@@ -100,9 +100,9 @@ public class OptionManager {
                     "Java Cryptography Extension Unlimited Strength Jurisdiction Policy Files 8 installed.\nInstall them" +
                     " to enable this option. :D");
         } else {
-            useStrongEncryptionCheckbox.setSelected(Boolean.parseBoolean(String.valueOf(useStrongEncryption.getValue())));
-            t.setText("If checked, uses the StrongTextEncryptor from Jasypt. If it\'s not, uses " +
-                    "StandardPBEStringEncryptor\nfrom Jasypt (using PBEWithMD5AndDES as the algorithm)");
+	        useStrongEncryptionCheckbox.setSelected(useStrongEncryption.value().asBoolean());
+	        t.setText("If checked, uses the StrongTextEncryptor from Jasypt. If it\'s not, uses " +
+			        "StandardPBEStringEncryptor\nfrom Jasypt (using PBEWithMD5AndDES as the algorithm)");
         }
 
         useStrongEncryptionCheckbox.setTooltip(t);

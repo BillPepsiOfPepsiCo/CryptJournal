@@ -40,16 +40,17 @@ public class JournalEntry {
 	public void write(String data, String password) {
         String encData;
 
-        if (MethodProxy.strongEncryptionAvailable() && Boolean.parseBoolean(String.valueOf(OptionManager.useStrongEncryption.getValue()))) {
-            StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
-            strongTextEncryptor.setPassword(password);
+		if (MethodProxy.strongEncryptionAvailable() && OptionManager.useStrongEncryption.value().asBoolean()) {
+			StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+			strongTextEncryptor.setPassword(password);
             encData = strongTextEncryptor.encrypt(data);
         } else {
             StandardPBEStringEncryptor stringEncryptor = new StandardPBEStringEncryptor();
             stringEncryptor.setAlgorithm("PBEWithMD5AndDES");
             stringEncryptor.setPassword(password);
-            encData = stringEncryptor.encrypt(data);
-        }
+			stringEncryptor.setKeyObtentionIterations(Integer.parseInt(this.fetchProperty("OBTENTION_ITERATIONS")));
+			encData = stringEncryptor.encrypt(data);
+		}
 
         this.entryFileProprietor.write(encData, true);
     }
@@ -58,9 +59,9 @@ public class JournalEntry {
         try {
             String data = StringUtils.collect(this.entryFileProprietor.read());
 
-            if (MethodProxy.strongEncryptionAvailable() && Boolean.parseBoolean(String.valueOf(OptionManager.useStrongEncryption.getValue()))) {
-                StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
-                strongTextEncryptor.setPassword(password);
+	        if (MethodProxy.strongEncryptionAvailable() && OptionManager.useStrongEncryption.value().asBoolean()) {
+		        StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+		        strongTextEncryptor.setPassword(password);
                 return strongTextEncryptor.decrypt(data);
             } else {
                 StandardPBEStringEncryptor stringEncryptor = new StandardPBEStringEncryptor();
@@ -142,6 +143,7 @@ public class JournalEntry {
         }
     }
 
+	@SuppressWarnings("unused")
 	public void setProperty(String key, String value) {
 		if (this.fetchProperty(key) != null) {
 			TempFile metadataTempFile = new TempFile(this.getMetadataFile());
