@@ -86,8 +86,8 @@ public class OptionManager {
 
         dateFormatTextField.setTooltip(new Tooltip("Sets the date format for the list view.\nMake sure it\'s separated by slashes (/)."));
         timeFormatTextField.setTooltip(new Tooltip("Sets the time format for the list view.\nMake sure it\'s separated by colons (:)."));
-        autosaveIntervalTextField.setTooltip(new Tooltip("N.Y.I."));
-        cachePasswordsCheckBox.setTooltip(new Tooltip("N.Y.I."));
+		autosaveIntervalTextField.setTooltip(new Tooltip("Sets the amount of time (in seconds)\nbetween autosaves."));
+		cachePasswordsCheckBox.setTooltip(new Tooltip("N.Y.I."));
         keyObtentionIterationsTextField.setTooltip(new Tooltip("Higher number = more secure, but slower."));
         useDarkThemeCheckbox.setTooltip(new Tooltip("Applies the sexy dark theme."));
 
@@ -115,12 +115,8 @@ public class OptionManager {
             promptForRestartOnApply = true;
         });
 
-		autosaveIntervalTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            autosaveInterval.setValue(Integer.valueOf(autosaveIntervalTextField.getText()));
-            promptForRestartOnApply = true;
-        });
-
-        cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.setValue(newValue));
+		autosaveIntervalTextField.focusedProperty().addListener((observable, oldValue, newValue) -> autosaveInterval.setValue(Integer.valueOf(autosaveIntervalTextField.getText())));
+		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.setValue(newValue));
         dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.setValue(dateFormatTextField.getText()));
         timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.setValue(timeFormatTextField.getText()));
         keyObtentionIterationsTextField.focusedProperty().addListener((observable, oldValue, newValue) -> keyObtentionIterations.setValue(Integer.valueOf(keyObtentionIterationsTextField.getText())));

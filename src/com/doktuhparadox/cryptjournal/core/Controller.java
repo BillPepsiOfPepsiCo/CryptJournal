@@ -7,6 +7,7 @@ import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
+import com.doktuhparadox.easel.utils.StringUtils;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
@@ -29,6 +30,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import resources.Index;
 
@@ -56,6 +59,7 @@ public class Controller {
     private HTMLEditor journalContentEditor;
 
     private final String defaultPassword = "dongerlord";
+	private Timer autosaveService; //TODO change to ExecutorService instead
 
 	@FXML
 	void initialize() {
@@ -82,7 +86,26 @@ public class Controller {
 	    }));
     }
 
+
     private void attachListeners() {
+	    journalContentEditor.disabledProperty().addListener((observable, oldValue, newValue) -> {
+		    if (!newValue) {
+			    int delay = OptionManager.autosaveInterval.value().asInt() * 1000;
+			    System.out.println("Starting autosave service...");
+			    autosaveService = new Timer("AutosaveDaemon", true);
+			    autosaveService.scheduleAtFixedRate(new TimerTask() {
+				    @Override
+				    public void run() {
+					    System.out.println("Autosaving...");
+					    saveEntry(true);
+				    }
+			    }, delay, delay);
+		    } else {
+			    System.out.println("Canceling autosave service...");
+			    autosaveService.cancel();
+		    }
+	    });
+
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (this.getSelectedEntry() != null) {
 	            if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
@@ -215,7 +238,9 @@ public class Controller {
 
     void saveEntry(boolean isAutosave) {
         if (isAutosave) {
-            this.getSelectedEntry().write(journalContentEditor.getHtmlText(), this.defaultPassword);
+	        String text = journalContentEditor.getHtmlText();
+	        if (StringUtils.emptyOrNull(text)) return;
+	        this.getSelectedEntry().write(text, this.defaultPassword);
         } else {
             String password;
 
@@ -257,10 +282,11 @@ public class Controller {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().delete();
             this.refreshListView();
-            journalEntryListView.getSelectionModel().select(-1);
 
-            if (journalEntryListView.getItems().size() == 0) {
-                NodeState.disable(openButton);
+	        journalEntryListView.getSelectionModel().select(-1);
+
+	        if (journalEntryListView.getItems().size() == 0) {
+		        NodeState.disable(openButton);
                 NodeState.disable(deleteEntryButton);
 	            NodeState.disable(renameButton);
             }
