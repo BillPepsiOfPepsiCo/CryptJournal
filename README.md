@@ -27,20 +27,19 @@ Not to worry, you can still view your dirty little secrets if you remember the p
 
 **3) Configuration!**
 
-A) new innovation in the software engineering community: options! You can currently configure:
+A new innovation in the software engineering community: options! You can currently configure:
 
-B) The date and time display formats (and 12/24 hour time). 
+1) The date and time display formats (and 12/24 hour time). 
 This is a small convenience feature for those in the glorious U.S.A. and for those in commieland and Australia (m8). 
 Though the U.S. is best, the default date format is day/month/year for ease on my behalf.
 
-C) The interval at which CryptJournal autosaves your entries. Currently, this feature is not in the program due to an issue with closing the application that I'm having trouble resolving,
-so this option has no effect. Autosaving does occur when the program is terminated while an entry is currently open in the editor; it writes it to the journal entry file with the default password
-which is a string of equal signs corresponding to the current encryption algorithm's key length (which doesn't matter to you because it skips password entry if it is the default).
+2) The interval at which CryptJournal autosaves your entries. The autosave service is started when you open an entry and canceled when you save it. If you change your autosave interval without restarting the program,
+your changes will take effect the next time the autosave service is started.
 
-D) Toggle password caching (defaults "off"). This option is currently only for show, but password caching will be implemented in the future (the new
+3) Toggle password caching (defaults "off"). This option is currently only for show, but password caching will be implemented in the future (the new
 journal entry metadata system will be the basis for that).
 
-E) A dark theme! This seems to be a popular *theme* with applications lately so I thought I would include one.
+4) A dark theme! This seems to be a popular *theme* with applications lately so I thought I would include one.
 Currently, there is no way to fully style an HTMLEditor, but the rest of the app is fully skinned. 
 
 **4) Easter eggs!**
