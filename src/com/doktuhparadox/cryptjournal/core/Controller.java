@@ -59,7 +59,7 @@ public class Controller {
     private HTMLEditor journalContentEditor;
 
     private final String defaultPassword = "dongerlord";
-	private Timer autosaveService; //TODO change to ExecutorService instead
+	private Timer autosaveService;
 
 	@FXML
 	void initialize() {
@@ -225,7 +225,8 @@ public class Controller {
 		}
 
         journalContentEditor.setHtmlText(decodedContent);
-        NodeState.enable(saveButton);
+	    journalContentEditor.requestFocus();
+	    NodeState.enable(saveButton);
         NodeState.enable(journalContentEditor);
         NodeState.disable(journalEntryListView);
         NodeState.disable(openButton);
