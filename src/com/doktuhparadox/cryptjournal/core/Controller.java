@@ -29,8 +29,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import resources.Index;
 
@@ -58,7 +59,6 @@ public class Controller {
     private HTMLEditor journalContentEditor;
 
     private final String defaultPassword = "dongerlord";
-	private Timer autosaveService;
 
 	@FXML
 	void initialize() {
@@ -85,23 +85,26 @@ public class Controller {
 	    }));
     }
 
+	private ScheduledExecutorService autosaveService;
 
     private void attachListeners() {
 	    journalContentEditor.disabledProperty().addListener((observable, oldValue, newValue) -> {
 		    if (!newValue) {
-			    int delay = OptionManager.autosaveInterval.value().asInt() * 1000;
+			    int delay = OptionManager.autosaveInterval.value().asInt();
 			    System.out.println("Starting autosave service...");
-			    autosaveService = new Timer("AutosaveDaemon", true);
-			    autosaveService.scheduleAtFixedRate(new TimerTask() {
-				    @Override
-				    public void run() {
-					    System.out.println("Autosaving...");
-					    saveEntry(true);
-				    }
-			    }, delay, delay);
+			    autosaveService = Executors.newSingleThreadScheduledExecutor(r -> {
+				    Thread t = new Thread(r, "AutosaveServiceDaemon");
+				    t.setDaemon(true);
+				    return t;
+			    });
+
+			    autosaveService.scheduleAtFixedRate(() -> {
+				    System.out.println("Autosaving...");
+				    saveEntry(true);
+			    }, delay, delay, TimeUnit.SECONDS);
 		    } else {
 			    System.out.println("Canceling autosave service...");
-			    autosaveService.cancel();
+			    autosaveService.shutdown();
 		    }
 	    });
 
