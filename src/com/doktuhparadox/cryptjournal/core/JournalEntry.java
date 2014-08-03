@@ -91,7 +91,7 @@ public class JournalEntry {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
             String timeFormat = OptionManager.timeFormat.getValue();
 			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
-            this.writeProperty("OBTENTION_ITERATIONS", String.valueOf(OptionManager.keyObtentionIterations.getValue()));
+	        this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
             return true;
         }
 
@@ -130,7 +130,7 @@ public class JournalEntry {
 		for (String s : this.entryMetadataFileProprietor.read()) {
 			if (!s.startsWith("#") && s.startsWith("$")) {
 				String[] pair = s.split("=");
-				if (pair[0].equals("$" + key)) return pair[1];
+				if (pair[0].equals('$' + key)) return pair[1];
 			}
 		}
 
@@ -150,7 +150,7 @@ public class JournalEntry {
 
 			for (String s : this.entryMetadataFileProprietor.read()) {
 				String[] arr = s.split("=");
-				if (arr[0].equals("$" + key))
+				if (arr[0].equals('$' + key))
 					metadataTempFile.proprietor.appendf("%s=%s", true, key, value);
 				else metadataTempFile.proprietor.append(s, true);
 			}
