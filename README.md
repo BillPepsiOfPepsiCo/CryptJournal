@@ -19,7 +19,7 @@ buggy and that's really not in my capabilities to fix).
 All of your text is safe. Every last character you enter is thoroughly encrypted with Jasypt!
 
 This program uses [Jasypt](http://http://www.jasypt.org/)'s StrongTextEncryptor for its backend. This means the algorithm is always"PBEWithMD5AndTripleDES." This is super duper secure.
-***Super duper*** secure. This features requires the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files, which CryptJournal will install for you.
+***Super duper*** secure. This features requires the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files.
 
 Each time an entry is saved, you are prompted for a password, so each time you save your entry it can be re-encrypted using a different password.
 
