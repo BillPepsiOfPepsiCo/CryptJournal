@@ -27,7 +27,6 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Timer;
@@ -139,8 +138,8 @@ public class Controller {
 	    saveButton.setOnAction(event -> this.saveEntry(false));
 	    deleteEntryButton.setOnAction(event -> this.deleteEntry());
 	    openButton.setOnAction(event -> this.openEntry());
-	    optionsButton.setOnAction(event -> this.openOptionsWindow());
 	    renameButton.setOnAction(event -> this.renameEntry());
+
         aboutButton.setOnAction(event -> {
             Parent root = null;
 	        Stage stage = new Stage(StageStyle.UNIFIED);
@@ -163,6 +162,25 @@ public class Controller {
             stage.setResizable(false);
             stage.show();
         });
+
+	    optionsButton.setOnAction(event -> {
+		    Parent root = null;
+		    Stage stage = new Stage();
+
+		    try {
+			    root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
+		    } catch (IOException e) {
+			    e.printStackTrace();
+		    }
+
+		    Scene scene = new Scene(root, 346, 372);
+
+		    stage.initStyle(StageStyle.UNIFIED);
+		    stage.setTitle("Options");
+		    stage.setScene(scene);
+		    stage.setResizable(false);
+		    stage.show();
+	    });
 
         //Easter eggs
         KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
@@ -303,25 +321,6 @@ public class Controller {
             }
         }
     }
-
-	private void openOptionsWindow() {
-        Parent root = null;
-        Stage stage = new Stage();
-
-        try {
-            root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Scene scene = new Scene(root, 346, 372);
-
-        stage.initStyle(StageStyle.UNIFIED);
-        stage.setTitle("Options");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
     //**********Section end, dog**********\\
 
 
@@ -329,8 +328,8 @@ public class Controller {
         journalEntryListView.getItems().clear();
 
         if (JournalEntry.journalDir.exists()) //noinspection ConstantConditions
-            Arrays.asList(JournalEntry.journalDir.listFiles()).stream()
-                    .filter(f -> f.getName().endsWith(".journal") && Files.exists(Paths.get("Journals/.metadata/" + f.getName() + "metadata")))
+	        FileProprietor.ls(JournalEntry.journalDir).stream()
+			        .filter(f -> f.getName().endsWith(".journal") && Files.exists(Paths.get("Journals/.metadata/" + f.getName() + "metadata")))
                     .map(f -> new JournalEntry(f.getName()))
                     .forEach(e -> journalEntryListView.getItems().add((JournalEntry) e));
     }
