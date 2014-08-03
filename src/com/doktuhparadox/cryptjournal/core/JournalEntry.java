@@ -29,6 +29,8 @@ public class JournalEntry {
 	public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
 	private final FileProprietor entryFileProprietor, entryMetadataFileProprietor;
     private String name;
+    private final boolean strongEncryptionAvailable = MethodProxy.strongEncryptionAvailable();
+    private boolean useStrongEncryption = OptionManager.useStrongEncryption.value().asBoolean();
 
 	public JournalEntry(String name) {
 		this.name = StringUtils.strip(name, ".journal");
@@ -40,8 +42,11 @@ public class JournalEntry {
 	public void write(String data, String password) {
         String encData;
 
-		if (MethodProxy.strongEncryptionAvailable() && OptionManager.useStrongEncryption.value().asBoolean()) {
-			StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+        if (password.equals("$")) this.assertProperty("LAST_SAVE_WAS_AUTOSAVE", "true");
+        else this.assertProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
+
+        if (strongEncryptionAvailable && useStrongEncryption) {
+            StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
 			strongTextEncryptor.setPassword(password);
             encData = strongTextEncryptor.encrypt(data);
         } else {
@@ -59,8 +64,8 @@ public class JournalEntry {
         try {
             String data = StringUtils.collect(this.entryFileProprietor.read());
 
-	        if (MethodProxy.strongEncryptionAvailable() && OptionManager.useStrongEncryption.value().asBoolean()) {
-		        StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+            if (strongEncryptionAvailable && useStrongEncryption) {
+                StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
 		        strongTextEncryptor.setPassword(password);
                 return strongTextEncryptor.decrypt(data);
             } else {
@@ -92,6 +97,7 @@ public class JournalEntry {
             String timeFormat = OptionManager.timeFormat.getValue();
 			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
 	        this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
+            this.writeProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
             return true;
         }
 
@@ -137,22 +143,21 @@ public class JournalEntry {
 		return null;
 	}
 
-    void writeProperty(String key, String value) {
+    private void writeProperty(String key, String value) {
         if (this.fetchProperty(key) == null) {
             this.entryMetadataFileProprietor.appendf("$%s=%s", true, key, value);
         }
     }
 
-	@SuppressWarnings("unused")
-	public void setProperty(String key, String value) {
-		if (this.fetchProperty(key) != null) {
+    private void assertProperty(String key, String value) {
+        if (this.fetchProperty(key) != null) {
 			TempFile metadataTempFile = new TempFile(this.getMetadataFile());
 
 			for (String s : this.entryMetadataFileProprietor.read()) {
 				String[] arr = s.split("=");
 				if (arr[0].equals('$' + key))
-					metadataTempFile.proprietor.appendf("%s=%s", true, key, value);
-				else metadataTempFile.proprietor.append(s, true);
+                    metadataTempFile.proprietor.appendf("$%s=%s", true, key, value);
+                else metadataTempFile.proprietor.append(s, true);
 			}
 
 			metadataTempFile.assumeParent();

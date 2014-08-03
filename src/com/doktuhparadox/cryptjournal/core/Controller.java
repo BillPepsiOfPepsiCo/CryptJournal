@@ -58,10 +58,8 @@ public class Controller {
     @FXML
     private HTMLEditor journalContentEditor;
 
-    private final String defaultPassword = "dongerlord";
-
-	@FXML
-	void initialize() {
+    @FXML
+    void initialize() {
         if (FileProprietor.pollDir(JournalEntry.journalDir))
             System.out.println("Created journal entry directory at " + JournalEntry.infoDir.getAbsolutePath());
         if (FileProprietor.pollDir(JournalEntry.infoDir))
@@ -76,13 +74,6 @@ public class Controller {
             deleteEntryButton.setDisable(true);
 	        renameButton.setDisable(true);
         }
-
-	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-		    if (!this.journalContentEditor.isDisabled()) {
-			    System.out.println("Application termination requested while entry is being edited, performing autosave...");
-			    this.saveEntry(true);
-		    }
-	    }));
     }
 
 	private ScheduledExecutorService autosaveService;
@@ -229,24 +220,22 @@ public class Controller {
     }
 
     void openEntry() {
+        JournalEntry currentEntry = this.getSelectedEntry();
         String decodedContent;
 
-        //Tests to see if the password for this entry is empty (an empty password is sixteen equal signs) and skips the password prompt if so
-        if ((decodedContent = this.getSelectedEntry().read(this.defaultPassword)).equals("BAD_PASSWORD")) {
-            try {
-                decodedContent = this.getSelectedEntry().read(this.promptForPassword());
-            } catch (NoSuchElementException e) {
-                return; //The user either pressed "cancel" or entered nothing
+        try {
+            decodedContent = currentEntry.fetchProperty("LAST_SAVE_WAS_AUTOSAVE").equals("true") ? currentEntry.read("$") : currentEntry.read(this.promptForPassword());
+
+            if (decodedContent.equals("BAD_PASSWORD")) {
+                this.createDialog("Error", "Incorrect password.").showError();
+                return;
             }
+        } catch (NoSuchElementException e) {
+            return;
+        }
 
-			if (decodedContent.equals("BAD_PASSWORD")) {
-				this.createDialog("Error", "Incorrect password.").showError();
-				return;
-			}
-		}
-
+        journalEntryNameLabel.setText(currentEntry.getName());
         journalContentEditor.setHtmlText(decodedContent);
-	    journalContentEditor.requestFocus();
 	    NodeState.enable(saveButton);
         NodeState.enable(journalContentEditor);
         NodeState.disable(journalEntryListView);
@@ -254,15 +243,16 @@ public class Controller {
         NodeState.disable(createEntryButton);
         NodeState.disable(deleteEntryButton);
 		NodeState.disable(renameButton);
-		journalEntryNameLabel.setText(this.getSelectedEntry().getName());
-		MethodProxy.setDockBadge("*");
-	}
+        journalContentEditor.requestFocus();
+
+        MethodProxy.setDockBadge("*");
+    }
 
     void saveEntry(boolean isAutosave) {
         if (isAutosave) {
 	        String text = journalContentEditor.getHtmlText();
 	        if (StringUtils.emptyOrNull(text)) return;
-	        this.getSelectedEntry().write(text, this.defaultPassword);
+            this.getSelectedEntry().write(text, "$");
         } else {
             String password;
 
