@@ -285,10 +285,14 @@ public class Controller {
     void renameEntry() {
         Optional<String> newName = Dialogs.create().masthead(null).message("Enter new entry name").showTextInput();
         try {
-            this.getSelectedEntry().rename(newName.get());
-		} catch (NoSuchElementException ignored) {
+            String newNameStr = newName.get();
+            if (StringUtils.emptyOrNull(newNameStr)) return;
+            this.getSelectedEntry().rename(newNameStr);
+        } catch (NoSuchElementException ignored) {
 		}
-	}
+
+        this.refreshListView();
+    }
 
     void deleteEntry() {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
