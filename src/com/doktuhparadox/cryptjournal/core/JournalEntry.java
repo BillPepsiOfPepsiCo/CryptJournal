@@ -42,8 +42,7 @@ public class JournalEntry {
 	public void write(String data, String password) {
         String encData;
 
-        if (password.equals("$")) this.assertProperty("LAST_SAVE_WAS_AUTOSAVE", "true");
-        else this.assertProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
+        this.assertProperty("LAST_SAVE_WAS_AUTOSAVE", String.valueOf(password.equals("$")));
 
         if (strongEncryptionAvailable && useStrongEncryption) {
             StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
@@ -95,7 +94,8 @@ public class JournalEntry {
 	public boolean create() throws IOException {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
             String timeFormat = OptionManager.timeFormat.getValue();
-			this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
+            this.entryMetadataFileProprietor.write("#DO NOT EDIT ANYTHING IN THIS FILE FOR RISK OF DEATH!!!!!!", false);
+            this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
 	        this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
             this.writeProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
             return true;
