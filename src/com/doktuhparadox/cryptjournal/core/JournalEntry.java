@@ -94,10 +94,11 @@ public class JournalEntry {
 	public boolean create() throws IOException {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
             String timeFormat = OptionManager.timeFormat.getValue();
-            this.entryMetadataFileProprietor.write("#DO NOT EDIT ANYTHING IN THIS FILE FOR RISK OF DEATH!!!!!!", false);
+            this.entryMetadataFileProprietor.write("#DO NOT EDIT ANYTHING IN THIS FILE FOR RISK OF DEATH!!!!!!", true);
             this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
 	        this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
             this.writeProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
+            this.lockMetadataFile();
             return true;
         }
 
@@ -126,11 +127,22 @@ public class JournalEntry {
 	}
 
 	public void delete() {
-		if (this.getFile().delete() && this.getMetadataFile().delete())
+        this.unlockMetadataFile();
+        if (this.getFile().delete() && this.getMetadataFile().delete())
 			System.out.println("Deleted journal entry " + this.name);
 		else
 			System.out.println("Could not delete entry " + this.name);
 	}
+
+    public void lockMetadataFile() {
+        if (this.getMetadataFile().setReadOnly()) System.out.println("Locked metadata file");
+        else System.out.println("Unable to lock metadata file");
+    }
+
+    public void unlockMetadataFile() {
+        if (this.getMetadataFile().setWritable(true)) System.out.println("Unlocked metadata file");
+        else System.out.println("Unable to unlock metadata file");
+    }
 
 	public String fetchProperty(String key) {
 		for (String s : this.entryMetadataFileProprietor.read()) {
@@ -151,7 +163,8 @@ public class JournalEntry {
 
     private void assertProperty(String key, String value) {
         if (this.fetchProperty(key) != null) {
-			TempFile metadataTempFile = new TempFile(this.getMetadataFile());
+            this.unlockMetadataFile();
+            TempFile metadataTempFile = new TempFile(this.getMetadataFile());
 
 			for (String s : this.entryMetadataFileProprietor.read()) {
 				String[] arr = s.split("=");
@@ -161,6 +174,7 @@ public class JournalEntry {
 			}
 
 			metadataTempFile.assumeParent();
-		}
+            this.lockMetadataFile();
+        }
 	}
 }
