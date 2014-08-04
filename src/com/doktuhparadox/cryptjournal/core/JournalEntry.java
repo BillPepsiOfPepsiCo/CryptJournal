@@ -28,8 +28,8 @@ public class JournalEntry {
 	private static final String journalDirName = "Journals/", infoDirName = ".metadata/";
 	public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
 	private final FileProprietor entryFileProprietor, entryMetadataFileProprietor;
-    private String name;
-    private final boolean strongEncryptionAvailable = MethodProxy.strongEncryptionAvailable();
+	private final String name;
+	private final boolean strongEncryptionAvailable = MethodProxy.strongEncryptionAvailable();
     private boolean useStrongEncryption = OptionManager.useStrongEncryption.value().asBoolean();
 
 	public JournalEntry(String name) {
@@ -95,7 +95,7 @@ public class JournalEntry {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
             String timeFormat = OptionManager.timeFormat.getValue();
             this.entryMetadataFileProprietor.write("#DO NOT EDIT ANYTHING IN THIS FILE FOR RISK OF DEATH!!!!!!", true);
-            this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s|%s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
+	        this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s %s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
 	        this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
             this.writeProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
             this.lockMetadataFile();

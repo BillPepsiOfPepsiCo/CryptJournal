@@ -16,7 +16,7 @@ class JournalEntryListCellFactory extends ListCell<JournalEntry> {
         super.updateItem(item, empty);
 
         if (!empty) {
-	        String[] creationTime = item.fetchProperty("CREATION").split("\\|");
+	        String[] creationTime = item.fetchProperty("CREATION").split(" ");
 	        StringBuilder builder = new StringBuilder();
 
 	        String regex = "(?<=\\G..............................)";
@@ -25,8 +25,7 @@ class JournalEntryListCellFactory extends ListCell<JournalEntry> {
 		        builder.append(s);
 
 		        if (s.length() == StringUtils.countMatches(regex, '.', false)) {
-			        if (!Character.isSpaceChar(s.charAt(s.length() - 1))) builder.append("-\n");
-			        else builder.append("\n");
+			        builder.append(!Character.isSpaceChar(s.charAt(s.length() - 1)) ? "-\n" : "\n");
 		        }
 	        }
 
