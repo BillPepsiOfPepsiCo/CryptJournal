@@ -114,11 +114,8 @@ public class JournalEntry {
 				Files.move(this.getFile().toPath(), newEntryFile.toPath());
 				Files.move(this.getMetadataFile().toPath(), newMetadataFile.toPath());
 
-				if (this.getFile().delete() && this.getMetadataFile().delete()) {
-					this.name = newName;
-					System.out.println("Renamed entry to " + newName);
-				}
-			} catch (IOException e) {
+                System.out.println("Renamed entry to " + newName);
+            } catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
