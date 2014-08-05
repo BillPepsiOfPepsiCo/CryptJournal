@@ -9,9 +9,12 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
@@ -29,13 +32,19 @@ import resources.Index;
  */
 public class OptionManager {
 
-    @FXML
-    private AnchorPane root;
+	@FXML
+	Scene scene;
+	@FXML
+	private AnchorPane root;
 	@FXML
 	private CheckBox useDarkThemeCheckbox;
     @FXML
     private CheckBox useStrongEncryptionCheckbox;
-    @FXML
+	@FXML
+	private ComboBox<String> timeFormatComboBox;
+	@FXML
+	private ComboBox<String> dateFormatComboBox;
+	@FXML
 	private TextField autosaveIntervalTextField;
 	@FXML
 	private CheckBox cachePasswordsCheckBox;
@@ -43,10 +52,6 @@ public class OptionManager {
     private TextField keyObtentionIterationsTextField;
     @FXML
     private Label keyObtentionIterationsLabel;
-    @FXML
-    private TextField dateFormatTextField;
-	@FXML
-	private TextField timeFormatTextField;
 	@FXML
 	private Button applyButton;
 
@@ -59,7 +64,6 @@ public class OptionManager {
 
     public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
     public static final Option<Boolean> useStrongEncryption = new Option<>(optionHandler, "use strong encryption", true);
-
     public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60),
             keyObtentionIterations = new Option<>(optionHandler, "key obtention iterations", 1000);
 
@@ -67,6 +71,9 @@ public class OptionManager {
 
 	@FXML
 	public void initialize() {
+		SelectionModel<String> dateComboBoxSM = this.dateFormatComboBox.getSelectionModel(),
+				timeComboBoxSM = this.timeFormatComboBox.getSelectionModel();
+
 		root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
 
 		if (theme.getValue().equals("dark")) {
@@ -74,27 +81,28 @@ public class OptionManager {
 			useDarkThemeCheckbox.setSelected(true);
 		}
 
-		dateFormatTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
-		timeFormatTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
-		autosaveIntervalTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
-        keyObtentionIterationsTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 12));
+		autosaveIntervalTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 14));
+		keyObtentionIterationsTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 14));
 
-		dateFormatTextField.setText(dateFormat.getValue());
-		timeFormatTextField.setText(timeFormat.getValue());
+		dateFormatComboBox.getItems().setAll("dd/MM/yyyy", "MM/dd/yyyy", "yyyy/MM/dd");
+		timeFormatComboBox.getItems().setAll("hh:mm:ss", "HH:mm:ss", "hh:mm", "HH:mm");
+
+		dateComboBoxSM.select(dateFormat.getValue());
+		timeComboBoxSM.select(timeFormat.getValue());
 		autosaveIntervalTextField.setText(autosaveInterval.value().asString());
 		keyObtentionIterationsTextField.setText(keyObtentionIterations.value().asString());
 
-        dateFormatTextField.setTooltip(new Tooltip("Sets the date format for the list view.\nMake sure it\'s separated by slashes (/)."));
-        timeFormatTextField.setTooltip(new Tooltip("Sets the time format for the list view.\nMake sure it\'s separated by colons (:)."));
+		dateFormatComboBox.setTooltip(new Tooltip("Sets the date format for the list view."));
+		timeFormatComboBox.setTooltip(new Tooltip("Sets the time format for the list view."));
 		autosaveIntervalTextField.setTooltip(new Tooltip("Sets the amount of time (in seconds)\nbetween autosaves."));
 		cachePasswordsCheckBox.setTooltip(new Tooltip("N.Y.I."));
         keyObtentionIterationsTextField.setTooltip(new Tooltip("Higher number = more secure, but slower."));
         useDarkThemeCheckbox.setTooltip(new Tooltip("Applies the sexy dark theme."));
 
         Tooltip t = new Tooltip();
-        if (!MethodProxy.strongEncryptionAvailable()) {
-            useStrongEncryptionCheckbox.setSelected(false);
-            useStrongEncryptionCheckbox.setDisable(true);
+		if (!MethodProxy.strongEncryptionAvailable) {
+			useStrongEncryptionCheckbox.setSelected(false);
+			useStrongEncryptionCheckbox.setDisable(true);
             useStrongEncryption.setValue(false);
             t.setText("This is disabled because you don\'t have the " +
                     "Java Cryptography Extension Unlimited Strength Jurisdiction Policy Files 8 installed.\nInstall them" +
@@ -117,10 +125,10 @@ public class OptionManager {
 
 		autosaveIntervalTextField.focusedProperty().addListener((observable, oldValue, newValue) -> autosaveInterval.setValue(Integer.valueOf(autosaveIntervalTextField.getText())));
 		cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.setValue(newValue));
-        dateFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> dateFormat.setValue(dateFormatTextField.getText()));
-        timeFormatTextField.focusedProperty().addListener((observable, oldValue, newValue) -> timeFormat.setValue(timeFormatTextField.getText()));
-        keyObtentionIterationsTextField.focusedProperty().addListener((observable, oldValue, newValue) -> keyObtentionIterations.setValue(Integer.valueOf(keyObtentionIterationsTextField.getText())));
-        useStrongEncryptionCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+		dateFormatComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> dateFormat.setValue(dateComboBoxSM.getSelectedItem()));
+		timeFormatComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> timeFormat.setValue(timeComboBoxSM.getSelectedItem()));
+		keyObtentionIterationsTextField.focusedProperty().addListener((observable, oldValue, newValue) -> keyObtentionIterations.setValue(Integer.valueOf(keyObtentionIterationsTextField.getText())));
+		useStrongEncryptionCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             useStrongEncryption.setValue(newValue);
             keyObtentionIterationsLabel.setVisible(!newValue);
             keyObtentionIterationsTextField.setVisible(!newValue);

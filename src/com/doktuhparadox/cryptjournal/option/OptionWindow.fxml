@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -23,8 +24,6 @@
         </CheckBox>
         <Button fx:id="applyButton" layoutX="146.0" layoutY="332.0" mnemonicParsing="false"
                 onAction="#onApplyButtonPressed" text="Close"/>
-        <TextField fx:id="dateFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="63.0" prefHeight="26.0"
-                   prefWidth="133.0"/>
         <Label layoutX="27.0" layoutY="66.0" text="Date format">
             <font>
                 <Font name="Helvetica" size="16.0"/>
@@ -35,8 +34,6 @@
                 <Font name="Helvetica" size="16.0"/>
             </font>
         </Label>
-        <TextField fx:id="timeFormatTextField" alignment="CENTER" layoutX="182.0" layoutY="103.0" prefHeight="26.0"
-                   prefWidth="133.0"/>
         <Label layoutX="26.0" layoutY="146.0" text="Autosave interval">
             <font>
                 <Font name="Helvetica" size="16.0"/>
@@ -68,5 +65,7 @@
                 <Font name="Helvetica" size="14.0"/>
             </font>
         </Label>
+        <ComboBox fx:id="dateFormatComboBox" layoutX="161.0" layoutY="63.0" prefWidth="150.0"/>
+        <ComboBox fx:id="timeFormatComboBox" layoutX="161.0" layoutY="103.0" prefWidth="150.0"/>
     </children>
 </AnchorPane>

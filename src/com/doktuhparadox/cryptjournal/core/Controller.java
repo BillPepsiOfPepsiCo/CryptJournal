@@ -5,7 +5,6 @@ import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.io.FileProprietor;
-import com.doktuhparadox.easel.utils.Clippy;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 import com.doktuhparadox.easel.utils.StringUtils;
 
@@ -99,6 +98,10 @@ public class Controller {
 		    }
 	    });
 
+	    journalEntryListView.setOnKeyPressed(keyEvent -> {
+		    if (keyEvent.getCode() == KeyCode.R) this.refreshListView();
+	    });
+
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (this.getSelectedEntry() != null) {
 	            if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
@@ -160,9 +163,11 @@ public class Controller {
 	    optionsButton.setOnAction(event -> {
 		    Parent root = null;
 		    Stage stage = new Stage();
+		    FXMLLoader loader = null;
 
 		    try {
-			    root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
+			    loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
+			    root = loader.load();
 		    } catch (IOException e) {
 			    e.printStackTrace();
 		    }
@@ -177,9 +182,7 @@ public class Controller {
 	    });
 
         //Easter eggs
-        KeyCode[] delimiters = {KeyCode.SPACE, KeyCode.BACK_SPACE};
-        new KeySequence(journalContentEditor, () -> Clippy.playSound("/resources/sound/smoke_weed_erryday.wav"), "WEED", delimiters).attach();
-	    new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", delimiters).attach();
+	    new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", KeyCode.SPACE, KeyCode.BACK_SPACE).attach();
     }
 
 	//**********Event methods**********\\
@@ -324,11 +327,14 @@ public class Controller {
     private void refreshListView() {
         journalEntryListView.getItems().clear();
 
-        if (JournalEntry.journalDir.exists()) //noinspection ConstantConditions
+	    if (JournalEntry.journalDir.exists()) {
+		    System.out.println("Refreshing list view");
+
 	        FileProprietor.ls(JournalEntry.journalDir).stream()
 			        .filter(f -> f.getName().endsWith(".journal") && Files.exists(Paths.get("Journals/.metadata/" + f.getName() + "metadata")))
-                    .map(f -> new JournalEntry(f.getName()))
-                    .forEach(e -> journalEntryListView.getItems().add((JournalEntry) e));
+			        .map(f -> new JournalEntry(f.getName()))
+			        .forEach(e -> journalEntryListView.getItems().add((JournalEntry) e));
+	    }
     }
 
     private String promptForPassword() throws NoSuchElementException {

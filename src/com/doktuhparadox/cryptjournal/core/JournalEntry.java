@@ -29,7 +29,6 @@ public class JournalEntry {
 	public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
 	private final FileProprietor entryFileProprietor, entryMetadataFileProprietor;
 	private final String name;
-	private final boolean strongEncryptionAvailable = MethodProxy.strongEncryptionAvailable();
     private boolean useStrongEncryption = OptionManager.useStrongEncryption.value().asBoolean();
 
 	public JournalEntry(String name) {
@@ -44,8 +43,8 @@ public class JournalEntry {
 
         this.assertProperty("LAST_SAVE_WAS_AUTOSAVE", String.valueOf(password.equals("$")));
 
-        if (strongEncryptionAvailable && useStrongEncryption) {
-            StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+		if (MethodProxy.strongEncryptionAvailable && useStrongEncryption) {
+			StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
 			strongTextEncryptor.setPassword(password);
             encData = strongTextEncryptor.encrypt(data);
         } else {
@@ -63,8 +62,8 @@ public class JournalEntry {
         try {
             String data = StringUtils.collect(this.entryFileProprietor.read());
 
-            if (strongEncryptionAvailable && useStrongEncryption) {
-                StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
+	        if (MethodProxy.strongEncryptionAvailable && useStrongEncryption) {
+		        StrongTextEncryptor strongTextEncryptor = new StrongTextEncryptor();
 		        strongTextEncryptor.setPassword(password);
                 return strongTextEncryptor.decrypt(data);
             } else {
@@ -93,9 +92,8 @@ public class JournalEntry {
 
 	public boolean create() throws IOException {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
-            String timeFormat = OptionManager.timeFormat.getValue();
             this.entryMetadataFileProprietor.write("#DO NOT EDIT ANYTHING IN THIS FILE FOR RISK OF DEATH!!!!!!", true);
-	        this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s %s", OptionManager.dateFormat.getValue().replace("mm", "MM"), timeFormat)).format(new Date()));
+	        this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s %s", "dd/MM/yyyy", "hh:mm:ss")).format(new Date()));
 	        this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
             this.writeProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
             this.lockMetadataFile();
