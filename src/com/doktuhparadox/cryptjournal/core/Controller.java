@@ -73,6 +73,10 @@ public class Controller {
             deleteEntryButton.setDisable(true);
 	        renameButton.setDisable(true);
         }
+
+	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		    if (!journalContentEditor.isDisabled()) this.saveEntry(true);
+	    }));
     }
 
 	private ScheduledExecutorService autosaveService;
@@ -88,10 +92,7 @@ public class Controller {
 				    return t;
 			    });
 
-			    autosaveService.scheduleAtFixedRate(() -> {
-				    System.out.println("Autosaving...");
-				    saveEntry(true);
-			    }, delay, delay, TimeUnit.SECONDS);
+			    autosaveService.scheduleAtFixedRate(() -> saveEntry(true), delay, delay, TimeUnit.SECONDS);
 		    } else {
 			    System.out.println("Canceling autosave service...");
 			    autosaveService.shutdown();
@@ -255,7 +256,8 @@ public class Controller {
         if (isAutosave) {
 	        String text = journalContentEditor.getHtmlText();
 	        if (StringUtils.emptyOrNull(text)) return;
-            this.getSelectedEntry().write(text, "$");
+	        System.out.println("Autosaving...");
+	        this.getSelectedEntry().write(text, "$");
         } else {
             String password;
 
