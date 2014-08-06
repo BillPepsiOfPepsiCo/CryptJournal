@@ -58,14 +58,15 @@ public class Controller {
     @FXML
     private HTMLEditor journalContentEditor;
 
+    //Returns "true" if the filename string is invalid
     private final Predicate<String> filenamePredicate = s -> {
-        boolean isEmptyOrOnlySpaces = StringUtils.emptyOrNull(s) || StringUtils.isOnlySpaces(s) || s.length() > 255;
+        boolean prePredicate = StringUtils.emptyOrNull(s) || StringUtils.isOnlySpaces(s);
 
         switch (PlatformDifferentiator.getOS()) {
-            case WINDOWS:
-                return isEmptyOrOnlySpaces || StringUtils.containsAny(s, PlatformDifferentiator.invalidWindowsFilenameCharacters);
-            case MAC_OS_X: case LINUX: case SOLARIS:
-                return isEmptyOrOnlySpaces || s.startsWith(".") || s.contains(":");
+            case WINDOWS: //NTFS garbage C:<
+                return prePredicate || !s.matches("[a-zA-Z0-9\\s\\p{Punct}&&[^/:*?\"<>\\|\\\\]]{1,255}+");
+            case MAC_OS_X: case LINUX: case SOLARIS: //Unix operating systems have the same FS
+                return prePredicate || !s.matches("[a-zA-Z0-9\\s\\p{Punct}&&[^:]]{1,255}+") || s.startsWith(".");
             default:
                 return true;
         }
