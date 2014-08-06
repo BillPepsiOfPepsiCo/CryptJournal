@@ -5,6 +5,7 @@ import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.io.FileProprietor;
+import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 import com.doktuhparadox.easel.utils.StringUtils;
 
@@ -26,11 +27,11 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import resources.Index;
 
@@ -56,6 +57,19 @@ public class Controller {
     private ListView<JournalEntry> journalEntryListView;
     @FXML
     private HTMLEditor journalContentEditor;
+
+    private final Predicate<String> filenamePredicate = s -> {
+        boolean isEmptyOrOnlySpaces = StringUtils.emptyOrNull(s) || StringUtils.isOnlySpaces(s) || s.length() > 255;
+
+        switch (PlatformDifferentiator.getOS()) {
+            case WINDOWS:
+                return isEmptyOrOnlySpaces || StringUtils.containsAny(s, PlatformDifferentiator.invalidWindowsFilenameCharacters);
+            case MAC_OS_X: case LINUX: case SOLARIS:
+                return isEmptyOrOnlySpaces || s.startsWith(".") || s.contains(":");
+            default:
+                return true;
+        }
+    };
 
     @FXML
     void initialize() {
@@ -188,113 +202,113 @@ public class Controller {
 
 	//**********Event methods**********\\
     void createNewEntry() {
-        Optional input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
+        Optional<String> input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
-        if (!input.equals(Optional.empty())) {
-	        JournalEntry newEntry = new JournalEntry(String.valueOf(input.get()));
+        if (input.isPresent()) {
+            String newEntryName = input.get();
 
-	        try {
-		        if (newEntry.create()) {
-			        System.out.println("Created new journal entry " + newEntry.getName());
-		        } else {
-			        if (newEntry.getFile().exists()) {
-				        this.createDialog("Could not create new entry", "An entry with that name already exists.").showError();
-			        } else {
-				        this.createDialog("Could not create new entry", "Unknown error.").showError();
-			        }
-			        return;
-		        }
-	        } catch (IOException e) {
-		        this.createDialog("Exception Raised", "Exception caught when trying to create new journal entry (read the first line and you may understand the issue):").showException(e);
-		        return;
-	        }
+            if (filenamePredicate.test(newEntryName)) {
+                this.createDialog("Error", "Invalid filename").showError();
+                return;
+            }
 
-	        this.refreshListView();
-	        NodeState.enable(saveButton);
-	        NodeState.enable(journalContentEditor);
-	        NodeState.disable(deleteEntryButton);
-	        NodeState.disable(createEntryButton);
-	        NodeState.disable(openButton);
-	        NodeState.disable(journalEntryListView);
-	        NodeState.disable(renameButton);
-	        journalEntryListView.getSelectionModel().select(newEntry);
-	        journalEntryNameLabel.setText(newEntry.getName());
-	        MethodProxy.setDockBadge("*");
+            JournalEntry newEntry = new JournalEntry(newEntryName);
+
+            try {
+                if (newEntry.create()) {
+                    System.out.println("Created new journal entry " + newEntry.getName());
+                } else {
+                    if (newEntry.getFile().exists()) {
+                        this.createDialog("Could not create new entry", "An entry with that name already exists.").showError();
+                    } else {
+                        this.createDialog("Could not create new entry", "Unknown error.").showError();
+                    }
+                    return;
+                }
+            } catch (IOException e) {
+                this.createDialog("Exception Raised", "Exception caught when trying to create new journal entry (read the first line and you may understand the issue):").showException(e);
+                return;
+            }
+
+            this.refreshListView();
+            NodeState.enable(saveButton);
+            NodeState.enable(journalContentEditor);
+            NodeState.disable(deleteEntryButton);
+            NodeState.disable(createEntryButton);
+            NodeState.disable(openButton);
+            NodeState.disable(journalEntryListView);
+            NodeState.disable(renameButton);
+            journalEntryListView.getSelectionModel().select(newEntry);
+            journalEntryNameLabel.setText(newEntry.getName());
+            MethodProxy.setDockBadge("*");
         }
     }
 
     void openEntry() {
-        JournalEntry currentEntry = this.getSelectedEntry();
-        String decodedContent;
+        Optional<String> password = this.promptForPassword();
 
-        try {
-            decodedContent = currentEntry.fetchProperty("LAST_SAVE_WAS_AUTOSAVE").equals("true") ? currentEntry.read("$") : currentEntry.read(this.promptForPassword());
+        if (password.isPresent()) {
+            JournalEntry currentEntry = this.getSelectedEntry();
+            String decodedContent = currentEntry.fetchProperty("LAST_SAVE_WAS_AUTOSAVE").equals("true") ? currentEntry.read("$") : currentEntry.read(password.get());
 
             if (decodedContent.equals("BAD_PASSWORD")) {
                 this.createDialog("Error", "Incorrect password.").showError();
                 return;
             }
-        } catch (NoSuchElementException e) {
-            return;
+
+            journalEntryNameLabel.setText(currentEntry.getName());
+            journalContentEditor.setHtmlText(decodedContent);
+            NodeState.enable(saveButton);
+            NodeState.enable(journalContentEditor);
+            NodeState.disable(journalEntryListView);
+            NodeState.disable(openButton);
+            NodeState.disable(createEntryButton);
+            NodeState.disable(deleteEntryButton);
+            NodeState.disable(renameButton);
+            journalContentEditor.requestFocus();
+
+            MethodProxy.setDockBadge("*");
         }
-
-        journalEntryNameLabel.setText(currentEntry.getName());
-        journalContentEditor.setHtmlText(decodedContent);
-	    NodeState.enable(saveButton);
-        NodeState.enable(journalContentEditor);
-        NodeState.disable(journalEntryListView);
-        NodeState.disable(openButton);
-        NodeState.disable(createEntryButton);
-        NodeState.disable(deleteEntryButton);
-		NodeState.disable(renameButton);
-        journalContentEditor.requestFocus();
-
-        MethodProxy.setDockBadge("*");
     }
 
     void saveEntry(boolean isAutosave) {
         if (isAutosave) {
 	        String text = journalContentEditor.getHtmlText();
 	        if (StringUtils.emptyOrNull(text)) return;
+
 	        System.out.println("Autosaving...");
 	        this.getSelectedEntry().write(text, "$");
         } else {
-            String password;
+            Optional<String> password = this.promptForPassword();
 
-            try {
-                password = this.promptForPassword();
-            } catch (NoSuchElementException e) {
-                return;
+            if (password.isPresent()) {
+                this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password.get());
+
+                if (journalEntryListView.getItems().size() > 0) {
+                    NodeState.enable(openButton);
+                    NodeState.enable(deleteEntryButton);
+                }
+
+                NodeState.enable(createEntryButton);
+                NodeState.enable(journalEntryListView);
+                NodeState.enable(renameButton);
+                NodeState.disable(journalContentEditor);
+                NodeState.disable(saveButton);
+                journalEntryListView.requestFocus();
+                journalEntryNameLabel.setText("");
+                journalContentEditor.setHtmlText("");
             }
-
-			this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password);
-
-			if (journalEntryListView.getItems().size() > 0) {
-				NodeState.enable(openButton);
-				NodeState.enable(deleteEntryButton);
-			}
-
-			NodeState.enable(createEntryButton);
-			NodeState.enable(journalEntryListView);
-			NodeState.enable(renameButton);
-			NodeState.disable(journalContentEditor);
-			NodeState.disable(saveButton);
-			journalEntryListView.requestFocus();
-			journalEntryNameLabel.setText("");
-			journalContentEditor.setHtmlText("");
-		}
+        }
 
 		MethodProxy.setDockBadge(null);
 	}
 
     void renameEntry() {
-        Optional<String> newName = Dialogs.create().masthead(null).message("Enter new entry name").showTextInput();
-        try {
-            String newNameStr = newName.get();
-            if (StringUtils.emptyOrNull(newNameStr)) return;
-            this.getSelectedEntry().rename(newNameStr);
-        } catch (NoSuchElementException ignored) {
-		}
+        Optional<String> newName = this.createDialog("Rename entry", "Enter new entry name").showTextInput();
+
+        if (newName.isPresent() && filenamePredicate.test(newName.get())) {
+            this.getSelectedEntry().rename(newName.get());
+        }
 
         this.refreshListView();
     }
@@ -330,8 +344,6 @@ public class Controller {
         journalEntryListView.getItems().clear();
 
 	    if (JournalEntry.journalDir.exists()) {
-		    System.out.println("Refreshing list view");
-
 	        FileProprietor.ls(JournalEntry.journalDir).stream()
 			        .filter(f -> f.getName().endsWith(".journal") && Files.exists(Paths.get("Journals/.metadata/" + f.getName() + "metadata")))
 			        .map(f -> new JournalEntry(f.getName()))
@@ -339,8 +351,8 @@ public class Controller {
 	    }
     }
 
-    private String promptForPassword() throws NoSuchElementException {
-        return this.createDialog("Enter password", "Password for this entry:").showTextInput().get();
+    private Optional<String> promptForPassword() {
+        return this.createDialog("Enter password", "Password for this entry:").showTextInput();
     }
 
     private Dialogs createDialog(String title, String message) {
