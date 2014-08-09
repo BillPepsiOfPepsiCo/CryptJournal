@@ -16,15 +16,15 @@ import com.apple.eawt.Application;
  */
 public class MethodProxy {
 
-	public static final boolean strongEncryptionAvailable = strongEncryptionAvailable();
+    public static final boolean strongEncryptionAvailable = strongEncryptionAvailable();
 
-	public static void setDockBadge(String badge) {
-		if (PlatformDifferentiator.isMacOSX()) Application.getApplication().setDockIconBadge(badge);
-	}
+    public static void setDockBadge(String badge) {
+        if (PlatformDifferentiator.isMacOSX()) Application.getApplication().setDockIconBadge(badge);
+    }
 
-	private static boolean strongEncryptionAvailable() {
-		try {
-			StrongTextEncryptor ste = new StrongTextEncryptor();
+    private static boolean strongEncryptionAvailable() {
+        try {
+            StrongTextEncryptor ste = new StrongTextEncryptor();
             ste.setPassword("Donglord");
             ste.encrypt("dongerlord");
         } catch (EncryptionOperationNotPossibleException e) {

@@ -16,20 +16,20 @@ class JournalEntryListCellFactory extends ListCell<JournalEntry> {
         super.updateItem(item, empty);
 
         if (!empty) {
-	        String[] creationTime = item.fetchProperty("CREATION").split(" ");
-	        StringBuilder builder = new StringBuilder();
+            String[] creationTime = item.fetchProperty("CREATION").split(" ");
+            StringBuilder builder = new StringBuilder();
 
-	        String regex = "(?<=\\G..............................)";
+            String regex = "(?<=\\G..............................)";
 
-	        for (String s : item.getName().split(regex)) {
-		        builder.append(s);
+            for (String s : item.getName().split(regex)) {
+                builder.append(s);
 
-		        if (s.length() == StringUtils.countMatches(regex, '.', false)) {
-			        builder.append(!Character.isSpaceChar(s.charAt(s.length() - 1)) ? "-\n" : "\n");
-		        }
-	        }
+                if (s.length() == StringUtils.countMatches(regex, '.', false)) {
+                    builder.append(!Character.isSpaceChar(s.charAt(s.length() - 1)) ? "-\n" : "\n");
+                }
+            }
 
-	        this.setText(String.format("%s\n%s at %s", builder.toString(), creationTime[0], creationTime[1]));
+            this.setText(String.format("%s\n%s at %s", builder.toString(), creationTime[0], creationTime[1]));
         } else {
             this.setText(null);
         }

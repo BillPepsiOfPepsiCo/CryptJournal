@@ -37,10 +37,10 @@ import resources.Index;
 
 public class Controller {
 
-	@FXML
-	private Button aboutButton;
-	@FXML
-	private Button createEntryButton;
+    @FXML
+    private Button aboutButton;
+    @FXML
+    private Button createEntryButton;
     @FXML
     private Button deleteEntryButton;
     @FXML
@@ -49,9 +49,9 @@ public class Controller {
     private Button optionsButton;
     @FXML
     private Button saveButton;
-	@FXML
-	private Button renameButton;
-	@FXML
+    @FXML
+    private Button renameButton;
+    @FXML
     private Label journalEntryNameLabel;
     @FXML
     private ListView<JournalEntry> journalEntryListView;
@@ -65,7 +65,9 @@ public class Controller {
         switch (PlatformDifferentiator.getOS()) {
             case WINDOWS: //NTFS garbage C:<
                 return prePredicate || !s.matches("[a-zA-Z0-9\\s\\p{Punct}&&[^/:*?\"<>\\|\\\\]]{1,255}+");
-            case MAC_OS_X: case LINUX: case SOLARIS: //Unix operating systems have the same FS
+            case MAC_OS_X:
+            case LINUX:
+            case SOLARIS: //Unix operating systems have the same FS
                 return prePredicate || !s.matches("[a-zA-Z0-9\\s\\p{Punct}&&[^:]]{1,255}+") || s.startsWith(".");
             default:
                 return true;
@@ -79,49 +81,49 @@ public class Controller {
         if (FileProprietor.pollDir(JournalEntry.infoDir))
             System.out.println("Created journal entry metadata directory at " + JournalEntry.infoDir.getAbsolutePath());
 
-	    journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
-		this.attachListeners();
+        journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
+        this.attachListeners();
         this.refreshListView();
         //Prevent exceptions
         if (journalEntryListView.getItems().size() == 0) {
             openButton.setDisable(true);
             deleteEntryButton.setDisable(true);
-	        renameButton.setDisable(true);
+            renameButton.setDisable(true);
         }
 
-	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-		    if (!journalContentEditor.isDisabled()) this.saveEntry(true);
-	    }));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (!journalContentEditor.isDisabled()) this.saveEntry(true);
+        }));
     }
 
-	private ScheduledExecutorService autosaveService;
+    private ScheduledExecutorService autosaveService;
 
     private void attachListeners() {
-	    journalContentEditor.disabledProperty().addListener((observable, oldValue, newValue) -> {
-		    if (!newValue) {
-			    int delay = OptionManager.autosaveInterval.value().asInt();
-			    System.out.println("Starting autosave service...");
-			    autosaveService = Executors.newSingleThreadScheduledExecutor(r -> {
-				    Thread t = new Thread(r, "AutosaveServiceDaemon");
-				    t.setDaemon(true);
-				    return t;
-			    });
+        journalContentEditor.disabledProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                int delay = OptionManager.autosaveInterval.value().asInt();
+                System.out.println("Starting autosave service...");
+                autosaveService = Executors.newSingleThreadScheduledExecutor(r -> {
+                    Thread t = new Thread(r, "AutosaveServiceDaemon");
+                    t.setDaemon(true);
+                    return t;
+                });
 
-			    autosaveService.scheduleAtFixedRate(() -> saveEntry(true), delay, delay, TimeUnit.SECONDS);
-		    } else {
-			    System.out.println("Canceling autosave service...");
-			    autosaveService.shutdown();
-		    }
-	    });
+                autosaveService.scheduleAtFixedRate(() -> saveEntry(true), delay, delay, TimeUnit.SECONDS);
+            } else {
+                System.out.println("Canceling autosave service...");
+                autosaveService.shutdown();
+            }
+        });
 
-	    journalEntryListView.setOnKeyPressed(keyEvent -> {
-		    if (keyEvent.getCode() == KeyCode.R) this.refreshListView();
-	    });
+        journalEntryListView.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.R) this.refreshListView();
+        });
 
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (this.getSelectedEntry() != null) {
-	            if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
-	            if (keyEvent.getCode().equals(KeyCode.DELETE)) this.deleteEntry();
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
+                if (keyEvent.getCode().equals(KeyCode.DELETE)) this.deleteEntry();
             }
         });
 
@@ -129,45 +131,45 @@ public class Controller {
             if (journalEntryListView.getItems().size() == 0) {
                 NodeState.disable(openButton);
                 NodeState.disable(deleteEntryButton);
-	            NodeState.disable(renameButton);
+                NodeState.disable(renameButton);
             } else {
                 NodeState.enable(openButton);
                 NodeState.enable(deleteEntryButton);
-	            NodeState.enable(renameButton);
+                NodeState.enable(renameButton);
             }
         });
 
-	    journalEntryListView.getFocusModel().focusedItemProperty().addListener((observable, oldValue, newValue) -> {
-		    if (newValue == null) {
-			    NodeState.disable(openButton);
-			    NodeState.disable(deleteEntryButton);
-		    } else {
-			    NodeState.enable(openButton);
-			    NodeState.enable(deleteEntryButton);
-		    }
-	    });
+        journalEntryListView.getFocusModel().focusedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                NodeState.disable(openButton);
+                NodeState.disable(deleteEntryButton);
+            } else {
+                NodeState.enable(openButton);
+                NodeState.enable(deleteEntryButton);
+            }
+        });
 
-	    createEntryButton.setOnAction(event -> this.createNewEntry());
-	    saveButton.setOnAction(event -> this.saveEntry(false));
-	    deleteEntryButton.setOnAction(event -> this.deleteEntry());
-	    openButton.setOnAction(event -> this.openEntry());
-	    renameButton.setOnAction(event -> this.renameEntry());
+        createEntryButton.setOnAction(event -> this.createNewEntry());
+        saveButton.setOnAction(event -> this.saveEntry(false));
+        deleteEntryButton.setOnAction(event -> this.deleteEntry());
+        openButton.setOnAction(event -> this.openEntry());
+        renameButton.setOnAction(event -> this.renameEntry());
 
         aboutButton.setOnAction(event -> {
             Parent root = null;
-	        Stage stage = new Stage(StageStyle.UNIFIED);
+            Stage stage = new Stage(StageStyle.UNIFIED);
 
             try {
                 root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/etc/AboutMenu.fxml"));
             } catch (IOException e) {
                 e.printStackTrace();
-	            return;
+                return;
             }
 
             Scene scene = new Scene(root, 336, 312);
 
-	        if (OptionManager.theme.getValue().equals("dark"))
-		        root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
+            if (OptionManager.theme.getValue().equals("dark"))
+                root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 
             stage.initStyle(StageStyle.UNIFIED);
             stage.setTitle("About CryptJournal");
@@ -176,32 +178,32 @@ public class Controller {
             stage.show();
         });
 
-	    optionsButton.setOnAction(event -> {
-		    Parent root = null;
-		    Stage stage = new Stage();
-		    FXMLLoader loader = null;
+        optionsButton.setOnAction(event -> {
+            Parent root = null;
+            Stage stage = new Stage();
+            FXMLLoader loader = null;
 
-		    try {
-			    loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
-			    root = loader.load();
-		    } catch (IOException e) {
-			    e.printStackTrace();
-		    }
+            try {
+                loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
+                root = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-		    Scene scene = new Scene(root, 346, 372);
+            Scene scene = new Scene(root, 346, 372);
 
-		    stage.initStyle(StageStyle.UNIFIED);
-		    stage.setTitle("Options");
-		    stage.setScene(scene);
-		    stage.setResizable(false);
-		    stage.show();
-	    });
+            stage.initStyle(StageStyle.UNIFIED);
+            stage.setTitle("Options");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        });
 
         //Easter eggs
-	    new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", KeyCode.SPACE, KeyCode.BACK_SPACE).attach();
+        new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", KeyCode.SPACE, KeyCode.BACK_SPACE).attach();
     }
 
-	//**********Event methods**********\\
+    //**********Event methods**********\\
     void createNewEntry() {
         Optional<String> input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
@@ -210,6 +212,7 @@ public class Controller {
 
             if (filenamePredicate.test(newEntryName)) {
                 this.createDialog("Error", "Invalid filename").showError();
+                this.createNewEntry();
                 return;
             }
 
@@ -274,11 +277,11 @@ public class Controller {
 
     void saveEntry(boolean isAutosave) {
         if (isAutosave) {
-	        String text = journalContentEditor.getHtmlText();
-	        if (StringUtils.emptyOrNull(text)) return;
+            String text = journalContentEditor.getHtmlText();
+            if (StringUtils.emptyOrNull(text)) return;
 
-	        System.out.println("Autosaving...");
-	        this.getSelectedEntry().write(text, "$");
+            System.out.println("Autosaving...");
+            this.getSelectedEntry().write(text, "$");
         } else {
             Optional<String> password = this.promptForPassword();
 
@@ -301,8 +304,8 @@ public class Controller {
             }
         }
 
-		MethodProxy.setDockBadge(null);
-	}
+        MethodProxy.setDockBadge(null);
+    }
 
     void renameEntry() {
         Optional<String> newName = this.createDialog("Rename entry", "Enter new entry name").showTextInput();
@@ -319,12 +322,12 @@ public class Controller {
             this.getSelectedEntry().delete();
             this.refreshListView();
 
-	        journalEntryListView.getSelectionModel().select(-1);
+            journalEntryListView.getSelectionModel().select(-1);
 
-	        if (journalEntryListView.getItems().size() == 0) {
-		        NodeState.disable(openButton);
+            if (journalEntryListView.getItems().size() == 0) {
+                NodeState.disable(openButton);
                 NodeState.disable(deleteEntryButton);
-	            NodeState.disable(renameButton);
+                NodeState.disable(renameButton);
             }
 
             journalEntryNameLabel.setText("");
@@ -344,12 +347,12 @@ public class Controller {
     private void refreshListView() {
         journalEntryListView.getItems().clear();
 
-	    if (JournalEntry.journalDir.exists()) {
-	        FileProprietor.ls(JournalEntry.journalDir).stream()
-			        .filter(f -> f.getName().endsWith(".journal") && Files.exists(Paths.get("Journals/.metadata/" + f.getName() + "metadata")))
-			        .map(f -> new JournalEntry(f.getName()))
-			        .forEach(e -> journalEntryListView.getItems().add((JournalEntry) e));
-	    }
+        if (JournalEntry.journalDir.exists()) {
+            FileProprietor.ls(JournalEntry.journalDir).stream()
+                    .filter(f -> f.getName().endsWith(".journal") && Files.exists(Paths.get("Journals/.metadata/" + f.getName() + "metadata")))
+                    .map(f -> new JournalEntry(f.getName()))
+                    .forEach(e -> journalEntryListView.getItems().add((JournalEntry) e));
+        }
     }
 
     private Optional<String> promptForPassword() {
@@ -357,7 +360,7 @@ public class Controller {
     }
 
     private Dialogs createDialog(String title, String message) {
-	    return Dialogs.create().masthead(null).title(title).message(message);
+        return Dialogs.create().masthead(null).title(title).message(message);
     }
 
     private JournalEntry getSelectedEntry() {

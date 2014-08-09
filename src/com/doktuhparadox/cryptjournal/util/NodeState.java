@@ -1,6 +1,7 @@
 package com.doktuhparadox.cryptjournal.util;
 
 import com.doktuhparadox.easel.control.fx.Transitions;
+
 import javafx.scene.Node;
 import javafx.util.Duration;
 
