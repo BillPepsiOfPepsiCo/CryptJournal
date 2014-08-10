@@ -220,9 +220,7 @@ public class Controller {
             JournalEntry newEntry = new JournalEntry(newEntryName);
 
             try {
-                if (newEntry.create()) {
-                    Logger.logInfo(String.format("Created new journal entry with name \'%s\'", newEntry));
-                } else {
+                if (!newEntry.create()) {
                     if (newEntry.getFile().exists()) {
                         this.createDialog("Could not create new entry", "An entry with that name already exists.").showError();
                     } else {

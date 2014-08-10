@@ -13,16 +13,21 @@ import java.util.Date;
  * Author: Brennan Forrest (DoktuhParadox)
  * Date of creation: 8/10/14 at 4:12 PM.
  */
-public class Logger implements com.doktuhparadox.easel.utils.log.Logger {
+public final class Logger implements com.doktuhparadox.easel.utils.log.Logger {
 
     private static final Logger cryptJournalLogger = new Logger();
+    private final File logFile = new File("CryptJournalLog.txt");
+
+    private Logger() {
+        if (logFile.delete()) System.out.println("\"Cleared\" log file");
+    }
 
     @Override
     public void log(LogLevel logLevel, String s) {
-        File logFile = new File("CryptJournalLog.txt");
         FileProprietor fileProprietor = new FileProprietor(logFile);
-        System.out.printf("[CryptJournalLogger@%s] %s", logLevel.toString(), s);
-        fileProprietor.write(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(new Date()).concat("LogLevel.".concat(logLevel.toString())), true);
+        String info = String.format("[CryptJournalLogger@%s] %s", logLevel.toString(), s);
+        System.out.println(info);
+        fileProprietor.append(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss ").format(new Date()).concat(info), true);
     }
 
     public static void logInfo(String s) {

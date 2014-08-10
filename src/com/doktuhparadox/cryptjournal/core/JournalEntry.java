@@ -98,6 +98,7 @@ public final class JournalEntry {
             this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
             this.writeProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
             this.lockMetadataFile();
+            Logger.logInfo(String.format("Created new journal entry with name \'%s\'", this.name));
             return true;
         }
 
