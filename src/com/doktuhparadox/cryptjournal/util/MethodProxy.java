@@ -29,10 +29,11 @@ public class MethodProxy {
             ste.encrypt("dongerlord");
         } catch (EncryptionOperationNotPossibleException e) {
             if (e.getMessage().contains(" (JCE) ")) {
+                Logger.logFine("Strong encryption unavailable due to absence of unlimited strength encryption policy files");
                 return false;
             }
 
-            e.printStackTrace();
+            Logger.logError("Strong encryption made unavailable due to unexpected error: ".concat(e.toString()));
         }
 
         return true;

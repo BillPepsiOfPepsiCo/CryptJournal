@@ -1,6 +1,7 @@
 package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.cryptjournal.option.OptionManager;
+import com.doktuhparadox.cryptjournal.util.Logger;
 import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
@@ -77,9 +78,9 @@ public class Controller {
     @FXML
     void initialize() {
         if (FileProprietor.pollDir(JournalEntry.journalDir))
-            System.out.println("Created journal entry directory at " + JournalEntry.infoDir.getAbsolutePath());
+            Logger.logInfo("Created journal entry directory successfully @ ".concat(JournalEntry.journalDir.getAbsolutePath()));
         if (FileProprietor.pollDir(JournalEntry.infoDir))
-            System.out.println("Created journal entry metadata directory at " + JournalEntry.infoDir.getAbsolutePath());
+            Logger.logInfo("Created journal entry directory successfully @ ".concat(JournalEntry.infoDir.getAbsolutePath()));
 
         journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
         this.attachListeners();
@@ -102,7 +103,7 @@ public class Controller {
         journalContentEditor.disabledProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 int delay = OptionManager.autosaveInterval.value().asInt();
-                System.out.println("Starting autosave service...");
+                Logger.logInfo(String.format("Autosave service started at interval of %s seconds", delay));
                 autosaveService = Executors.newSingleThreadScheduledExecutor(r -> {
                     Thread t = new Thread(r, "AutosaveServiceDaemon");
                     t.setDaemon(true);
@@ -111,8 +112,8 @@ public class Controller {
 
                 autosaveService.scheduleAtFixedRate(() -> saveEntry(true), delay, delay, TimeUnit.SECONDS);
             } else {
-                System.out.println("Canceling autosave service...");
                 autosaveService.shutdown();
+                Logger.logInfo("Autosave service canceled");
             }
         });
 
@@ -162,7 +163,7 @@ public class Controller {
             try {
                 root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/etc/AboutMenu.fxml"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.logError("Unable to display options window: ".concat(e.toString()));
                 return;
             }
 
@@ -187,7 +188,7 @@ public class Controller {
                 loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
                 root = loader.load();
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.logError("Unable to open options window: ".concat(e.toString()));
             }
 
             Scene scene = new Scene(root, 346, 372);
@@ -220,7 +221,7 @@ public class Controller {
 
             try {
                 if (newEntry.create()) {
-                    System.out.println("Created new journal entry " + newEntry.getName());
+                    Logger.logInfo(String.format("Created new journal entry with name \'%s\'", newEntry));
                 } else {
                     if (newEntry.getFile().exists()) {
                         this.createDialog("Could not create new entry", "An entry with that name already exists.").showError();
@@ -280,7 +281,7 @@ public class Controller {
             String text = journalContentEditor.getHtmlText();
             if (StringUtils.emptyOrNull(text)) return;
 
-            System.out.println("Autosaving...");
+            Logger.logInfo("Autosaving...");
             this.getSelectedEntry().write(text, "$");
         } else {
             Optional<String> password = this.promptForPassword();

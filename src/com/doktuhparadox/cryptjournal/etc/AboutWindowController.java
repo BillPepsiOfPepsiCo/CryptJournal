@@ -1,6 +1,7 @@
 package com.doktuhparadox.cryptjournal.etc;
 
 import com.doktuhparadox.cryptjournal.Main;
+import com.doktuhparadox.cryptjournal.util.Logger;
 import com.doktuhparadox.easel.utils.NetUtils;
 
 import javafx.fxml.FXML;
@@ -33,7 +34,7 @@ public class AboutWindowController {
             try {
                 NetUtils.openWebpage(new URL("http://github.com/DoktuhParadox/CryptJournal"));
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                Logger.logError("Caught exception when opening webpage: ".concat(e.getMessage()));
             }
         });
 
@@ -41,7 +42,7 @@ public class AboutWindowController {
             try {
                 NetUtils.openWebpage(new URL("http://www.twitter.com/DoktuhParadox"));
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                Logger.logError("Caught exception when opening webpage: ".concat(e.getMessage()));
             }
         });
     }

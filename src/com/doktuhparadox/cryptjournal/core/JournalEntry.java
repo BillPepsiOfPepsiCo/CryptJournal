@@ -1,6 +1,7 @@
 package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.cryptjournal.option.OptionManager;
+import com.doktuhparadox.cryptjournal.util.Logger;
 import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.io.TempFile;
@@ -23,7 +24,7 @@ import java.util.Date;
  * User: brennanforrest
  * Date of creation: 6/27/14, at 12:21 PM.
  */
-public class JournalEntry {
+public final class JournalEntry {
 
     private static final String journalDirName = "Journals/", infoDirName = ".metadata/";
     public static final File journalDir = new File(journalDirName), infoDir = new File(journalDirName + infoDirName);
@@ -112,9 +113,9 @@ public class JournalEntry {
                 Files.move(this.getFile().toPath(), newEntryFile.toPath());
                 Files.move(this.getMetadataFile().toPath(), newMetadataFile.toPath());
 
-                System.out.println("Renamed entry to " + newName);
+                Logger.logInfo(String.format("Renamed entry %s to %s", this.name, newName));
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.logError("Unable to rename file: ".concat(e.toString()));
             }
         } else {
             Dialogs.create().masthead(null).title("Could not rename entry").message("An entry or metadata file with that name already exists.");
@@ -124,18 +125,20 @@ public class JournalEntry {
     public void delete() {
         this.unlockMetadataFile();
         if (this.getFile().delete() && this.getMetadataFile().delete())
-            System.out.println("Deleted journal entry " + this.name);
+            Logger.logInfo("Deleted journal entry ".concat(this.name));
         else
-            System.out.println("Could not delete entry " + this.name);
+            Logger.logInfo("Deleted journal entry".concat(this.name));
     }
 
     public void lockMetadataFile() {
-        if (this.getMetadataFile().setReadOnly()) System.out.println("Locked metadata file");
-        else System.out.println("Unable to lock metadata file");
+        if (this.getMetadataFile().setReadOnly())
+            Logger.logInfo(String.format("Metadata for entry %s was locked", this.name));
+        else Logger.logInfo(String.format("Metadata for entry %s was unable to be locked", this.name));
     }
 
     public void unlockMetadataFile() {
-        if (this.getMetadataFile().setWritable(true)) System.out.println("Unlocked metadata file");
+        if (this.getMetadataFile().setWritable(true))
+            Logger.logInfo(String.format("Metadata for entry %s was locked", this.name));
         else System.out.println("Unable to unlock metadata file");
     }
 

@@ -3,6 +3,7 @@ package com.doktuhparadox.cryptjournal;
 import com.doktuhparadox.cryptjournal.core.JournalEntry;
 import com.doktuhparadox.cryptjournal.core.MacAppModule;
 import com.doktuhparadox.cryptjournal.option.OptionManager;
+import com.doktuhparadox.cryptjournal.util.Logger;
 import com.doktuhparadox.easel.platform.IPlatformDifferentiator;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 
@@ -58,7 +59,7 @@ public class Main extends Application implements IPlatformDifferentiator {
             if (JournalEntry.infoDir.exists())
                 Files.setAttribute(JournalEntry.infoDir.toPath(), "dos:hidden", true); //Hide the .metadata folder on Windows
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.logError("Unable to hide metadata file ".concat(e.toString()));
         }
     }
 
