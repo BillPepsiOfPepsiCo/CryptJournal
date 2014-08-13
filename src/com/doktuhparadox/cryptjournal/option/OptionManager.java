@@ -9,7 +9,6 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -32,8 +31,6 @@ import resources.Index;
  */
 public class OptionManager {
 
-    @FXML
-    Scene scene;
     @FXML
     private AnchorPane root;
     @FXML
@@ -59,8 +56,8 @@ public class OptionManager {
     public static final SimpleOptionsHandler optionHandler = new SimpleOptionsHandler(configFile, false);
 
     public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
-            dateFormat = new Option<>(optionHandler, "date format", "dd/mm/yyyy"),
-            timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss");
+		    dateFormat = new Option<>(optionHandler, "date format", "dd/MM/yyyy"),
+		    timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss");
 
     public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
     public static final Option<Boolean> useStrongEncryption = new Option<>(optionHandler, "use strong encryption", true);
