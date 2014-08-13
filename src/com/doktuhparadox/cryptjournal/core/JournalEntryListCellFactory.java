@@ -1,5 +1,7 @@
 package com.doktuhparadox.cryptjournal.core;
 
+import com.doktuhparadox.cryptjournal.option.OptionManager;
+import com.doktuhparadox.easel.utils.DateReformatter;
 import com.doktuhparadox.easel.utils.StringUtils;
 
 import javafx.scene.control.ListCell;
@@ -25,11 +27,11 @@ class JournalEntryListCellFactory extends ListCell<JournalEntry> {
                 builder.append(s);
 
                 if (s.length() == StringUtils.countMatches(regex, '.', false)) {
-                    builder.append(!Character.isSpaceChar(s.charAt(s.length() - 1)) ? "-\n" : "\n");
+	                builder.append(!Character.isSpaceChar(s.charAt(s.length() - 1)) ? "-\n" : '\n');
                 }
             }
 
-            this.setText(String.format("%s\n%s at %s", builder.toString(), creationTime[0], creationTime[1]));
+	        this.setText(String.format("%s\n%s at %s", builder.toString(), DateReformatter.reformatDate("dd/MM/yyyy", creationTime[0], OptionManager.dateFormat.getValue()), creationTime[1]));
         } else {
             this.setText(null);
         }
