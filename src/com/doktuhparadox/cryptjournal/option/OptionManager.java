@@ -67,7 +67,7 @@ public class OptionManager {
     public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60),
             keyObtentionIterations = new Option<>(optionHandler, "key obtention iterations", 1000);
 
-    private boolean promptForRestartOnApply = false;
+	private boolean promptForRestartOnApply;
 
     @FXML
     public void initialize() {
