@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
 import java.io.File;
+import java.util.function.Predicate;
 
 import resources.Index;
 
@@ -56,15 +57,15 @@ public class OptionManager {
     public static final SimpleOptionsHandler optionHandler = new SimpleOptionsHandler(configFile, false);
 
     public static final Option<String> theme = new Option<>(optionHandler, "theme", "light"),
-		    dateFormat = new Option<>(optionHandler, "date format", "dd/MM/yyyy"),
-		    timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss");
+            dateFormat = new Option<>(optionHandler, "date format", "dd/MM/yyyy"),
+            timeFormat = new Option<>(optionHandler, "time format", "hh:mm:ss");
 
     public static final Option<Boolean> cachePasswords = new Option<>(optionHandler, "cache passwords", false);
     public static final Option<Boolean> useStrongEncryption = new Option<>(optionHandler, "use strong encryption", true);
     public static final Option<Integer> autosaveInterval = new Option<>(optionHandler, "autosave interval", 60),
             keyObtentionIterations = new Option<>(optionHandler, "key obtention iterations", 1000);
 
-	private boolean promptForRestartOnApply;
+    private boolean promptForRestartOnApply;
 
     @FXML
     public void initialize() {
@@ -129,6 +130,16 @@ public class OptionManager {
             useStrongEncryption.setValue(newValue);
             keyObtentionIterationsLabel.setVisible(!newValue);
             keyObtentionIterationsTextField.setVisible(!newValue);
+        });
+
+        //Kind of boilerplate, but it's aight.
+        Predicate<String> numericInputEnsurancePredicate = s -> s.matches("([0-9]+)|(^$)");
+
+        autosaveIntervalTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!numericInputEnsurancePredicate.test(newValue)) autosaveIntervalTextField.setText(oldValue);
+        });
+        keyObtentionIterationsTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!numericInputEnsurancePredicate.test(newValue)) keyObtentionIterationsTextField.setText(oldValue);
         });
     }
 
