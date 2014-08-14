@@ -128,17 +128,17 @@ public final class JournalEntry {
         if (this.getFile().delete() && this.getMetadataFile().delete())
             Logger.logInfo("Deleted journal entry ".concat(this.name));
         else
-	        Logger.logInfo("Failed to delete journal entry".concat(this.name));
+            Logger.logInfo("Failed to delete journal entry".concat(this.name));
     }
 
-	private void lockMetadataFile() {
-		if (this.getMetadataFile().setReadOnly())
+    private void lockMetadataFile() {
+        if (this.getMetadataFile().setReadOnly())
             Logger.logInfo(String.format("Metadata for entry %s was locked", this.name));
         else Logger.logInfo(String.format("Metadata for entry %s was unable to be locked", this.name));
     }
 
-	private void unlockMetadataFile() {
-		if (this.getMetadataFile().setWritable(true))
+    private void unlockMetadataFile() {
+        if (this.getMetadataFile().setWritable(true))
             Logger.logInfo(String.format("Metadata for entry %s was locked", this.name));
         else System.out.println("Unable to unlock metadata file");
     }

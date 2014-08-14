@@ -126,7 +126,7 @@ public class Controller {
             if (this.getSelectedEntry() != null) {
                 if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
                 if (keyEvent.getCode().equals(KeyCode.DELETE)) this.deleteEntry();
-	            if (keyEvent.getCode().equals(KeyCode.R)) this.refreshListView();
+                if (keyEvent.getCode().equals(KeyCode.R)) this.refreshListView();
             }
         });
 
@@ -158,48 +158,48 @@ public class Controller {
         openButton.setOnAction(event -> this.openEntry());
         renameButton.setOnAction(event -> this.renameEntry());
 
-	    aboutButton.setOnAction(event -> Platform.runLater(() -> {
-		    Parent root = null;
-		    Stage stage = new Stage(StageStyle.UNIFIED);
+        aboutButton.setOnAction(event -> Platform.runLater(() -> {
+            Parent root = null;
+            Stage stage = new Stage(StageStyle.UNIFIED);
 
-		    try {
-			    root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/etc/AboutMenu.fxml"));
-		    } catch (IOException e) {
-			    Logger.logError("Unable to display options window: ".concat(e.toString()));
-			    return;
-		    }
+            try {
+                root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/etc/AboutMenu.fxml"));
+            } catch (IOException e) {
+                Logger.logError("Unable to display options window: ".concat(e.toString()));
+                return;
+            }
 
-		    Scene scene = new Scene(root, 336, 312);
+            Scene scene = new Scene(root, 336, 312);
 
-		    if (OptionManager.theme.getValue().equals("dark"))
-			    root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
+            if (OptionManager.theme.getValue().equals("dark"))
+                root.getStylesheets().add(Index.darkThemeStylesheet.toExternalForm());
 
-		    stage.initStyle(StageStyle.UNIFIED);
-		    stage.setTitle("About CryptJournal");
-		    stage.setScene(scene);
-		    stage.setResizable(false);
-		    stage.show();
-	    }));
+            stage.initStyle(StageStyle.UNIFIED);
+            stage.setTitle("About CryptJournal");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        }));
 
-	    optionsButton.setOnAction(event -> Platform.runLater(() -> {
-		    Parent root = null;
-		    Stage stage = new Stage(StageStyle.UNIFIED);
-		    FXMLLoader loader = null;
+        optionsButton.setOnAction(event -> Platform.runLater(() -> {
+            Parent root = null;
+            Stage stage = new Stage(StageStyle.UNIFIED);
+            FXMLLoader loader = null;
 
-		    try {
-			    loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
-			    root = loader.load();
-		    } catch (IOException e) {
-			    Logger.logError("Unable to open options window: ".concat(e.toString()));
-		    }
+            try {
+                loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
+                root = loader.load();
+            } catch (IOException e) {
+                Logger.logError("Unable to open options window: ".concat(e.toString()));
+            }
 
-		    Scene scene = new Scene(root, 346, 372);
+            Scene scene = new Scene(root, 346, 372);
 
-		    stage.setTitle("Options");
-		    stage.setScene(scene);
-		    stage.setResizable(false);
-		    stage.show();
-	    }));
+            stage.setTitle("Options");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        }));
 
         //Easter eggs
         new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", KeyCode.SPACE, KeyCode.BACK_SPACE).attach();
@@ -253,7 +253,10 @@ public class Controller {
 
         if (password.isPresent()) {
             JournalEntry currentEntry = this.getSelectedEntry();
-            String decodedContent = currentEntry.fetchProperty("LAST_SAVE_WAS_AUTOSAVE").equals("true") ? currentEntry.read("$") : currentEntry.read(password.get());
+            String decodedContent =
+                    currentEntry.fetchProperty("LAST_SAVE_WAS_AUTOSAVE").equals("true")
+                            ? currentEntry.read("$")
+                            : currentEntry.read(password.get());
 
             if (decodedContent.equals("BAD_PASSWORD")) {
                 this.createDialog("Error", "Incorrect password.").showError();
