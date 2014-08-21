@@ -1,7 +1,7 @@
 package com.doktuhparadox.cryptjournal.core;
 
 import com.doktuhparadox.cryptjournal.option.OptionManager;
-import com.doktuhparadox.easel.utils.DateReformatter;
+import com.doktuhparadox.easel.utils.DateUtils;
 import com.doktuhparadox.easel.utils.StringUtils;
 
 import javafx.scene.control.ListCell;
@@ -31,7 +31,7 @@ class JournalEntryListCellFactory extends ListCell<JournalEntry> {
                 }
             }
 
-            this.setText(String.format("%s\n%s at %s", builder.toString(), DateReformatter.reformatDate("dd/MM/yyyy", creationTime[0], OptionManager.dateFormat.getValue()), creationTime[1]));
+            this.setText(String.format("%s\n%s at %s", builder.toString(), DateUtils.reformatDate(creationTime[0], "dd/MM/yyyy", OptionManager.dateFormat.getValue(), '/'), creationTime[1]));
         } else {
             this.setText(null);
         }

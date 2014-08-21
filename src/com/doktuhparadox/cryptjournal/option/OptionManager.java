@@ -13,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
@@ -69,9 +68,6 @@ public class OptionManager {
 
     @FXML
     public void initialize() {
-        SelectionModel<String> dateComboBoxSM = this.dateFormatComboBox.getSelectionModel(),
-                timeComboBoxSM = this.timeFormatComboBox.getSelectionModel();
-
         root.getStylesheets().add(Index.rootTweaksStylesheet.toExternalForm());
 
         if (theme.getValue().equals("dark")) {
@@ -82,15 +78,15 @@ public class OptionManager {
         autosaveIntervalTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 14));
         keyObtentionIterationsTextField.setFont(Font.loadFont(this.getClass().getResourceAsStream("/resources/font/mplus-1m-regular.ttf"), 14));
 
-        dateFormatComboBox.getItems().setAll("dd/MM/yyyy", "MM/dd/yyyy", "yyyy/MM/dd");
+        this.dateFormatComboBox.getItems().setAll("dd/MM/yyyy", "MM/dd/yyyy", "yyyy/MM/dd", "Custom");
         timeFormatComboBox.getItems().setAll("hh:mm:ss", "HH:mm:ss", "hh:mm", "HH:mm");
 
-        dateComboBoxSM.select(dateFormat.getValue());
-        timeComboBoxSM.select(timeFormat.getValue());
+        dateFormatComboBox.getSelectionModel().select(dateFormat.getValue());
+        timeFormatComboBox.getSelectionModel().select(timeFormat.getValue());
         autosaveIntervalTextField.setText(autosaveInterval.value().asString());
         keyObtentionIterationsTextField.setText(keyObtentionIterations.value().asString());
 
-        dateFormatComboBox.setTooltip(new Tooltip("Sets the date format for the list view."));
+        this.dateFormatComboBox.setTooltip(new Tooltip("Sets the date format for the list view."));
         timeFormatComboBox.setTooltip(new Tooltip("Sets the time format for the list view."));
         autosaveIntervalTextField.setTooltip(new Tooltip("Sets the amount of time (in seconds)\nbetween autosaves."));
         cachePasswordsCheckBox.setTooltip(new Tooltip("N.Y.I."));
@@ -123,8 +119,8 @@ public class OptionManager {
 
         autosaveIntervalTextField.focusedProperty().addListener((observable, oldValue, newValue) -> autosaveInterval.setValue(Integer.valueOf(autosaveIntervalTextField.getText())));
         cachePasswordsCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> cachePasswords.setValue(newValue));
-        dateFormatComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> dateFormat.setValue(dateComboBoxSM.getSelectedItem()));
-        timeFormatComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> timeFormat.setValue(timeComboBoxSM.getSelectedItem()));
+        dateFormatComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> dateFormat.setValue(dateFormatComboBox.getSelectionModel().getSelectedItem()));
+        timeFormatComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> timeFormat.setValue(timeFormatComboBox.getSelectionModel().getSelectedItem()));
         keyObtentionIterationsTextField.focusedProperty().addListener((observable, oldValue, newValue) -> keyObtentionIterations.setValue(Integer.valueOf(keyObtentionIterationsTextField.getText())));
         useStrongEncryptionCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             useStrongEncryption.setValue(newValue);
