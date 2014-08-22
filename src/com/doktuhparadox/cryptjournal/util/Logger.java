@@ -15,42 +15,42 @@ import java.util.Date;
  */
 public final class Logger implements com.doktuhparadox.easel.utils.log.Logger {
 
-    private static final Logger cryptJournalLogger = new Logger();
-    private final File logFile = new File("CryptJournalLog.txt");
+	private static final Logger cryptJournalLogger = new Logger();
+	private final File logFile = new File("CryptJournalLog.txt");
 
-    private Logger() {
-        if (logFile.delete()) System.out.println("\"Cleared\" log file");
-    }
+	private Logger() {
+		if (logFile.delete()) System.out.println("\"Cleared\" log file");
+	}
 
-    @Override
-    public void log(LogLevel logLevel, String s) {
-        FileProprietor fileProprietor = new FileProprietor(logFile);
-        String info = String.format("[CryptJournalLogger@%s] %s", logLevel.toString(), s);
-        System.out.println(info);
-        fileProprietor.append(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss ").format(new Date()).concat(info), true);
-    }
+	@Override
+	public void log(LogLevel logLevel, String s) {
+		FileProprietor fileProprietor = new FileProprietor(logFile);
+		String info = String.format("[CryptJournalLogger@%s] %s", logLevel.toString(), s);
+		System.out.println(info);
+		fileProprietor.append(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss ").format(new Date()).concat(info), true);
+	}
 
-    public static void logInfo(String s) {
-        cryptJournalLogger.log(LogLevel.INFO, s);
-    }
+	public static void logInfo(String s) {
+		cryptJournalLogger.log(LogLevel.INFO, s);
+	}
 
-    public static void logFine(String s) {
-        cryptJournalLogger.log(LogLevel.FINE, s);
-    }
+	public static void logFine(String s) {
+		cryptJournalLogger.log(LogLevel.FINE, s);
+	}
 
-    public static void logFiner(String s) {
-        cryptJournalLogger.log(LogLevel.FINER, s);
-    }
+	public static void logFiner(String s) {
+		cryptJournalLogger.log(LogLevel.FINER, s);
+	}
 
-    public static void logWarning(String s) {
-        cryptJournalLogger.log(LogLevel.WARNING, s);
-    }
+	public static void logWarning(String s) {
+		cryptJournalLogger.log(LogLevel.WARNING, s);
+	}
 
-    public static void logError(String s) {
-        cryptJournalLogger.log(LogLevel.ERROR, s);
-    }
+	public static void logError(String s) {
+		cryptJournalLogger.log(LogLevel.ERROR, s);
+	}
 
-    public static void logCritical(String s) {
-        cryptJournalLogger.log(LogLevel.CRITICAL, s);
-    }
+	public static void logCritical(String s) {
+		cryptJournalLogger.log(LogLevel.CRITICAL, s);
+	}
 }

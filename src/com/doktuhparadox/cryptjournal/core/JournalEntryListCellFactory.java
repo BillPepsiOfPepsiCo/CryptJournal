@@ -13,27 +13,27 @@ import javafx.scene.control.ListCell;
  * Date of creation: 6/27/14, at 12:57 PM.
  */
 class JournalEntryListCellFactory extends ListCell<JournalEntry> {
-    @Override
-    public void updateItem(JournalEntry item, boolean empty) {
-        super.updateItem(item, empty);
+	@Override
+	public void updateItem(JournalEntry item, boolean empty) {
+		super.updateItem(item, empty);
 
-        if (!empty) {
-            String[] creationTime = item.fetchProperty("CREATION").split(" ");
-            StringBuilder builder = new StringBuilder();
+		if (!empty) {
+			String[] creationTime = item.fetchProperty("CREATION").split(" ");
+			StringBuilder builder = new StringBuilder();
 
-            String regex = "(?<=\\G..............................)";
+			String regex = "(?<=\\G..............................)";
 
-            for (String s : item.getName().split(regex)) {
-                builder.append(s);
+			for (String s : item.getName().split(regex)) {
+				builder.append(s);
 
-                if (s.length() == StringUtils.countMatches(regex, '.', false)) {
-                    builder.append(!Character.isSpaceChar(s.charAt(s.length() - 1)) ? "-\n" : '\n');
-                }
-            }
+				if (s.length() == StringUtils.countMatches(regex, '.', false)) {
+					builder.append(!Character.isSpaceChar(s.charAt(s.length() - 1)) ? "-\n" : '\n');
+				}
+			}
 
-            this.setText(String.format("%s\n%s at %s", builder.toString(), DateUtils.reformatDate(creationTime[0], "dd/MM/yyyy", OptionManager.dateFormat.getValue(), '/'), creationTime[1]));
-        } else {
-            this.setText(null);
-        }
-    }
+			this.setText(String.format("%s\n%s at %s", builder.toString(), DateUtils.reformatDate(creationTime[0], "dd/MM/yyyy", OptionManager.dateFormat.getValue(), '/'), creationTime[1]));
+		} else {
+			this.setText(null);
+		}
+	}
 }

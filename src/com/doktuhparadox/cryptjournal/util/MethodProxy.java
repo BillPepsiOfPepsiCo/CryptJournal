@@ -16,26 +16,26 @@ import com.apple.eawt.Application;
  */
 public class MethodProxy {
 
-    public static final boolean strongEncryptionAvailable = strongEncryptionAvailable();
+	public static final boolean strongEncryptionAvailable = strongEncryptionAvailable();
 
-    public static void setDockBadge(String badge) {
-        if (PlatformDifferentiator.isMacOSX()) Application.getApplication().setDockIconBadge(badge);
-    }
+	public static void setDockBadge(String badge) {
+		if (PlatformDifferentiator.isMacOSX()) Application.getApplication().setDockIconBadge(badge);
+	}
 
-    private static boolean strongEncryptionAvailable() {
-        try {
-            StrongTextEncryptor ste = new StrongTextEncryptor();
-            ste.setPassword("Donglord");
-            ste.encrypt("dongerlord");
-        } catch (EncryptionOperationNotPossibleException e) {
-            if (e.getMessage().contains(" (JCE) ")) {
-                Logger.logFine("Strong encryption unavailable due to absence of unlimited strength encryption policy files");
-                return false;
-            }
+	private static boolean strongEncryptionAvailable() {
+		try {
+			StrongTextEncryptor ste = new StrongTextEncryptor();
+			ste.setPassword("Donglord");
+			ste.encrypt("dongerlord");
+		} catch (EncryptionOperationNotPossibleException e) {
+			if (e.getMessage().contains(" (JCE) ")) {
+				Logger.logFine("Strong encryption unavailable due to absence of unlimited strength encryption policy files");
+				return false;
+			}
 
-            Logger.logError("Strong encryption made unavailable due to unexpected error: ".concat(e.toString()));
-        }
+			Logger.logError("Strong encryption made unavailable due to unexpected error: ".concat(e.toString()));
+		}
 
-        return true;
-    }
+		return true;
+	}
 }

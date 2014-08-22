@@ -19,31 +19,31 @@ import java.net.URL;
  * Date of creation: 7/18/14 at 8:13 PM.
  */
 public class AboutWindowController {
-    @FXML
-    private Button openGitHubButton;
-    @FXML
-    private Button openTwitterButton;
-    @FXML
-    private Label versionLabel;
+	@FXML
+	private Button openGitHubButton;
+	@FXML
+	private Button openTwitterButton;
+	@FXML
+	private Label versionLabel;
 
-    @FXML
-    void initialize() {
-        versionLabel.setText("Version " + Main.version);
+	@FXML
+	void initialize() {
+		versionLabel.setText("Version " + Main.version);
 
-        openGitHubButton.setOnAction(event -> {
-            try {
-                NetUtils.openWebpage(new URL("http://github.com/DoktuhParadox/CryptJournal"));
-            } catch (MalformedURLException e) {
-                Logger.logError("Caught exception when opening webpage: ".concat(e.getMessage()));
-            }
-        });
+		openGitHubButton.setOnAction(event -> {
+			try {
+				NetUtils.openWebpage(new URL("http://github.com/DoktuhParadox/CryptJournal"));
+			} catch (MalformedURLException e) {
+				Logger.logError("Caught exception when opening webpage: ".concat(e.getMessage()));
+			}
+		});
 
-        openTwitterButton.setOnAction(event -> {
-            try {
-                NetUtils.openWebpage(new URL("http://www.twitter.com/DoktuhParadox"));
-            } catch (MalformedURLException e) {
-                Logger.logError("Caught exception when opening webpage: ".concat(e.getMessage()));
-            }
-        });
-    }
+		openTwitterButton.setOnAction(event -> {
+			try {
+				NetUtils.openWebpage(new URL("http://www.twitter.com/DoktuhParadox"));
+			} catch (MalformedURLException e) {
+				Logger.logError("Caught exception when opening webpage: ".concat(e.getMessage()));
+			}
+		});
+	}
 }

@@ -13,13 +13,13 @@ import com.apple.eawt.PreferencesHandler;
  */
 public class MacAppModule implements AboutHandler, PreferencesHandler {
 
-    @Override
-    public void handleAbout(AppEvent.AboutEvent aboutEvent) {
+	@Override
+	public void handleAbout(AppEvent.AboutEvent aboutEvent) {
 
-    }
+	}
 
-    @Override
-    public void handlePreferences(AppEvent.PreferencesEvent preferencesEvent) {
+	@Override
+	public void handlePreferences(AppEvent.PreferencesEvent preferencesEvent) {
 
-    }
+	}
 }
