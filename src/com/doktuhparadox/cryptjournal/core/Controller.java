@@ -3,7 +3,6 @@ package com.doktuhparadox.cryptjournal.core;
 import com.doktuhparadox.cryptjournal.option.OptionManager;
 import com.doktuhparadox.cryptjournal.util.Logger;
 import com.doktuhparadox.cryptjournal.util.MethodProxy;
-import com.doktuhparadox.cryptjournal.util.NodeState;
 import com.doktuhparadox.easel.control.keyboard.KeySequence;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
@@ -70,14 +69,14 @@ public class Controller {
             case MAC_OS_X:
             case LINUX:
             case SOLARIS: //Unix operating systems have the same FS
-                return prePredicate || !s.matches("[a-zA-Z0-9\\s\\p{Punct}&&[^:]]{1,255}+") || s.startsWith(".");
+                return prePredicate || !s.matches("[a-zA-Z0-9\\s\\p{Punct}&&[^:]]{1,255}+") || s.startsWith("."); //(^:
             default:
                 return true;
         }
     };
 
     @FXML
-    void initialize() {
+    public void initialize() {
         if (FileProprietor.pollDir(JournalEntry.journalDir))
             Logger.logInfo("Created journal entry directory successfully @ ".concat(JournalEntry.journalDir.getAbsolutePath()));
         if (FileProprietor.pollDir(JournalEntry.infoDir))
@@ -86,19 +85,19 @@ public class Controller {
         journalEntryListView.setCellFactory(listView -> new JournalEntryListCellFactory());
         this.attachListeners();
         this.refreshListView();
+
         //Prevent exceptions
-        if (journalEntryListView.getItems().size() == 0) {
-            openButton.setDisable(true);
-            deleteEntryButton.setDisable(true);
-            renameButton.setDisable(true);
-        }
+	    boolean disable = journalEntryListView.getItems().size() == 0;
+	    openButton.setDisable(disable);
+	    deleteEntryButton.setDisable(disable);
+	    renameButton.setDisable(disable);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (!journalContentEditor.isDisabled()) this.saveEntry(true);
         }));
     }
 
-    private ScheduledExecutorService autosaveService;
+    private volatile ScheduledExecutorService autosaveService;
 
     private void attachListeners() {
         journalContentEditor.disabledProperty().addListener((observable, oldValue, newValue) -> {
@@ -126,30 +125,20 @@ public class Controller {
             if (this.getSelectedEntry() != null) {
                 if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
                 if (keyEvent.getCode().equals(KeyCode.DELETE)) this.deleteEntry();
-                if (keyEvent.getCode().equals(KeyCode.R)) this.refreshListView();
+                if (keyEvent.getCode().equals(KeyCode.R)) this.refreshListView(); //Mainly for me
             }
         });
 
         journalEntryListView.itemsProperty().addListener(observable -> {
-            if (journalEntryListView.getItems().size() == 0) {
-                NodeState.disable(openButton);
-                NodeState.disable(deleteEntryButton);
-                NodeState.disable(renameButton);
-            } else {
-                NodeState.enable(openButton);
-                NodeState.enable(deleteEntryButton);
-                NodeState.enable(renameButton);
-            }
+	        boolean disable = journalEntryListView.getItems().size() == 0;
+	        openButton.setDisable(disable);
+	        deleteEntryButton.setDisable(disable);
+	        renameButton.setDisable(disable);
         });
 
         journalEntryListView.getFocusModel().focusedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
-                NodeState.disable(openButton);
-                NodeState.disable(deleteEntryButton);
-            } else {
-                NodeState.enable(openButton);
-                NodeState.enable(deleteEntryButton);
-            }
+	        openButton.setDisable(newValue == null);
+	        deleteEntryButton.setDisable(newValue == null);
         });
 
         createEntryButton.setOnAction(event -> this.createNewEntry());
@@ -165,7 +154,7 @@ public class Controller {
             try {
                 root = FXMLLoader.load(this.getClass().getResource("/com/doktuhparadox/cryptjournal/etc/AboutMenu.fxml"));
             } catch (IOException e) {
-                Logger.logError("Unable to display options window: ".concat(e.toString()));
+                Logger.logError("Unable to load options window: ".concat(e.toString()));
                 return;
             }
 
@@ -206,7 +195,7 @@ public class Controller {
     }
 
     //**********Event methods**********\\
-    void createNewEntry() {
+    private void createNewEntry() {
         Optional<String> input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
         if (input.isPresent()) {
@@ -230,25 +219,28 @@ public class Controller {
                     return;
                 }
             } catch (IOException e) {
-                this.createDialog("Exception Raised", "Exception caught when trying to create new journal entry (read the first line and you may understand the issue):").showException(e);
+                this.createDialog("Exception Raised", "Exception caught when trying to create new journal entry: ").showException(e);
                 return;
             }
 
             this.refreshListView();
-            NodeState.enable(saveButton);
-            NodeState.enable(journalContentEditor);
-            NodeState.disable(deleteEntryButton);
-            NodeState.disable(createEntryButton);
-            NodeState.disable(openButton);
-            NodeState.disable(journalEntryListView);
-            NodeState.disable(renameButton);
-            journalEntryListView.getSelectionModel().select(newEntry);
+
+	        journalEntryListView.getSelectionModel().select(newEntry);
+
+	        saveButton.setDisable(false);
+	        journalContentEditor.setDisable(false);
+	        deleteEntryButton.setDisable(true);
+	        createEntryButton.setDisable(true);
+	        openButton.setDisable(true);
+	        journalEntryListView.setDisable(true);
+	        renameButton.setDisable(true);
+
             journalEntryNameLabel.setText(newEntry.getName());
             MethodProxy.setDockBadge("*");
         }
     }
 
-    void openEntry() {
+    private void openEntry() {
         Optional<String> password = this.promptForPassword();
 
         if (password.isPresent()) {
@@ -263,22 +255,23 @@ public class Controller {
                 return;
             }
 
+	        saveButton.setDisable(false);
+	        journalContentEditor.setDisable(false);
+	        journalEntryListView.setDisable(true);
+	        openButton.setDisable(true);
+	        createEntryButton.setDisable(true);
+	        deleteEntryButton.setDisable(true);
+	        renameButton.setDisable(true);
+
             journalEntryNameLabel.setText(currentEntry.getName());
             journalContentEditor.setHtmlText(decodedContent);
-            NodeState.enable(saveButton);
-            NodeState.enable(journalContentEditor);
-            NodeState.disable(journalEntryListView);
-            NodeState.disable(openButton);
-            NodeState.disable(createEntryButton);
-            NodeState.disable(deleteEntryButton);
-            NodeState.disable(renameButton);
             journalContentEditor.requestFocus();
 
             MethodProxy.setDockBadge("*");
         }
     }
 
-    void saveEntry(boolean isAutosave) {
+    private void saveEntry(boolean isAutosave) {
         if (isAutosave) {
             String text = journalContentEditor.getHtmlText();
             if (StringUtils.emptyOrNull(text)) return;
@@ -291,16 +284,15 @@ public class Controller {
             if (password.isPresent()) {
                 this.getSelectedEntry().write(journalContentEditor.getHtmlText(), password.get());
 
-                if (journalEntryListView.getItems().size() > 0) {
-                    NodeState.enable(openButton);
-                    NodeState.enable(deleteEntryButton);
-                }
+	            boolean disable = !(journalEntryListView.getItems().size() > 0);
+	            openButton.setDisable(disable);
+				deleteEntryButton.setDisable(disable);
+	            createEntryButton.setDisable(false);
+	            journalEntryListView.setDisable(false);
+	            renameButton.setDisable(false);
+	            journalContentEditor.setDisable(true);
+	            saveButton.setDisable(true);
 
-                NodeState.enable(createEntryButton);
-                NodeState.enable(journalEntryListView);
-                NodeState.enable(renameButton);
-                NodeState.disable(journalContentEditor);
-                NodeState.disable(saveButton);
                 journalEntryListView.requestFocus();
                 journalEntryNameLabel.setText("");
                 journalContentEditor.setHtmlText("");
@@ -310,38 +302,30 @@ public class Controller {
         MethodProxy.setDockBadge(null);
     }
 
-    void renameEntry() {
+    private void renameEntry() {
         Optional<String> newName = this.createDialog("Rename entry", "Enter new entry name").showTextInput();
 
-        if (newName.isPresent() && filenamePredicate.test(newName.get())) {
-            this.getSelectedEntry().rename(newName.get());
-        }
+        if (newName.isPresent() && filenamePredicate.test(newName.get())) this.getSelectedEntry().rename(newName.get());
 
         this.refreshListView();
     }
 
-    void deleteEntry() {
+    private void deleteEntry() {
         if (this.createDialog("Delete entry?", "Are you sure you want to delete this entry?").showConfirm() == Dialog.Actions.YES) {
             this.getSelectedEntry().delete();
             this.refreshListView();
 
             journalEntryListView.getSelectionModel().select(-1);
 
-            if (journalEntryListView.getItems().size() == 0) {
-                NodeState.disable(openButton);
-                NodeState.disable(deleteEntryButton);
-                NodeState.disable(renameButton);
-            }
+	        boolean disable = journalEntryListView.getItems().size() == 0;
+	        openButton.setDisable(disable);
+	        deleteEntryButton.setDisable(disable);
+	        renameButton.setDisable(disable);
+	        openButton.setDisable(disable);
+	        saveButton.setDisable(disable);
+	        createEntryButton.setDisable(!journalContentEditor.isDisabled());
 
-            journalEntryNameLabel.setText("");
-
-            if (!journalContentEditor.isDisabled()) {
-                NodeState.enable(createEntryButton);
-                NodeState.enable(openButton);
-                NodeState.disable(saveButton);
-                NodeState.disable(journalContentEditor);
-                journalContentEditor.setHtmlText("");
-            }
+	        journalEntryNameLabel.setText("");
         }
     }
     //**********Section end, dog**********\\
