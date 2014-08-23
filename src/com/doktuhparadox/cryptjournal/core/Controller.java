@@ -122,15 +122,12 @@ public class Controller {
         });
 
         journalEntryListView.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.R) this.refreshListView();
-        });
-
-        journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (this.getSelectedEntry() != null) {
                 if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
                 if (keyEvent.getCode().equals(KeyCode.DELETE)) this.deleteEntry();
-                if (keyEvent.getCode().equals(KeyCode.R)) this.refreshListView(); //Mainly for me
             }
+
+            if (keyEvent.getCode().equals(KeyCode.R)) this.refreshListView(); //Mainly for me
         });
 
         journalEntryListView.itemsProperty().addListener(observable -> {
@@ -193,10 +190,10 @@ public class Controller {
             stage.setAlwaysOnTop(true);
             stage.setScene(scene);
             stage.setResizable(false);
+            anchorPane.setEffect(new GaussianBlur(20));
             stage.show();
 
             scene.getWindow().setOnCloseRequest(closeEvent -> anchorPane.setEffect(null));
-            anchorPane.setEffect(new GaussianBlur(20));
         }));
 
         //Easter eggs
@@ -221,7 +218,7 @@ public class Controller {
             try {
                 if (!newEntry.create()) {
                     if (newEntry.getFile().exists()) {
-                        this.createDialog("Could not create new entry", "An entry with that name already exists.").showError();
+                        this.createDialog("Could not create new entry", String.format("An entry with the name \'%s\' already exists.", newEntryName)).showError();
                     } else {
                         this.createDialog("Could not create new entry", "Unknown error.").showError();
                     }
@@ -260,7 +257,7 @@ public class Controller {
                             : currentEntry.read(password.get());
 
             if (decodedContent.equals("BAD_PASSWORD")) {
-                this.createDialog("Error", "Incorrect password.").showError();
+                this.createDialog("Error", String.format("Incorrect password: \'%s\'.", password.get())).showError();
                 return;
             }
 
@@ -314,9 +311,10 @@ public class Controller {
     private void renameEntry() {
         Optional<String> newName = this.createDialog("Rename entry", "Enter new entry name").showTextInput();
 
-        if (newName.isPresent() && filenamePredicate.test(newName.get())) this.getSelectedEntry().rename(newName.get());
-
-        this.refreshListView();
+        if (newName.isPresent() && filenamePredicate.test(newName.get())) {
+            this.getSelectedEntry().rename(newName.get());
+            this.refreshListView();
+        }
     }
 
     private void deleteEntry() {
