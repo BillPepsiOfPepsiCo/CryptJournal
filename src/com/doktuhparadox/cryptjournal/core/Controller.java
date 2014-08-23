@@ -172,7 +172,7 @@ public class Controller {
             stage.show();
         }));
 
-        optionsButton.setOnAction(event -> Platform.runLater(() -> {
+        optionsButton.setOnAction(event -> Platform.runLater(() -> Platform.runLater(() -> {
             Parent root = null;
             Stage stage = new Stage(StageStyle.UNDECORATED);
             FXMLLoader loader = null;
@@ -194,7 +194,7 @@ public class Controller {
             stage.show();
 
             scene.getWindow().setOnCloseRequest(closeEvent -> anchorPane.setEffect(null));
-        }));
+        })));
 
         //Easter eggs
         new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", KeyCode.SPACE, KeyCode.BACK_SPACE).attach();
@@ -330,7 +330,6 @@ public class Controller {
             renameButton.setDisable(disable);
             openButton.setDisable(disable);
             saveButton.setDisable(disable);
-            createEntryButton.setDisable(!journalContentEditor.isDisabled());
 
             journalEntryNameLabel.setText("");
         }

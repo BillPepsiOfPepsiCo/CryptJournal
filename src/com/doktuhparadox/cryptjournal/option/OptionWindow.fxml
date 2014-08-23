@@ -16,7 +16,7 @@
                 <Font name="Helvetica" size="24.0"/>
             </font>
         </Label>
-        <CheckBox fx:id="useDarkThemeCheckbox" layoutX="173.0" layoutY="295.0" mnemonicParsing="false"
+        <CheckBox fx:id="useDarkThemeCheckbox" layoutX="193.0" layoutY="295.0" mnemonicParsing="false"
                   text="Use dark theme">
             <font>
                 <Font name="Helvetica" size="13.0"/>
@@ -46,13 +46,13 @@
                 <Font name="Helvetica" size="14.0"/>
             </font>
         </Label>
-        <CheckBox fx:id="cachePasswordsCheckBox" layoutX="33.0" layoutY="295.0" mnemonicParsing="false"
+        <CheckBox fx:id="cachePasswordsCheckBox" layoutX="33.0" layoutY="265.0" mnemonicParsing="false"
                   prefHeight="18.0" prefWidth="133.0" text="Cache passwords">
             <font>
                 <Font name="Helvetica" size="13.0"/>
             </font>
         </CheckBox>
-        <CheckBox fx:id="useStrongEncryptionCheckbox" layoutX="33.318603515625" layoutY="264.25" mnemonicParsing="false"
+        <CheckBox fx:id="useStrongEncryptionCheckbox" layoutX="33.0" layoutY="295.0" mnemonicParsing="false"
                   text="Use strong encryption">
             <font>
                 <Font name="Helvetica" size="13.0"/>
@@ -67,5 +67,11 @@
         </Label>
         <ComboBox fx:id="dateFormatComboBox" layoutX="161.0" layoutY="63.0" prefWidth="150.0"/>
         <ComboBox fx:id="timeFormatComboBox" layoutX="161.0" layoutY="103.0" prefWidth="150.0"/>
+        <CheckBox fx:id="enableLoggingCheckbox" layoutX="193.318603515625" layoutY="264.5" mnemonicParsing="false"
+                  text="Enable logging">
+            <font>
+                <Font name="Helvetica" size="13.0"/>
+            </font>
+        </CheckBox>
     </children>
 </AnchorPane>

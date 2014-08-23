@@ -1,5 +1,6 @@
 package com.doktuhparadox.cryptjournal.util;
 
+import com.doktuhparadox.cryptjournal.option.OptionManager;
 import com.doktuhparadox.easel.io.FileProprietor;
 
 import java.io.File;
@@ -27,7 +28,8 @@ public final class Logger implements com.doktuhparadox.easel.utils.log.Logger {
         FileProprietor fileProprietor = new FileProprietor(logFile);
         String info = String.format("[CryptJournalLogger@%s] %s", logLevel.toString(), s);
         System.out.println(info);
-        fileProprietor.append(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss ").format(new Date()).concat(info), true);
+        if (OptionManager.loggingEnabled.value().asBoolean())
+            fileProprietor.append(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss ").format(new Date()).concat(info), true);
     }
 
     public static void logInfo(String s) {
