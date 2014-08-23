@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
+import javafx.stage.Window;
 
 import java.io.File;
 import java.util.function.Predicate;
@@ -146,7 +147,9 @@ public class OptionManager {
             return;
         }
 
-        root.getScene().getWindow().hide();
+        Window window = root.getScene().getWindow();
+        window.hide();
+        window.getOnCloseRequest().handle(null); //Calling window.hide does not dispatch a window close event
         promptForRestartOnApply = false;
     }
 }

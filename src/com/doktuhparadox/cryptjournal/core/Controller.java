@@ -20,7 +20,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -38,6 +40,8 @@ import resources.Index;
 
 public class Controller {
 
+    @FXML
+    private AnchorPane anchorPane;
     @FXML
     private Button aboutButton;
     @FXML
@@ -167,12 +171,13 @@ public class Controller {
             stage.setTitle("About CryptJournal");
             stage.setScene(scene);
             stage.setResizable(false);
+            stage.setAlwaysOnTop(true);
             stage.show();
         }));
 
         optionsButton.setOnAction(event -> Platform.runLater(() -> {
             Parent root = null;
-            Stage stage = new Stage(StageStyle.UNIFIED);
+            Stage stage = new Stage(StageStyle.UNDECORATED);
             FXMLLoader loader = null;
 
             try {
@@ -185,9 +190,13 @@ public class Controller {
             Scene scene = new Scene(root, 346, 372);
 
             stage.setTitle("Options");
+            stage.setAlwaysOnTop(true);
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
+
+            scene.getWindow().setOnCloseRequest(closeEvent -> anchorPane.setEffect(null));
+            anchorPane.setEffect(new GaussianBlur(20));
         }));
 
         //Easter eggs
