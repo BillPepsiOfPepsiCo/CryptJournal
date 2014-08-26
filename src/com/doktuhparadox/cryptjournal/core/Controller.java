@@ -8,13 +8,10 @@ import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 import com.doktuhparadox.easel.utils.StringUtils;
-
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,17 +24,20 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+import resources.Index;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-
-import resources.Index;
 
 public class Controller {
 
@@ -175,12 +175,13 @@ public class Controller {
             stage.show();
         }));
 
-        optionsButton.setOnAction(event -> Platform.runLater(() -> Platform.runLater(() -> {
+        optionsButton.setOnAction(event -> Platform.runLater(() -> {
             optionsButton.setDisable(true);
             Parent root = null;
             Stage stage = new Stage(StageStyle.UNDECORATED);
             FXMLLoader loader = null;
-            Window thisWindow = anchorPane.getScene().getWindow();
+            Window primaryWindow = anchorPane.getScene().getWindow();
+            List<Node> nodesToReenable = new ArrayList<>(anchorPane.getChildren().size());
 
             try {
                 loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
@@ -196,15 +197,26 @@ public class Controller {
             stage.setScene(scene);
             stage.setResizable(false);
             anchorPane.setEffect(blur);
-            //TODO: Calculate the fucking center of the parent stage
+            //Center the options window regardless of where the main window is
+            //The scene's height/width property are used because stages' do not
+            //have a value until they are shown.
+            stage.setX(primaryWindow.getX() + scene.getWidth());
+            stage.setY(primaryWindow.getY() + (scene.getHeight() / 2));
             stage.show();
 
+            anchorPane.getChildren().stream().filter(n -> !n.isDisabled()).forEach(n -> {
+                n.setDisable(true);
+                nodesToReenable.add(n);
+            });
+
             scene.getWindow().setOnCloseRequest(closeEvent -> {
+                //The list of children must be referenced directly in order to be interacted with.
+                anchorPane.getChildren().stream().filter(nodesToReenable::contains).forEach(n -> n.setDisable(false));
                 anchorPane.setEffect(null);
                 optionsButton.setDisable(false);
                 this.refreshListView();
             });
-        })));
+        }));
 
         //Easter eggs
         new KeySequence(journalContentEditor, () -> new FXMLWindow(getClass().getResource("Doge.fxml"), "Doge", 510, 385, false).show(), "DOGE", KeyCode.SPACE, KeyCode.BACK_SPACE).attach();
