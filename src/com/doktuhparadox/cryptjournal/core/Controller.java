@@ -9,6 +9,7 @@ import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 import com.doktuhparadox.easel.utils.StringUtils;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -192,16 +193,22 @@ public class Controller {
 
             Scene scene = new Scene(root, 346, 372);
 
+            ChangeListener<? super Number> changeListener = (observable, oldValue, newValue) -> {
+                //Center the options window regardless of where the main window is
+                //The scene's height/width property are used because stages' do not
+                //have a value until they are shown.
+                stage.setX(primaryWindow.getX() + scene.getWidth());
+                stage.setY(primaryWindow.getY() + (scene.getHeight() / 2));
+            };
+
             stage.setTitle("Options");
             stage.setAlwaysOnTop(true);
             stage.setScene(scene);
             stage.setResizable(false);
             anchorPane.setEffect(blur);
-            //Center the options window regardless of where the main window is
-            //The scene's height/width property are used because stages' do not
-            //have a value until they are shown.
-            stage.setX(primaryWindow.getX() + scene.getWidth());
-            stage.setY(primaryWindow.getY() + (scene.getHeight() / 2));
+            changeListener.changed(null, null, null);
+            primaryWindow.xProperty().addListener(changeListener);
+            primaryWindow.yProperty().addListener(changeListener);
             stage.show();
 
             anchorPane.getChildren().stream().filter(n -> !n.isDisabled()).forEach(n -> {
@@ -216,6 +223,9 @@ public class Controller {
                 optionsButton.setDisable(false);
                 this.refreshListView();
             });
+
+            //Exiting the program from the primary window will not be stopped by the options window.
+            primaryWindow.setOnCloseRequest(closeEvent -> stage.close());
         }));
 
         //Easter eggs
