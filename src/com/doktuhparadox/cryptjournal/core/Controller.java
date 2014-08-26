@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -179,6 +180,7 @@ public class Controller {
             Parent root = null;
             Stage stage = new Stage(StageStyle.UNDECORATED);
             FXMLLoader loader = null;
+            Window thisWindow = anchorPane.getScene().getWindow();
 
             try {
                 loader = new FXMLLoader(getClass().getResource("/com/doktuhparadox/cryptjournal/option/OptionWindow.fxml"));
@@ -194,6 +196,7 @@ public class Controller {
             stage.setScene(scene);
             stage.setResizable(false);
             anchorPane.setEffect(blur);
+            //TODO: Calculate the fucking center of the parent stage
             stage.show();
 
             scene.getWindow().setOnCloseRequest(closeEvent -> {
