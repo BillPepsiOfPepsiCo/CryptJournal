@@ -104,6 +104,8 @@ public class Controller {
     private volatile ScheduledExecutorService autosaveService;
 
     private void attachListeners() {
+        GaussianBlur blur = new GaussianBlur(20);
+
         journalContentEditor.disabledProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 int delay = OptionManager.autosaveInterval.value().asInt();
@@ -173,6 +175,7 @@ public class Controller {
         }));
 
         optionsButton.setOnAction(event -> Platform.runLater(() -> Platform.runLater(() -> {
+            optionsButton.setDisable(true);
             Parent root = null;
             Stage stage = new Stage(StageStyle.UNDECORATED);
             FXMLLoader loader = null;
@@ -190,10 +193,14 @@ public class Controller {
             stage.setAlwaysOnTop(true);
             stage.setScene(scene);
             stage.setResizable(false);
-            anchorPane.setEffect(new GaussianBlur(20));
+            anchorPane.setEffect(blur);
             stage.show();
 
-            scene.getWindow().setOnCloseRequest(closeEvent -> anchorPane.setEffect(null));
+            scene.getWindow().setOnCloseRequest(closeEvent -> {
+                anchorPane.setEffect(null);
+                optionsButton.setDisable(false);
+                this.refreshListView();
+            });
         })));
 
         //Easter eggs
