@@ -8,6 +8,10 @@ import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 import com.doktuhparadox.easel.utils.StringUtils;
+
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -25,9 +29,6 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-import resources.Index;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,6 +40,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+
+import resources.Index;
 
 public class Controller {
 
@@ -267,7 +270,6 @@ public class Controller {
             this.refreshListView();
 
             journalEntryListView.getSelectionModel().select(newEntry);
-            journalEntryListView.requestFocus();
 
             saveButton.setDisable(false);
             journalContentEditor.setDisable(false);
@@ -278,6 +280,8 @@ public class Controller {
             renameButton.setDisable(true);
 
             journalEntryNameLabel.setText(newEntry.getName());
+            journalContentEditor.requestFocus();
+
             MethodProxy.setDockBadge("*");
         }
     }
@@ -352,9 +356,17 @@ public class Controller {
     private void renameEntry() {
         Optional<String> newName = this.createDialog("Rename entry", "Enter new entry name").showTextInput();
 
-        if (newName.isPresent() && !filenamePredicate.test(newName.get())) {
-            this.getSelectedEntry().rename(newName.get());
-            this.refreshListView();
+        if (newName.isPresent()) {
+            if (!filenamePredicate.test(newName.get())) {
+                if (!Files.exists(new JournalEntry(newName.get()).getFile().toPath())) {
+                    this.getSelectedEntry().rename(newName.get());
+                    this.refreshListView();
+                } else {
+                    this.createDialog("Error renaming entry", "An entry file with that name already exists.");
+                }
+            } else {
+                this.createDialog("Error renaming entry", "Inputted filename is invalid.");
+            }
         }
     }
 
