@@ -351,7 +351,7 @@ public class Controller {
     private void renameEntry() {
         Optional<String> newName = this.createDialog("Rename entry", "Enter new entry name").showTextInput();
 
-        if (newName.isPresent() && filenamePredicate.test(newName.get())) {
+        if (newName.isPresent() && !filenamePredicate.test(newName.get())) {
             this.getSelectedEntry().rename(newName.get());
             this.refreshListView();
         }
