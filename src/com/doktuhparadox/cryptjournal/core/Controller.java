@@ -125,6 +125,8 @@ public class Controller {
             }
         });
 
+        journalContentEditor.setOnKeyPressed(event -> MethodProxy.setDockBadge("*"));
+
         journalEntryListView.setOnKeyPressed(keyEvent -> {
             if (this.getSelectedEntry() != null) {
                 if (keyEvent.getCode().equals(KeyCode.ENTER)) this.openEntry();
@@ -264,6 +266,7 @@ public class Controller {
             this.refreshListView();
 
             journalEntryListView.getSelectionModel().select(newEntry);
+            journalEntryListView.requestFocus();
 
             saveButton.setDisable(false);
             journalContentEditor.setDisable(false);
@@ -279,34 +282,39 @@ public class Controller {
     }
 
     private void openEntry() {
-        Optional<String> password = this.promptForPassword();
+        JournalEntry currentEntry = this.getSelectedEntry();
+        String decodedContent;
 
-        if (password.isPresent()) {
-            JournalEntry currentEntry = this.getSelectedEntry();
-            String decodedContent =
-                    currentEntry.fetchProperty("LAST_SAVE_WAS_AUTOSAVE").equals("true")
-                            ? currentEntry.read("$")
-                            : currentEntry.read(password.get());
+        if (currentEntry.fetchProperty("LAST_SAVE_WAS_AUTOSAVE").equals("true")) {
+            decodedContent = currentEntry.read("$");
+        } else {
+            Optional<String> password = this.promptForPassword();
 
-            if (decodedContent.equals("BAD_PASSWORD")) {
-                this.createDialog("Error", String.format("Incorrect password: \'%s\'.", password.get())).showError();
+            if (password.isPresent()) {
+                decodedContent = currentEntry.read(password.get());
+
+                if (decodedContent.equals("BAD_PASSWORD")) {
+                    this.createDialog("Error", String.format("Incorrect password: \'%s\'.", password.get())).showError();
+                    return;
+                }
+            } else {
                 return;
             }
-
-            saveButton.setDisable(false);
-            journalContentEditor.setDisable(false);
-            journalEntryListView.setDisable(true);
-            openButton.setDisable(true);
-            createEntryButton.setDisable(true);
-            deleteEntryButton.setDisable(true);
-            renameButton.setDisable(true);
-
-            journalEntryNameLabel.setText(currentEntry.getName());
-            journalContentEditor.setHtmlText(decodedContent);
-            journalContentEditor.requestFocus();
-
-            MethodProxy.setDockBadge("*");
         }
+
+        saveButton.setDisable(false);
+        journalContentEditor.setDisable(false);
+        journalEntryListView.setDisable(true);
+        openButton.setDisable(true);
+        createEntryButton.setDisable(true);
+        deleteEntryButton.setDisable(true);
+        renameButton.setDisable(true);
+
+        journalEntryNameLabel.setText(currentEntry.getName());
+        journalContentEditor.setHtmlText(decodedContent);
+        journalContentEditor.requestFocus();
+
+        MethodProxy.setDockBadge("*");
     }
 
     private void saveEntry(boolean isAutosave) {
