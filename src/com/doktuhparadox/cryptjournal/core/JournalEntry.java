@@ -6,8 +6,6 @@ import com.doktuhparadox.cryptjournal.util.MethodProxy;
 import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.io.TempFile;
 import com.doktuhparadox.easel.utils.StringUtils;
-
-import org.controlsfx.dialog.Dialogs;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.StrongTextEncryptor;
@@ -109,17 +107,13 @@ public final class JournalEntry {
         File newEntryFile = new File(journalDirName + newName + ".journal"),
                 newMetadataFile = new File(journalDirName + infoDirName + newName + ".journalmetadata");
 
-        if (!newEntryFile.exists() && !newMetadataFile.exists()) {
-            try {
-                Files.move(this.getFile().toPath(), newEntryFile.toPath());
-                Files.move(this.getMetadataFile().toPath(), newMetadataFile.toPath());
+        try {
+            Files.move(this.getFile().toPath(), newEntryFile.toPath());
+            Files.move(this.getMetadataFile().toPath(), newMetadataFile.toPath());
 
-                Logger.logInfo(String.format("Renamed entry %s to %s", this.name, newName));
-            } catch (IOException e) {
-                Logger.logError("Unable to rename file: ".concat(e.toString()));
-            }
-        } else {
-            Dialogs.create().masthead(null).title("Could not rename entry").message("An entry or metadata file with that name already exists.");
+            Logger.logInfo(String.format("Renamed entry %s to %s", this.name, newName));
+        } catch (IOException e) {
+            Logger.logError("Unable to rename file: ".concat(e.toString()));
         }
     }
 
