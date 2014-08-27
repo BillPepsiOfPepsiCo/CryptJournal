@@ -8,10 +8,6 @@ import com.doktuhparadox.easel.io.FileProprietor;
 import com.doktuhparadox.easel.platform.PlatformDifferentiator;
 import com.doktuhparadox.easel.utils.FXMLWindow;
 import com.doktuhparadox.easel.utils.StringUtils;
-
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -29,6 +25,9 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+import resources.Index;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,8 +39,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-
-import resources.Index;
 
 public class Controller {
 
@@ -223,8 +220,7 @@ public class Controller {
             });
 
             scene.getWindow().setOnCloseRequest(closeEvent -> {
-                //The list of children must be referenced directly in order to be interacted with.
-                anchorPane.getChildren().stream().filter(nodesToReenable::contains).forEach(n -> n.setDisable(false));
+                nodesToReenable.forEach(n -> n.setDisable(false));
                 anchorPane.setEffect(null);
                 optionsButton.setDisable(false);
                 this.refreshListView();
@@ -240,10 +236,10 @@ public class Controller {
 
     //**********Event methods**********\\
     private void createNewEntry() {
-        Optional<String> input = this.createDialog("Create new entry", "Enter entry name").showTextInput();
+        Optional<String> entryName = this.createDialog("Create new entry", "Enter entry name").showTextInput();
 
-        if (input.isPresent()) {
-            String newEntryName = input.get();
+        if (entryName.isPresent()) {
+            String newEntryName = entryName.get();
 
             if (filenamePredicate.test(newEntryName)) {
                 this.createDialog("Error", "Invalid filename").showError();
@@ -355,17 +351,20 @@ public class Controller {
 
     private void renameEntry() {
         Optional<String> newName = this.createDialog("Rename entry", "Enter new entry name").showTextInput();
+        JournalEntry currentEntry = this.getSelectedEntry();
 
-        if (newName.isPresent()) {
+        if (newName.isPresent() && !newName.get().equals(currentEntry.getName())) {
             if (!filenamePredicate.test(newName.get())) {
                 if (!Files.exists(new JournalEntry(newName.get()).getFile().toPath())) {
-                    this.getSelectedEntry().rename(newName.get());
+                    currentEntry.rename(newName.get());
                     this.refreshListView();
                 } else {
                     this.createDialog("Error renaming entry", "An entry file with that name already exists.").showError();
+                    this.renameEntry();
                 }
             } else {
                 this.createDialog("Error renaming entry", "Inputted filename is invalid.").showError();
+                this.renameEntry();
             }
         }
     }
