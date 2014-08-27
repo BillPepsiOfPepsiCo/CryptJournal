@@ -362,10 +362,10 @@ public class Controller {
                     this.getSelectedEntry().rename(newName.get());
                     this.refreshListView();
                 } else {
-                    this.createDialog("Error renaming entry", "An entry file with that name already exists.");
+                    this.createDialog("Error renaming entry", "An entry file with that name already exists.").showError();
                 }
             } else {
-                this.createDialog("Error renaming entry", "Inputted filename is invalid.");
+                this.createDialog("Error renaming entry", "Inputted filename is invalid.").showError();
             }
         }
     }
