@@ -191,6 +191,7 @@ public class Controller {
                 root = loader.load();
             } catch (IOException e) {
                 Logger.logError("Unable to open options window: ".concat(e.toString()));
+                return;
             }
 
             Scene scene = new Scene(root, 346, 372);
