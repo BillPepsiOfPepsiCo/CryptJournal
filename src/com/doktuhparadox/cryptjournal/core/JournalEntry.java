@@ -128,13 +128,13 @@ public final class JournalEntry {
     private void lockMetadataFile() {
         if (this.getMetadataFile().setReadOnly())
             Logger.logInfo(String.format("Metadata for entry %s was locked", this.name));
-        else Logger.logInfo(String.format("Metadata for entry %s was unable to be locked", this.name));
+        else Logger.logError(String.format("Metadata for entry %s was unable to be locked", this.name));
     }
 
     private void unlockMetadataFile() {
         if (this.getMetadataFile().setWritable(true))
             Logger.logInfo(String.format("Metadata for entry %s was locked", this.name));
-        else System.out.println("Unable to unlock metadata file");
+        else Logger.logError(String.format("Metadata for entry %s was unable to be unlocked", this.name));
     }
 
     public String fetchProperty(String key) {
