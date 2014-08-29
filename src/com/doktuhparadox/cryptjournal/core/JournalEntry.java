@@ -92,7 +92,7 @@ public final class JournalEntry {
     public boolean create() throws IOException {
         if (FileProprietor.poll(this.getFile()) && FileProprietor.poll(this.getMetadataFile())) {
             this.entryMetadataFileProprietor.write("#DO NOT EDIT ANYTHING IN THIS FILE FOR RISK OF DEATH!!!!!!", true);
-            this.writeProperty("CREATION", new SimpleDateFormat(String.format("%s %s", "dd/MM/yyyy", "hh:mm:ss")).format(new Date()));
+            this.writeProperty("CREATION", new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(new Date()));
             this.writeProperty("OBTENTION_ITERATIONS", OptionManager.keyObtentionIterations.value().asString());
             this.writeProperty("LAST_SAVE_WAS_AUTOSAVE", "false");
             this.lockMetadataFile();
