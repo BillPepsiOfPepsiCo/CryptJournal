@@ -47,25 +47,6 @@ Currently, there is no way to fully style an HTMLEditor, but the rest of the app
 I'm not going to go too into detail with this. They're not too complex, and if you dive around the source you'll find them. (Hint: they're in
 the Controller class).
 
-Screenshots
-============
-
-![Startup](/screenshots/1-Startup.png?raw=true "First screen")
-
-![Creating](/screenshots/2-Creating.png?raw=true "Creating an entry")
-
-![Writing](/screenshots/3-Writing.png?raw=true "Writing an entry")
-
-![Saving](/screenshots/4-Saving.png?raw=true "Saving an entry")
-
-![Plaintext](/screenshots/5-Plaintext.png?raw=true "What that looks like when encrypted (with password U.S.A.)")
-
-![Configuration](/screenshots/6-Configuration.png?raw=true "The options window")
-
-![Dark theme 1](/screenshots/7-Dark_theme.png?raw=true "The dark theme on the first screen")
-
-![Dark theme 2](/screenshots/8-Dark_theme2.png?raw=true "The dark theme on the options window")
-
 Downloads
 ============
 
@@ -75,4 +56,4 @@ Dependencies
 ============
 
 This app depends on [ControlsFX](http://fxexperience.com/controlsfx/), [Jasypt](http://http://www.jasypt.org/),
-and my own commons library, [Easel](https://github.com/DoktuhParadox/Easel). None of these have to be downloaded for the binary to work.
+and my own commons library, [Easel](https://github.com/DoktuhParadox/Easel). None of these have to be downloaded for the binary to work (duh). 
